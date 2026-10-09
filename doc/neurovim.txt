@@ -1,0 +1,46 @@
+*neurovim.txt*  NeuroVim — a Vim-learning spy thriller, as a Neovim plugin
+
+                                                                      *neurovim*
+
+==============================================================================
+CONTENTS                                                   *neurovim-contents*
+
+  1. Status ................................................ |neurovim-status|
+  2. Requirements .................................... |neurovim-requirements|
+  3. Commands .............................................. |neurovim-commands|
+  4. License ................................................ |neurovim-license|
+
+==============================================================================
+1. STATUS                                                    *neurovim-status*
+
+In development (phase 3 of 5 done). The game rules — scoring, progression,
+par tiers — are ported to Lua and pass all conformance vectors from
+NeuroVim's TypeScript core. The plugin defines no commands yet; the
+interface follows in phase 4. The repository is private and not released.
+
+==============================================================================
+2. REQUIREMENTS                                        *neurovim-requirements*
+
+- Neovim 0.10 or newer.
+- Nothing else: no Node, no helper process, no other plugin.
+
+==============================================================================
+3. COMMANDS                                                *neurovim-commands*
+
+None yet. Planned for phase 4 (subject to change):
+
+  :NeuroVim               NEXUS: status and mission list.
+  :NeuroVim mission {id}  Briefing, then the mission buffer.
+  :NeuroVim check         Score the mission buffer.
+  :NeuroVim reveal        Highlight the lines that still differ.
+  :NeuroVim restart       Reload the corrupted text, reset time and keys.
+
+The plugin will set no global keys; it will offer |<Plug>| mappings.
+
+==============================================================================
+4. LICENSE                                                  *neurovim-license*
+
+Code: AGPL-3.0 (LICENSE, dual licensing in LICENSING.md). Documentation and
+texts: CC BY-SA 4.0 (LICENSE-DOCS).
+
+ vim:tw=78:ts=8:ft=help:norl:

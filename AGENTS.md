@@ -59,4 +59,4 @@ After a rule change upstream:
 
 ## Abweichungen von der Leitkonvention
 
-- README-Tier: keiner, vorläufig (`untiered_by_choice` in `_docs/readme/readme-spec.json`) — der Tier `nvim-plugin` ist noch nicht definiert; Task „README-Tier nvim-plugin definieren“ im `_docs`-Cockpit.
+- Keine bekannt. README-Tier `nvim-plugin` (`_docs/readme/readme-spec.json`); README und `doc/neurovim.txt` beschreiben ehrlich den Entwicklungsstand, bis Phase 4/5 Befehle und Installation liefern.
