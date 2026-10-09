@@ -3,15 +3,18 @@ local C = require('neurovim.kit.conformance')
 local root = vim.fn.fnamemodify(debug.getinfo(1, 'S').source:sub(2), ':p:h:h')
 local DIR = root .. '/spec/conformance'
 
+local diff = require('neurovim.rules.diff')
+
 -- TS function name → Lua port. Grows with tasks 5–7.
-local IMPLS = {}
+local IMPLS = {
+  normalizeMissionText = diff.normalize_mission_text,
+  getDiff = diff.get_diff,
+  getDivergentLines = diff.get_divergent_lines,
+}
 
 -- Ports not written yet. Phase 3 only: each is announced as PENDING on every run, never counted
 -- as passed, and task 7 deletes this table together with the branch below that reads it.
 local PENDING = {
-  normalizeMissionText = true,
-  getDiff = true,
-  getDivergentLines = true,
   getLevelForXp = true,
   addXp = true,
   backfillUnlocks = true,
