@@ -6,6 +6,7 @@ local missions = require('neurovim.missions')
 local scratch = require('neurovim.kit.scratch')
 local panel = require('neurovim.kit.panel')
 local keytrack = require('neurovim.kit.keytrack')
+local winbar = require('neurovim.kit.winbar')
 local diff = require('neurovim.rules.diff')
 local metrics = require('neurovim.rules.metrics')
 local completion = require('neurovim.rules.completion')
@@ -20,8 +21,13 @@ local function not_a_mission()
   vim.notify('neurovim: not a mission buffer — open one with :NeuroVim mission <id>.', vim.log.levels.ERROR)
 end
 
+-- width is the text width the panel may use (the narrowest window, without number and sign
+-- columns); the kit calls this again after every resize or split.
 local function objective(m, width)
-  local lines = { { { m.id .. ' — ' .. m.title, 'Title' } } }
+  local lines = {}
+  for _, part in ipairs(panel.wrap(m.id .. ' — ' .. m.title, math.max(width, 20))) do
+    lines[#lines + 1] = { { part, 'Title' } }
+  end
   for _, step in ipairs(m.objective) do
     for i, part in ipairs(panel.wrap(step, math.max(width - 4, 20))) do
       lines[#lines + 1] = { { (i == 1 and '  ▸ ' or '    ') .. part, 'Comment' } }
@@ -29,11 +35,6 @@ local function objective(m, width)
   end
   lines[#lines + 1] = { { '' } }
   return lines
-end
-
-local function set_winbar(buf, win)
-  local expr = ("%%{%%v:lua.require'neurovim.ui.mission'.winbar(%d)%%}"):format(buf)
-  vim.api.nvim_set_option_value('winbar', expr, { scope = 'local', win = win })
 end
 
 function M.winbar(buf)
@@ -63,8 +64,9 @@ function M.start(id)
     bufhidden = 'hide',
     listed = true,
   })
-  local win = vim.api.nvim_get_current_win()
-  panel.set(buf, objective(m, vim.api.nvim_win_get_width(win)))
+  panel.set(buf, function(width)
+    return objective(m, width)
+  end)
   runs[buf] = {
     id = id,
     mission = m,
@@ -76,15 +78,8 @@ function M.start(id)
       end,
     }),
   }
-  set_winbar(buf, win)
+  winbar.attach(buf, M.winbar)
   local group = vim.api.nvim_create_augroup('neurovim.mission.' .. buf, { clear = true })
-  vim.api.nvim_create_autocmd('BufWinEnter', {
-    group = group,
-    buffer = buf,
-    callback = function()
-      set_winbar(buf, vim.api.nvim_get_current_win())
-    end,
-  })
   -- :bdelete unloads without wiping: the text is gone, so the run ends either way.
   vim.api.nvim_create_autocmd({ 'BufUnload', 'BufWipeout' }, {
     group = group,

@@ -93,3 +93,62 @@ T.case(':bdelete ends the run: no zombie mission after :buffer', function()
   vim.cmd('bdelete! ' .. buf)
   T.eq(mission.run(buf), nil)
 end)
+
+local function widest_virt_line(buf)
+  local widest = 0
+  for _, mk in ipairs(vim.api.nvim_buf_get_extmarks(buf, -1, 0, -1, { details = true })) do
+    for _, vl in ipairs(mk[4].virt_lines or {}) do
+      local text = ''
+      for _, chunk in ipairs(vl) do
+        text = text .. chunk[1]
+      end
+      widest = math.max(widest, vim.fn.strdisplaywidth(text))
+    end
+  end
+  return widest
+end
+
+local function textwidth(win)
+  return vim.api.nvim_win_get_width(win) - vim.fn.getwininfo(win)[1].textoff
+end
+
+T.case('the objective fits beside number and sign columns, and again after a split', function()
+  vim.cmd('silent! only')
+  vim.o.number = true
+  vim.o.signcolumn = 'yes'
+  local buf = mission.start('M-01')
+  local win = vim.api.nvim_get_current_win()
+  T.ok(widest_virt_line(buf) <= textwidth(win), ('%d > %d'):format(widest_virt_line(buf), textwidth(win)))
+  vim.cmd('vsplit')
+  vim.api.nvim_exec_autocmds('VimResized', {}) -- headless has no redraw to raise it
+  local narrow = math.min(textwidth(vim.fn.win_findbuf(buf)[1]), textwidth(vim.fn.win_findbuf(buf)[2]))
+  T.ok(widest_virt_line(buf) <= narrow, ('%d > %d after the split'):format(widest_virt_line(buf), narrow))
+  vim.cmd('silent! only')
+  vim.o.number = false
+  vim.o.signcolumn = 'auto'
+end)
+
+T.case('restart keeps the layout: both windows show the new run with its winbar', function()
+  vim.cmd('silent! only')
+  local buf = mission.start('M-01')
+  vim.cmd('vsplit')
+  local again = mission.restart(buf)
+  local wins = vim.fn.win_findbuf(again)
+  T.eq(#vim.api.nvim_tabpage_list_wins(0), 2)
+  T.eq(#wins, 2)
+  for _, w in ipairs(wins) do
+    local bar = vim.api.nvim_eval_statusline(vim.wo[w].winbar, { winid = w, use_winbar = true }).str
+    T.ok(bar:find('M-01', 1, true), 'winbar in window ' .. w .. ': ' .. bar)
+  end
+  vim.cmd('silent! only')
+end)
+
+T.case('u stops at the raw text; mouse scrolling is not a keystroke', function()
+  local buf = mission.start('M-01')
+  vim.o.mouse = 'nvi'
+  vim.cmd('silent! normal! xuuuu')
+  T.eq(table.concat(vim.api.nvim_buf_get_lines(buf, 0, -1, false), '\n'), missions.get('M-01').transmission)
+  local before = mission.run(buf).tracker.keys()
+  keys('<ScrollWheelDown><ScrollWheelUp>')
+  T.eq(mission.run(buf).tracker.keys(), before)
+end)

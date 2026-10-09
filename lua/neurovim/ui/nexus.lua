@@ -4,16 +4,12 @@ local missions = require('neurovim.missions')
 local progression = require('neurovim.rules.progression')
 local state = require('neurovim.state')
 local scratch = require('neurovim.kit.scratch')
+local kit_text = require('neurovim.kit.text')
 
 local M = {}
 
 local NAME = 'neurovim://nexus'
 local BAR = 20
-
-local function bar(pct)
-  local filled = math.floor(pct / 100 * BAR + 0.5)
-  return '[' .. string.rep('█', filled) .. string.rep('░', BAR - filled) .. ']'
-end
 
 function M.render(s)
   local lines, rows, marks = {}, {}, {}
@@ -33,9 +29,9 @@ function M.render(s)
   add('NEUROVIM // NEXUS', 'Title')
   add(('Level %d · %s · %d XP'):format(p.level, title, s.total_xp))
   if p.nextLevelXp then
-    add(('%s %d%% · next: %s at %d XP'):format(bar(p.pct), p.pct, p.nextTitle, p.nextLevelXp))
+    add(('%s %d%% · next: %s at %d XP'):format(kit_text.bar(p.pct, BAR), p.pct, p.nextTitle, p.nextLevelXp))
   else
-    add(bar(100) .. ' max level')
+    add(kit_text.bar(100, BAR) .. ' max level')
   end
   add(('Streak: %d day%s'):format(s.streak_current or 0, (s.streak_current or 0) == 1 and '' or 's'))
   for _, c in ipairs(missions.chapters()) do
@@ -63,14 +59,8 @@ function M.render(s)
   return { lines = lines, rows = rows, marks = marks }
 end
 
-local ns = vim.api.nvim_create_namespace('neurovim.nexus')
-
 local function paint(buf, r)
-  scratch.set_lines(buf, r.lines)
-  vim.api.nvim_buf_clear_namespace(buf, ns, 0, -1)
-  for _, mk in ipairs(r.marks) do
-    vim.api.nvim_buf_set_extmark(buf, ns, mk[1] - 1, 0, { line_hl_group = mk[2] })
-  end
+  scratch.set_lines(buf, r.lines, r.marks)
   local rows = {}
   for lnum, id in pairs(r.rows) do
     rows[tostring(lnum)] = id

@@ -23,16 +23,9 @@ local function warn_aside(path, aside)
   )
 end
 
-local function is_object(v)
-  return type(v) == 'table' and v ~= vim.NIL and (next(v) == nil or not vim.islist(v))
-end
-
 local function normalize(raw, info, path)
   if info.broken then
     warn_aside(path, info.broken)
-    raw = nil
-  elseif raw ~= nil and not is_object(raw) then
-    warn_aside(path, store.set_aside(path))
     raw = nil
   end
   local d = data.default_plugin_data()
@@ -44,19 +37,15 @@ end
 
 function M.load(path)
   path = path or M.path()
-  local raw, info = store.read(path)
+  local raw, info = store.read(path, { expect = 'object' })
   return normalize(raw, info, path)
-end
-
-local function pass(...)
-  return ...
 end
 
 function M.update(fn, path)
   path = path or M.path()
   return store.update(path, function(raw, info)
-    return pass(fn(normalize(raw, info, path)))
-  end)
+    return fn(normalize(raw, info, path))
+  end, { expect = 'object' })
 end
 
 return M

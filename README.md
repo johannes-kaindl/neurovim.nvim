@@ -29,7 +29,7 @@ Not installable yet — the repository is private. Once it is published, it inst
 | `:NeuroVim reveal` | Highlights the lines that still differ from the solution. |
 | `:NeuroVim restart` | Reloads the corrupted text and resets time and keys. |
 
-A mission is a scratch buffer `neurovim://<id>` with the objective above line 1 and a winbar like `M-01 · 01:23 · 37 keys · par 40`. Time and keys count from your first key in that buffer; `:NeuroVim …` itself does not count. The result opens in a floating window that closes when the cursor moves.
+A mission is a scratch buffer `neurovim://<id>` with the objective above line 1 and a winbar like `M-01 · 01:23 · 37 keys · par 40`. Time and keys count from your first key in that buffer; `:NeuroVim …` itself, mouse clicks, the scroll wheel and a paste from the terminal do not count (`:help neurovim-keys`). The result opens in a floating window that closes when the cursor moves.
 
 The plugin sets no global keys. Map the `<Plug>` mappings yourself — `<Plug>(neurovim-nexus)`, `<Plug>(neurovim-check)`, `<Plug>(neurovim-reveal)`, `<Plug>(neurovim-restart)`:
 

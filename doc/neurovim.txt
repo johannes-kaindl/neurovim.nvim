@@ -10,6 +10,7 @@ CONTENTS                                                   *neurovim-contents*
   3. Commands .............................................. |neurovim-commands|
      Mappings ............................................. |neurovim-mappings|
      Save file ................................................ |neurovim-save|
+     What counts as a key ..................................... |neurovim-keys|
   4. License ................................................ |neurovim-license|
 
 ==============================================================================
@@ -51,6 +52,15 @@ the winbar shows id, time, keys and par. Time and keys count from the first
 key typed in the mission buffer; |:NeuroVim| commands themselves do not count.
 A run solved without a single key (pasted, already solved) counts and earns
 its XP, but sets no bests.
+
+                                                           *neurovim-keys*
+What counts as a key: every key you type in the mission buffer, a macro once
+for the keys that start it (not for what it replays), and a search or an Ex
+command such as :s with all its keys. Mouse clicks and the scroll wheel do not
+count. A paste from the terminal costs no key at all, however long: terminals
+send it as one bracketed paste. A terminal without bracketed paste sends the
+pasted characters as if you had typed them, and then they count.
+The keys of your own mapping to a |<Plug>| mapping do count.
 
                                                            *neurovim-mappings*
 The plugin sets no global keys. These |<Plug>| mappings are yours to map:
