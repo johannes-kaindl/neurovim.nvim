@@ -1,13 +1,13 @@
 {
   "source": "nvim-kit",
   "source_path": "nvim-kit",
-  "tag": "0.3.0",
-  "sha": "d6b39795ed62835aa08d43b449634c05215a67a5",
-  "commit": "d6b39795ed62835aa08d43b449634c05215a67a5",
-  "version": "0.3.0",
+  "tag": "0.4.0",
+  "sha": "e4a847d66386651568ee804021fd12e59dface4a",
+  "commit": "e4a847d66386651568ee804021fd12e59dface4a",
+  "version": "0.4.0",
   "license": "AGPL-3.0-only",
   "header": true,
-  "vendored": "8 file(s) from nvim-kit@0.3.0",
+  "vendored": "10 file(s) from nvim-kit@0.4.0",
   "files": [
     "lua/nvim_kit/conformance.lua",
     "lua/nvim_kit/data.lua",
@@ -16,7 +16,9 @@
     "lua/nvim_kit/panel.lua",
     "lua/nvim_kit/scratch.lua",
     "lua/nvim_kit/store.lua",
-    "lua/nvim_kit/test.lua"
+    "lua/nvim_kit/test.lua",
+    "lua/nvim_kit/text.lua",
+    "lua/nvim_kit/winbar.lua"
   ],
   "map": {
     "lua/nvim_kit/conformance.lua": "lua/neurovim/kit/conformance.lua",
@@ -26,7 +28,9 @@
     "lua/nvim_kit/panel.lua": "lua/neurovim/kit/panel.lua",
     "lua/nvim_kit/scratch.lua": "lua/neurovim/kit/scratch.lua",
     "lua/nvim_kit/store.lua": "lua/neurovim/kit/store.lua",
-    "lua/nvim_kit/test.lua": "lua/neurovim/kit/test.lua"
+    "lua/nvim_kit/test.lua": "lua/neurovim/kit/test.lua",
+    "lua/nvim_kit/text.lua": "lua/neurovim/kit/text.lua",
+    "lua/nvim_kit/winbar.lua": "lua/neurovim/kit/winbar.lua"
   },
   "note": "Verbatim copies (below a one-line provenance header for .lua when header is true). Never edit — re-vendor."
 }

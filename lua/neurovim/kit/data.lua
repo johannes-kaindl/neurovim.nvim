@@ -1,4 +1,4 @@
--- vendored from nvim-kit@0.3.0 (lua/nvim_kit/data.lua) — do not edit; re-vendor
+-- vendored from nvim-kit@0.4.0 (lua/nvim_kit/data.lua) — do not edit; re-vendor
 -- Load a JSON data file that declares its schema version. Fails loudly on a missing file,
 -- broken JSON or a different schema — never returns half-understood data. Nulls inside
 -- objects are absent fields (luanil).

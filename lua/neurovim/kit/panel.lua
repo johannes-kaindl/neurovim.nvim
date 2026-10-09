@@ -1,4 +1,4 @@
--- vendored from nvim-kit@0.3.0 (lua/nvim_kit/panel.lua) — do not edit; re-vendor
+-- vendored from nvim-kit@0.4.0 (lua/nvim_kit/panel.lua) — do not edit; re-vendor
 -- Virtual lines above line 1 (a heading, an objective): shown, never part of the text. Neovim
 -- draws virtual lines above the first line only when the window's topfill makes room, and gg
 -- resets topfill to 0; this module makes room again when the cursor is on line 1 without it.
@@ -7,6 +7,8 @@ local M = {}
 
 local ns = vim.api.nvim_create_namespace(MOD)
 local height = {} -- buf -> number of virtual lines
+local renderers = {} -- buf -> render(width), when the panel was set with a function
+local rerender -- defined below, used by the autocmds in watch
 
 local function reveal(win)
   local buf = vim.api.nvim_win_get_buf(win)
@@ -32,6 +34,7 @@ local function watch(buf)
     group = group,
     buffer = buf,
     callback = function()
+      rerender(buf)
       reveal(vim.api.nvim_get_current_win())
     end,
   })
@@ -53,24 +56,68 @@ local function watch(buf)
     buffer = buf,
     callback = function()
       height[buf] = nil
+      renderers[buf] = nil
       pcall(vim.api.nvim_del_augroup_by_id, group)
     end,
   })
 end
 
-function M.set(buf, lines)
+-- The text width available to virtual lines: the narrowest window showing buf, minus its number,
+-- sign and fold columns (virtual lines start after them). Virtual lines belong to the buffer, so
+-- one width has to fit every window.
+local function text_width(buf)
+  local width
+  for _, win in ipairs(vim.fn.win_findbuf(buf)) do
+    local w = vim.api.nvim_win_get_width(win) - vim.fn.getwininfo(win)[1].textoff
+    width = width and math.min(width, w) or w
+  end
+  return width or vim.o.columns
+end
+
+local function draw(buf, lines)
   vim.api.nvim_buf_clear_namespace(buf, ns, 0, -1)
   if #lines > 0 then
     vim.api.nvim_buf_set_extmark(buf, ns, 0, 0, { virt_lines = lines, virt_lines_above = true })
-  end
-  if height[buf] == nil then
-    watch(buf)
   end
   height[buf] = #lines
   for _, win in ipairs(vim.fn.win_findbuf(buf)) do
     reveal(win)
   end
 end
+
+rerender = function(buf)
+  if renderers[buf] and vim.api.nvim_buf_is_valid(buf) then
+    draw(buf, renderers[buf](text_width(buf)))
+  end
+end
+
+--- Set the panel of buf: a list of virtual lines ({ { { text, hl } }, … }), or a function
+--- render(width) -> such a list, called again whenever the available width changes.
+function M.set(buf, lines)
+  if height[buf] == nil then
+    watch(buf)
+  end
+  if type(lines) == 'function' then
+    renderers[buf] = lines
+    lines = lines(text_width(buf))
+  else
+    renderers[buf] = nil
+  end
+  draw(buf, lines)
+end
+
+local resize = vim.api.nvim_create_augroup(MOD .. '.resize', { clear = true })
+local function rerender_all()
+  for buf in pairs(renderers) do
+    rerender(buf)
+  end
+end
+vim.api.nvim_create_autocmd({ 'WinResized', 'VimResized' }, { group = resize, callback = rerender_all })
+vim.api.nvim_create_autocmd('OptionSet', {
+  group = resize,
+  pattern = { 'number', 'relativenumber', 'signcolumn', 'foldcolumn', 'numberwidth', 'statuscolumn' },
+  callback = rerender_all,
+})
 
 function M.wrap(text, width)
   local out, line = {}, ''
