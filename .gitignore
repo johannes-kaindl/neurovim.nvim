@@ -1,0 +1,4 @@
+.DS_Store
+.remember/
+.claude/
+__pycache__/
