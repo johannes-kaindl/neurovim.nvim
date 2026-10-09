@@ -34,6 +34,17 @@ function M.render(s)
     add(kit_text.bar(100, BAR) .. ' max level')
   end
   add(('Streak: %d day%s'):format(s.streak_current or 0, (s.streak_current or 0) == 1 and '' or 's'))
+  local n = missions.next_unlock(s)
+  if n then
+    add(
+      ('Replay solved missions for XP — level %d (%d XP) unlocks %s.'):format(
+        n.level,
+        n.xp,
+        table.concat(n.ids, ', ')
+      ),
+      'DiagnosticWarn'
+    )
+  end
   for _, c in ipairs(missions.chapters()) do
     add('')
     add(c.label, 'Title')

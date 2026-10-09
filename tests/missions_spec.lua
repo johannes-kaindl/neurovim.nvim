@@ -30,3 +30,27 @@ T.case('status: open, done with tier, locked with its unlock level', function()
     { ['M-01'] = { best_keystrokes = 10, best_time_ms = 1, best_ks_per_min = 1, runs = 1, last_run = '' } }
   T.eq(missions.status(s, missions.get('M-01')), { kind = 'done', tier = 'gold' })
 end)
+
+local function solved(ids, xp)
+  local s = data.default_plugin_data()
+  s.unlocked, s.completed_missions, s.total_xp = vim.deepcopy(ids), vim.deepcopy(ids), xp
+  return s
+end
+
+T.case('next_unlock: nil while a free mission is open', function()
+  T.eq(missions.next_unlock(data.default_plugin_data()), nil)
+end)
+
+T.case('next_unlock: the next level, its XP and what it unlocks, once everything free is solved', function()
+  local n = missions.next_unlock(solved({ 'M-01', 'M-02', 'M-03', 'M-04', 'KATA-01' }, 60))
+  T.eq(n.level, 2)
+  T.eq(n.xp, 66)
+  T.eq(n.ids, { 'M-05', 'M-06', 'M-07', 'M-08', 'KATA-02', 'KATA-03', 'KATA-12' })
+end)
+
+T.case('next_unlock: nil when nothing is locked any more', function()
+  local ids = vim.tbl_map(function(m)
+    return m.id
+  end, missions.all())
+  T.eq(missions.next_unlock(solved(ids, 2500)), nil)
+end)

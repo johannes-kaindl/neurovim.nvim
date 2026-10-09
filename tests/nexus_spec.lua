@@ -58,3 +58,15 @@ T.case('show: <CR> on a locked mission says so and opens nothing', function()
   T.eq(vim.api.nvim_get_current_buf(), buf)
   T.ok(seen[1] and seen[1]:find('M-09 is locked', 1, true), vim.inspect(seen))
 end)
+
+T.case('NEXUS shows the replay hint only when every free mission is solved', function()
+  local s = data.default_plugin_data()
+  T.eq(find(nexus.render(s).lines, 'Replay solved missions'), nil)
+  s.completed_missions = vim.deepcopy(s.unlocked)
+  s.total_xp = 60
+  local _, line = find(nexus.render(s).lines, 'Replay solved missions')
+  T.eq(
+    line,
+    'Replay solved missions for XP — level 2 (66 XP) unlocks M-05, M-06, M-07, M-08, KATA-02, KATA-03, KATA-12.'
+  )
+end)

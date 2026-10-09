@@ -83,4 +83,35 @@ function M.status(s, m)
   return { kind = 'locked', unlock_level = progression.unlock_level_for(m.id) }
 end
 
+function M.next_unlock(s)
+  index()
+  local lowest
+  for _, m in ipairs(all) do
+    local st = M.status(s, m)
+    if st.kind == 'open' then
+      return nil
+    end
+    if st.kind == 'locked' and st.unlock_level and (not lowest or st.unlock_level < lowest) then
+      lowest = st.unlock_level
+    end
+  end
+  if not lowest then
+    return nil
+  end
+  local ids = {}
+  for _, m in ipairs(all) do
+    local st = M.status(s, m)
+    if st.kind == 'locked' and st.unlock_level == lowest then
+      ids[#ids + 1] = m.id
+    end
+  end
+  local xp
+  for _, l in ipairs(data.get().levels) do
+    if l.level == lowest then
+      xp = l.xp_required
+    end
+  end
+  return { level = lowest, xp = xp, ids = ids }
+end
+
 return M
