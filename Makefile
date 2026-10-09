@@ -1,11 +1,12 @@
 .PHONY: check fmt lint test vendor-check release-check
+NVIM ?= nvim
 check: fmt lint test vendor-check
 fmt:
 	stylua --check lua tests plugin
 lint:
 	selene lua tests plugin
 test:
-	nvim --headless -u NONE -l tests/run.lua
+	$(NVIM) --headless -u NONE -l tests/run.lua
 vendor-check:
 	PYTHONDONTWRITEBYTECODE=1 python3 ../tools/kit/vendor.py check .
 release-check:

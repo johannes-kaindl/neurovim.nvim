@@ -28,6 +28,9 @@
 make check           # stylua --check · selene · tests in headless Neovim · vendor-check (../tools/kit/vendor.py)
 make release-check   # Bibliothek gate over everything since the last tag (../tools/bibliothek/gate.py)
 stylua lua tests     # format (skips lua/neurovim/kit/ via .styluaignore)
+make test NVIM=/path/to/nvim   # the suite with another Neovim — the minimum version run:
+# D=$(mktemp -d); curl -sfL https://github.com/neovim/neovim/releases/download/v0.10.4/nvim-macos-arm64.tar.gz | tar -xz -C "$D"; xattr -cr "$D"
+# make test NVIM="$D/nvim-macos-arm64/bin/nvim"
 ```
 
 Tools: `brew install stylua selene`. Neovim ≥ 0.10. The Dach (`..`) must be present for `vendor-check` and `release-check`.
