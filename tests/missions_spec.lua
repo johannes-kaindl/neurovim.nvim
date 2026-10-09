@@ -3,23 +3,19 @@ local missions = require('neurovim.missions')
 local data = require('neurovim.data')
 local diff = require('neurovim.rules.diff')
 
-T.case('story missions: 40, no KATA, in 10 chapters', function()
+T.case('54 missions: 40 story in 10 chapters, then 14 KATAs in their own section', function()
+  T.eq(#missions.all(), 54)
   T.eq(#missions.story(), 40)
-  for _, m in ipairs(missions.story()) do
-    T.ok(not m.kata, m.id)
-  end
-  T.eq(missions.get('KATA-01'), nil)
-  T.eq(missions.get('M-01').title, 'The Three Modes')
-  local n = 0
-  for _, c in ipairs(missions.chapters()) do
-    n = n + #c.missions
-  end
-  T.eq(#missions.chapters(), 10)
-  T.eq(n, 40)
+  T.eq(#missions.katas(), 14)
+  local chapters = missions.chapters()
+  T.eq(#chapters, 11)
+  T.eq(chapters[11].label, 'KATAS')
+  T.eq(#chapters[11].missions, 14)
+  T.eq(missions.get('KATA-01').title, 'Word Sprint')
 end)
 
-T.case('every story mission: its solution matches, its raw text does not', function()
-  for _, m in ipairs(missions.story()) do
+T.case('every mission: its solution matches, its raw text does not', function()
+  for _, m in ipairs(missions.all()) do
     T.ok(diff.get_diff(m.solution, m.solution).matches, m.id .. ' solution')
     T.ok(not diff.get_diff(m.transmission, m.solution).matches, m.id .. ' raw text')
   end

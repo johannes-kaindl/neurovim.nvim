@@ -44,7 +44,7 @@ function M.complete(arglead, cmdline)
   end
   if n == 2 and words[2] == 'mission' then
     local ids = {}
-    for _, m in ipairs(require('neurovim.missions').story()) do
+    for _, m in ipairs(require('neurovim.missions').all()) do
       ids[#ids + 1] = m.id
     end
     return starting(ids, arglead)

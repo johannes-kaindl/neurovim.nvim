@@ -9,7 +9,7 @@ local M = {}
 function M.open(id)
   local m = missions.get(id)
   if not m then
-    vim.notify(('neurovim: no story mission %s.'):format(id), vim.log.levels.ERROR)
+    vim.notify(('neurovim: no mission %s.'):format(id), vim.log.levels.ERROR)
     return nil
   end
   local st = missions.status(state.load(), m)
@@ -22,6 +22,10 @@ function M.open(id)
       vim.log.levels.INFO
     )
     return nil
+  end
+  if (m.briefing or '') == '' then
+    -- KATAs are drills without a briefing: straight to the mission buffer.
+    return require('neurovim.ui.mission').start(id)
   end
   return scratch.open('neurovim://briefing/' .. id, vim.split(m.briefing, '\n', { plain = true }), {
     filetype = 'markdown',

@@ -1,29 +1,43 @@
 -- domain: neurovim
--- The story missions of scope A (KATAs are not part of it) and their state for one player.
+-- The missions — story chapters, then the KATAs (drills without a briefing) — and their state for
+-- one player.
 local data = require('neurovim.data')
 local par = require('neurovim.rules.par')
 local progression = require('neurovim.rules.progression')
 
 local M = {}
 
-local story, by_id
+local all, story, katas, by_id
 
 local function index()
-  if story then
+  if all then
     return
   end
-  story, by_id = {}, {}
+  all, story, katas, by_id = {}, {}, {}, {}
   for _, m in ipairs(data.get().missions) do
-    if not m.kata then
+    all[#all + 1] = m
+    by_id[m.id] = m
+    if m.kata then
+      katas[#katas + 1] = m
+    else
       story[#story + 1] = m
-      by_id[m.id] = m
     end
   end
+end
+
+function M.all()
+  index()
+  return all
 end
 
 function M.story()
   index()
   return story
+end
+
+function M.katas()
+  index()
+  return katas
 end
 
 function M.get(id)
@@ -45,6 +59,7 @@ function M.chapters()
       out[#out + 1] = { label = c.label, missions = list }
     end
   end
+  out[#out + 1] = { label = 'KATAS', missions = katas }
   return out
 end
 

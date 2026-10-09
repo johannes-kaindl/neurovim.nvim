@@ -37,7 +37,7 @@ T.case('result text: XP, time, keys, tier, bests, streak', function()
   T.ok(has(lines, 'Streak: 2 days'))
 end)
 
-T.case('result text: level-up lists story unlocks only, by title', function()
+T.case('result text: level-up lists the unlocked missions and KATAs by title', function()
   local m = missions.get('M-04')
   local outcome = {
     xp = 20,
@@ -58,7 +58,7 @@ T.case('result text: level-up lists story unlocks only, by title', function()
   )
   T.ok(has(lines, 'LEVEL UP'), vim.inspect(lines))
   T.ok(has(lines, 'M-05'))
-  T.ok(not has(lines, 'KATA-02'))
+  T.ok(has(lines, 'KATA-02'), 'KATA unlocks are shown')
 end)
 
 T.case('result text: a run without a keystroke counts, its bests do not', function()
