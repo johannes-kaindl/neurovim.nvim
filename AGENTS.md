@@ -35,6 +35,17 @@ Tools: `brew install stylua selene`. Neovim ≥ 0.10. The Dach (`..`) must be pr
 - **Every module under `lua/neurovim/` except `kit/` carries `-- domain: neurovim` on line 1.** A module without it is gate-pflichtig under "Bibliothek ab Eins" (`../AGENTS.md`).
 - Every test has a counter-check that shows it can fail.
 
+## Conformance
+
+The rules in `lua/neurovim/rules/` are ports of neurovim's TS core (`packages/core/src/utils/diff.ts`, `engine/ProgressionEngine.ts`, `engine/ParTier.ts`). `tests/conformance_spec.lua` runs every vector file in `spec/conformance/` against its Lua function (table `IMPLS`, TS name → Lua function); a vector without a port is a red case, and the vector count is pinned (`12`) so a new function shows up.
+
+After a rule change upstream:
+
+1. Re-vendor from the new neurovim commit (from the Dach): `python3 tools/kit/vendor.py add neurovim.nvim --source ../apps/neurovim --ref <commit> --manifest data/VENDOR.json --license AGPL-3.0-only packages/content/export/neurovim-data.json:data/neurovim-data.json packages/core/conformance/:spec/conformance`.
+2. `make test` names the red functions and cases; port the change until they pass. Never edit a vector.
+3. A new vector function: add its port to `IMPLS` and raise the pinned count.
+4. Tell the neurovim session about the new pin — neurovim's `consumers.json`/`CONSUMERS.md` track it.
+
 ## Gotchas
 
 - **`vim.NIL` is truthy.** JSON goes through the kit's loader with `luanil`, so `null` inside objects is an absent field; `null` in arrays stays `vim.NIL`.
@@ -48,4 +59,4 @@ Tools: `brew install stylua selene`. Neovim ≥ 0.10. The Dach (`..`) must be pr
 
 ## Abweichungen von der Leitkonvention
 
-- Keine bekannt.
+- README-Tier: keiner, vorläufig (`untiered_by_choice` in `_docs/readme/readme-spec.json`) — der Tier `nvim-plugin` ist noch nicht definiert; Task „README-Tier nvim-plugin definieren“ im `_docs`-Cockpit.
