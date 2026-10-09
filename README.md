@@ -6,7 +6,7 @@
 
 <img src="https://raw.githubusercontent.com/johannes-kaindl/neurovim.nvim/main/docs/images/demo.gif" width="800" alt="Playing mission M-01 in Neovim: NEXUS lists the missions, the briefing opens, a recorded macro deletes every stray X and Z, and :NeuroVim check shows the result with XP and tier">
 
-**Status:** in development (phase 4 of 5 done). The 40 story missions are playable in Neovim: NEXUS, briefings, missions with a timer and a keystroke count, results and a save file. The game logic passes all 103 conformance vectors from NeuroVim's TypeScript core. End-to-end tests over every mission, `:checkhealth` and the full manual follow in phase 5. The repository is private and not released yet.
+**Status:** ready for a first release, still private. All 54 missions — 40 story missions with briefings and 14 KATA drills — are playable in Neovim and tested end to end; the game logic passes all 103 conformance vectors from NeuroVim's TypeScript core.
 
 ## Requirements
 
@@ -15,18 +15,26 @@
 
 ## Install
 
-Not installable yet — the repository is private. Once it is published, it installs with [lazy.nvim](https://github.com/folke/lazy.nvim):
+With [lazy.nvim](https://github.com/folke/lazy.nvim), once the repository is public (it is private until the first release):
 
 ```lua
 { "johannes-kaindl/neurovim.nvim" }
 ```
 
+From a local checkout:
+
+```lua
+{ dir = "~/path/to/neurovim.nvim" }
+```
+
+There is no `setup()`: the plugin defines `:NeuroVim` and four `<Plug>` mappings when it loads.
+
 ## Usage
 
 | Command | What it does |
 |---|---|
-| `:NeuroVim` | NEXUS: your level, XP, streak and the missions by chapter (✓ solved with its tier, 🔒 locked with the level that unlocks it). `<CR>` opens the mission under the cursor, `q` closes. |
-| `:NeuroVim mission <id>` | The briefing of a mission (Tab completes the ids). `<CR>` starts it, `q` closes. |
+| `:NeuroVim` | NEXUS: your level, XP, streak and the missions by chapter, then the KATAs (✓ solved with its tier, 🔒 locked with the level that unlocks it). `<CR>` opens the mission under the cursor, `q` closes. |
+| `:NeuroVim mission <id>` | The briefing of a mission (Tab completes the ids). `<CR>` starts it, `q` closes. A KATA has no briefing and starts at once. |
 | `:NeuroVim check` | Scores the mission buffer: either how many lines are still corrupted, or the result with XP, tier, bests and unlocks. |
 | `:NeuroVim reveal` | Highlights the lines that still differ from the solution. |
 | `:NeuroVim restart` | Reloads the corrupted text and resets time and keys. |
@@ -39,11 +47,17 @@ The plugin sets no global keys. Map the `<Plug>` mappings yourself — `<Plug>(n
 vim.keymap.set("n", "<leader>nc", "<Plug>(neurovim-check)")
 ```
 
+Every solved mission earns XP, also when you replay it; levels unlock new missions. The missions alone do not reach the last levels: when every free mission is solved, NEXUS tells you to replay for XP and which level unlocks what (`:help neurovim-progress`).
+
 Progress is saved in `stdpath('data')/neurovim/state.json`, in the same format as NeuroVim's other builds. A file that cannot be read is kept as `state.json.broken-<time>` and you start fresh, with a warning. Streak days roll over at 00:00 UTC.
 
 ## Configuration
 
 No options yet.
+
+## Troubleshooting
+
+`:help neurovim-troubleshooting` covers the usual questions: an objective you cannot see, a result window that closed, more keys than you typed, a locked mission, a save that seems gone.
 
 ## Documentation
 

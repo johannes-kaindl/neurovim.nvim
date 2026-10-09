@@ -15,7 +15,7 @@
 | `lua/neurovim/rules/` | domain rules ported from the TS core (pure Lua, `-- domain: neurovim`) |
 | `lua/neurovim/data.lua` | loads the vendored export `data/neurovim-data.json` through the kit's schema-checked loader; `default_plugin_data()` exact (null and {} kept) |
 | `lua/neurovim/state.lua` | the save file (PluginData) under `stdpath('data')/neurovim/`, through `kit.store` |
-| `lua/neurovim/missions.lua` | the 40 story missions (no KATA), chapters, status per player |
+| `lua/neurovim/missions.lua` | all 54 missions (40 story, 14 KATA), chapters + KATAS section, status per player, `next_unlock` for the replay hint |
 | `lua/neurovim/ui/` | NEXUS, briefing, mission buffer (panel, winbar, keytrack, check, reveal, restart), result float |
 | `lua/neurovim/command.lua`, `plugin/neurovim.lua` | `:NeuroVim`, Tab completion, `<Plug>` mappings, version check |
 | `lua/neurovim/kit/` | vendored from `nvim-kit` (`VENDOR.json`) — never edit |
@@ -27,6 +27,7 @@
 ```bash
 make check           # stylua --check · selene · tests in headless Neovim · vendor-check (../tools/kit/vendor.py)
 make release-check   # Bibliothek gate over everything since the last tag (../tools/bibliothek/gate.py)
+make demo            # README GIF + MP4 from docs/demo/demo.tape (vhs, ffmpeg; throw-away save)
 stylua lua tests     # format (skips lua/neurovim/kit/ via .styluaignore)
 make test NVIM=/path/to/nvim   # the suite with another Neovim — the minimum version run:
 # D=$(mktemp -d); curl -sfL https://github.com/neovim/neovim/releases/download/v0.10.4/nvim-macos-arm64.tar.gz | tar -xz -C "$D"; xattr -cr "$D"
@@ -58,6 +59,9 @@ After a rule change upstream:
 - **`vim.NIL` is truthy.** The game data goes through the kit's loader with `luanil`, so `null` inside objects is an absent field there. The save file and `data.default_plugin_data()` are read **without** `luanil` on purpose: `null` stays `vim.NIL` and `{}` stays an object, so the file keeps the shape NeuroVim's other builds read.
 - **`nvim_feedkeys` needs the flag `t`** (`'ntx'`) for keys to count as typed (macros, keystroke counting); **without `n`** (`'tx'`) for keys that must hit a mapping (the briefing's and NEXUS's `<CR>`).
 - **`tests/run.lua` points `XDG_DATA_HOME` at a temp dir** — never remove it, or tests write the player's real save.
+- **Specs that complete missions use their own save** (`with_fresh_save` in `tests/e2e_spec.lua`) and give `XDG_DATA_HOME` back afterwards, also on failure — spec files share one Neovim, and later specs expect the save `tests/run.lua` set up.
+- **KATAs have no briefing** (`briefing == ''`): `briefing.open` starts their mission buffer directly.
+- **`make demo`** needs `vhs`, `ttyd`, `ffmpeg`; vhs 0.12 writes 25 fps whatever the tape says, so the Makefile converts to the 20 fps GIF/MP4 (D13).
 - **Headless `nvim -l` never fires `CursorMoved`**; tests that depend on it raise it with `nvim_exec_autocmds`.
 - **`T.eq(x, vim.NIL)` passes for `nil`** (`deep_equal`); check a JSON null with `rawequal(x, vim.NIL)` or compare with `T.json_eq`.
 - **StyLua must skip `kit/`** (`.styluaignore`); otherwise it reformats the vendored copies and `vendor-check` turns red.

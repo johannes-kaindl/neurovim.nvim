@@ -1,25 +1,36 @@
 *neurovim.txt*  NeuroVim — a Vim-learning spy thriller, as a Neovim plugin
 
-                                                                      *neurovim*
+                                                                    *neurovim*
 
 ==============================================================================
 CONTENTS                                                   *neurovim-contents*
 
-  1. Status ................................................ |neurovim-status|
+  1. Introduction ........................................... |neurovim-intro|
   2. Requirements .................................... |neurovim-requirements|
-  3. Commands .............................................. |neurovim-commands|
-     Mappings ............................................. |neurovim-mappings|
-     Save file ................................................ |neurovim-save|
-     What counts as a key ..................................... |neurovim-keys|
-  4. License ................................................ |neurovim-license|
+  3. Install .............................................. |neurovim-install|
+  4. Getting started ........................................ |neurovim-start|
+  5. Commands ............................................ |neurovim-commands|
+     KATAs .................................................. |neurovim-katas|
+     Mappings ............................................ |neurovim-mappings|
+     What counts as a key .................................... |neurovim-keys|
+  6. Progress ............................................ |neurovim-progress|
+  7. Save file ............................................... |neurovim-save|
+  8. Troubleshooting .............................. |neurovim-troubleshooting|
+  9. License .............................................. |neurovim-license|
 
 ==============================================================================
-1. STATUS                                                    *neurovim-status*
+1. INTRODUCTION                                               *neurovim-intro*
 
-In development (phase 4 of 5 done). The 40 story missions are playable:
-NEXUS, briefings, missions with timer and keystroke count, results and a
-save file. The game rules pass all conformance vectors from NeuroVim's
-TypeScript core. The repository is private and not released.
+NeuroVim is a spy thriller you play with Vim motions. Every mission is a
+corrupted transmission from CIPHER: you repair the text in an ordinary Neovim
+buffer, with whatever Vim you know, and |:NeuroVim| check compares it with the
+original. Solved missions earn XP, levels unlock the next missions, and the
+fewer keys you need, the better your tier.
+
+There are 40 story missions in ten chapters, each with a briefing, and 14
+KATAs: short drills without a briefing. The plugin draws only what Neovim
+lacks — a mission list, an objective above the text, a winbar — and leaves
+colours, keys and everything else to your own configuration.
 
 ==============================================================================
 2. REQUIREMENTS                                        *neurovim-requirements*
@@ -28,39 +39,61 @@ TypeScript core. The repository is private and not released.
 - Nothing else: no Node, no helper process, no other plugin.
 
 ==============================================================================
-3. COMMANDS                                                *neurovim-commands*
+3. INSTALL                                                  *neurovim-install*
+
+With lazy.nvim, once the repository is public: >lua
+  { "johannes-kaindl/neurovim.nvim" }
+<
+From a local checkout: >lua
+  { dir = "~/path/to/neurovim.nvim" }
+<
+There is no setup() and no option: the plugin defines |:NeuroVim| and four
+|<Plug>| mappings when it loads, nothing else.
+
+==============================================================================
+4. GETTING STARTED                                            *neurovim-start*
+
+1. |:NeuroVim| opens NEXUS. Put the cursor on M-01 and press <CR>.
+2. Read the briefing, then press <CR> to start the mission.
+3. Repair the text. The objective above line 1 says what to change.
+4. `:NeuroVim check` scores it. Still wrong: it tells you how many lines.
+   Right: a window shows XP, time, keys, tier and what you unlocked.
+5. `:NeuroVim reveal` marks the lines that still differ, if you are stuck.
+
+==============================================================================
+5. COMMANDS                                                *neurovim-commands*
 
                                                                    *:NeuroVim*
-:NeuroVim               NEXUS: level, XP, streak and the missions by chapter.
-                        <CR> opens the mission under the cursor, q closes.
+:NeuroVim               NEXUS: level, XP, streak and the missions by chapter,
+                        then the KATAs. ✓ solved (with its tier), 🔒 locked
+                        (with the level that unlocks it). <CR> opens the
+                        mission under the cursor, q closes NEXUS.
 
-:NeuroVim mission {id}  The briefing of mission {id} (Tab completes the ids).
-                        <CR> starts the mission, q closes the briefing.
-                        A locked mission names the level that unlocks it.
+:NeuroVim mission {id}  The briefing of mission {id}; Tab completes the ids,
+                        upper or lower case. <CR> starts the mission, q closes
+                        the briefing. A KATA has no briefing and starts at
+                        once. A locked mission names the level that unlocks
+                        it and does not open.
 
 :NeuroVim check         Score the current mission buffer: the number of lines
                         still corrupted, or the result in a floating window
                         (it closes when the cursor moves). One completion per
-                        run; |:NeuroVim| restart plays it again.
+                        run; `:NeuroVim restart` plays it again.
 
-:NeuroVim reveal        Highlight the lines that still differ (|hl-DiffChange|).
+:NeuroVim reveal        Highlight the lines that still differ
+                        (|hl-DiffChange|). A missing line is marked on the
+                        last line.
 
 :NeuroVim restart       Reload the corrupted text, reset time and keys.
 
-A mission is the buffer neurovim://{id}. The objective stands above line 1;
-the winbar shows id, time, keys and par. Time and keys count from the first
-key typed in the mission buffer; |:NeuroVim| commands themselves do not count.
-A run solved without a single key (pasted, already solved) counts and earns
-its XP, but sets no bests.
+A mission is the buffer neurovim://{id}. The objective stands above line 1,
+wrapped to the window; the winbar shows id, time, keys and par. Time and keys
+count from the first key typed in the mission buffer. `u` stops at the
+corrupted text the mission started with.
 
-                                                           *neurovim-keys*
-What counts as a key: every key you type in the mission buffer, a macro once
-for the keys that start it (not for what it replays), and a search or an Ex
-command such as :s with all its keys. Mouse clicks and the scroll wheel do not
-count. A paste from the terminal costs no key at all, however long: terminals
-send it as one bracketed paste. A terminal without bracketed paste sends the
-pasted characters as if you had typed them, and then they count.
-The keys of your own mapping to a |<Plug>| mapping do count.
+                                                              *neurovim-katas*
+KATAs are drills: one skill, no story, no briefing. They earn XP like story
+missions and unlock with levels like them; KATA-01 is free from the start.
 
                                                            *neurovim-mappings*
 The plugin sets no global keys. These |<Plug>| mappings are yours to map:
@@ -73,15 +106,69 @@ The plugin sets no global keys. These |<Plug>| mappings are yours to map:
 Example: >lua
   vim.keymap.set('n', '<leader>nc', '<Plug>(neurovim-check)')
 <
-                                                               *neurovim-save*
-Progress is saved in stdpath('data')/neurovim/state.json, in the format of
-NeuroVim's other builds. Each save re-reads the file first, so two Neovim
-instances do not overwrite each other. A file that cannot be read is moved to
-state.json.broken-{time} with a warning, and the game starts fresh. Streak
-days roll over at 00:00 UTC.
+                                                               *neurovim-keys*
+What counts as a key: every key you type in the mission buffer, a macro once
+for the keys that start it (not for what it replays), and a search or an Ex
+command such as :s with all its keys. |:NeuroVim| commands you type do not
+count. Mouse clicks and the scroll wheel do not count. A paste from the
+terminal costs no key at all, however long: terminals send it as one
+bracketed paste. A terminal without bracketed paste sends the pasted
+characters as if you had typed them, and then they count. The keys of your
+own mapping to a |<Plug>| mapping do count.
 
 ==============================================================================
-4. LICENSE                                                  *neurovim-license*
+6. PROGRESS                                                *neurovim-progress*
+
+XP      Every solved mission earns its XP — also when you solve it again.
+Levels  Ten levels, from SIGNAL LOST (0 XP) to SIGNAL ARCHITECT (2500 XP).
+        A new level unlocks new missions and KATAs; the result window lists
+        them.
+Replay  The missions alone do not reach the last levels. When every free
+        mission is solved, NEXUS says so: "Replay solved missions for XP —
+        level N (X XP) unlocks …". Replaying is how you get past those walls.
+Par     Each mission has a par: its authored value, or 20 + 20 × difficulty.
+        Gold: at most par keys. Silver: at most 1.5 × par. Bronze: at most
+        2.5 × par. More keys: solved, no tier. The result says how many keys
+        fewer would reach the next tier.
+Bests   Per mission: best time, fewest keys, best keys per minute, runs. A
+        run without a single key (pasted, already solved) earns its XP but
+        sets no bests.
+Streak  Days in a row with at least one solved mission. Days roll over at
+        00:00 UTC.
+
+==============================================================================
+7. SAVE FILE                                                   *neurovim-save*
+
+Progress is saved in stdpath('data')/neurovim/state.json, in the format of
+NeuroVim's other builds. Each save re-reads the file first, so two Neovim
+instances do not overwrite each other, and writes it atomically. A file that
+cannot be read is moved to state.json.broken-{time} with a warning, and the
+game starts fresh — nothing is dropped silently.
+
+==============================================================================
+8. TROUBLESHOOTING                                  *neurovim-troubleshooting*
+
+The objective is not visible ~
+  It stands above line 1. `gg` brings it back; so does <C-y> at the top.
+
+The result window disappeared ~
+  It closes when the cursor moves. `:NeuroVim check` again only says the
+  transmission is already restored; NEXUS shows your XP, level and tiers.
+
+More keys than I typed ~
+  The keys of your own mapping to a |<Plug>| mapping count, and so does a
+  paste in a terminal without bracketed paste. See |neurovim-keys|.
+
+A mission is locked ~
+  NEXUS names the level that unlocks it. If every free mission is solved,
+  replay solved missions for XP (|neurovim-progress|).
+
+My progress is gone ~
+  Look for state.json.broken-{time} next to state.json (|neurovim-save|):
+  NeuroVim moved an unreadable file there instead of dropping it.
+
+==============================================================================
+9. LICENSE                                                  *neurovim-license*
 
 Code: AGPL-3.0 (LICENSE, dual licensing in LICENSING.md). Documentation and
 texts: CC BY-SA 4.0 (LICENSE-DOCS).
