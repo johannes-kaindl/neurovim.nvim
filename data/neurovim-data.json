@@ -1389,6 +1389,35 @@
     "M-04",
     "KATA-01"
   ],
+  "default_plugin_data": {
+    "missions": {},
+    "total_xp": 0,
+    "streak_current": 0,
+    "streak_last_date": "",
+    "sidebar_module_state": {
+      "mission": true,
+      "cheatsheet": false,
+      "progress": false
+    },
+    "unlocked": [
+      "M-01",
+      "M-02",
+      "M-03",
+      "M-04",
+      "KATA-01"
+    ],
+    "completed_missions": [],
+    "sandbox_bests": {
+      "easy": null,
+      "normal": null,
+      "hard": null
+    },
+    "onboarded": false,
+    "healedFrontmatters": {},
+    "ambient_enabled": false,
+    "vimPrimerSeen": false,
+    "railPin": null
+  },
   "cheatsheet": [
     {
       "id": "fundamentals",

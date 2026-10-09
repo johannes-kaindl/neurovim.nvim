@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "function": "unlockLevelFor",
+  "cases": [
+    {
+      "name": "M-01",
+      "args": [
+        "M-01"
+      ],
+      "expected": null
+    },
+    {
+      "name": "M-05",
+      "args": [
+        "M-05"
+      ],
+      "expected": 2
+    },
+    {
+      "name": "LOOT-04",
+      "args": [
+        "LOOT-04"
+      ],
+      "expected": 5
+    },
+    {
+      "name": "R-24",
+      "args": [
+        "R-24"
+      ],
+      "expected": 9
+    },
+    {
+      "name": "LOOT-09",
+      "args": [
+        "LOOT-09"
+      ],
+      "expected": 10
+    },
+    {
+      "name": "NOPE",
+      "args": [
+        "NOPE"
+      ],
+      "expected": null
+    }
+  ]
+}

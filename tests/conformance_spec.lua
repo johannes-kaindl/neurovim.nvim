@@ -6,6 +6,8 @@ local DIR = root .. '/spec/conformance'
 local diff = require('neurovim.rules.diff')
 local par = require('neurovim.rules.par')
 local progression = require('neurovim.rules.progression')
+local metrics = require('neurovim.rules.metrics')
+local completion = require('neurovim.rules.completion')
 
 -- TS function name → Lua port.
 local IMPLS = {
@@ -21,6 +23,9 @@ local IMPLS = {
   addXp = progression.add_xp,
   backfillUnlocks = progression.backfill_unlocks,
   getXpProgress = progression.get_xp_progress,
+  completeMission = completion.complete_mission,
+  metricsResult = metrics.metrics_result,
+  unlockLevelFor = progression.unlock_level_for,
 }
 
 local vectors = C.load_dir(DIR)
@@ -41,5 +46,5 @@ T.case('every vector has a Lua port', function()
 end)
 
 T.case('the vector set is the one the port was written against', function()
-  T.eq(#names, 12)
+  T.eq(#names, 15)
 end)

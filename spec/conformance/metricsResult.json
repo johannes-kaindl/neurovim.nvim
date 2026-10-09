@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "function": "metricsResult",
+  "cases": [
+    {
+      "name": "one decimal",
+      "args": [
+        37,
+        42000
+      ],
+      "expected": {
+        "elapsed_ms": 42000,
+        "keystrokes": 37,
+        "ks_per_min": 52.9
+      }
+    },
+    {
+      "name": "no time passed",
+      "args": [
+        5,
+        0
+      ],
+      "expected": {
+        "elapsed_ms": 0,
+        "keystrokes": 5,
+        "ks_per_min": 0
+      }
+    },
+    {
+      "name": "exactly 90 per minute",
+      "args": [
+        90,
+        60000
+      ],
+      "expected": {
+        "elapsed_ms": 60000,
+        "keystrokes": 90,
+        "ks_per_min": 90
+      }
+    },
+    {
+      "name": "half rounds up (9.375 → 9.4)",
+      "args": [
+        1,
+        6400
+      ],
+      "expected": {
+        "elapsed_ms": 6400,
+        "keystrokes": 1,
+        "ks_per_min": 9.4
+      }
+    },
+    {
+      "name": "no keys",
+      "args": [
+        0,
+        1000
+      ],
+      "expected": {
+        "elapsed_ms": 1000,
+        "keystrokes": 0,
+        "ks_per_min": 0
+      }
+    }
+  ]
+}

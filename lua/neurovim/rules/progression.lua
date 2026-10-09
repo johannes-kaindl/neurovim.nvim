@@ -155,4 +155,19 @@ function M.get_xp_progress(xp)
   }
 end
 
+function M.unlock_level_for(id)
+  local levels_with_unlocks = {}
+  for k in pairs(data.get().unlock_map) do
+    levels_with_unlocks[#levels_with_unlocks + 1] = tonumber(k)
+  end
+  table.sort(levels_with_unlocks)
+  for _, lvl in ipairs(levels_with_unlocks) do
+    local u = data.get().unlock_map[tostring(lvl)]
+    if contains(u.missions, id) or contains(u.loot, id) then
+      return lvl
+    end
+  end
+  return nil
+end
+
 return M

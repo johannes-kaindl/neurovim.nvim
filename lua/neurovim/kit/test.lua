@@ -1,4 +1,4 @@
--- vendored from nvim-kit@0.2.0 (lua/nvim_kit/test.lua) — do not edit; re-vendor
+-- vendored from nvim-kit@0.3.0 (lua/nvim_kit/test.lua) — do not edit; re-vendor
 -- nvim-kit test runner: plain Lua specs, run in headless Neovim, no external test dependency.
 --   nvim --headless -u NONE -l tests/run.lua
 -- A spec file registers cases with T.case(name, fn); a case fails by raising (T.eq, T.ok, T.raises).
@@ -65,6 +65,39 @@ function M.raises(fn, substring)
   end
   if substring and not tostring(err):find(substring, 1, true) then
     error(('error %q does not contain %q'):format(tostring(err), substring), 2)
+  end
+end
+
+-- Canonical JSON text: sorted keys; [] and {} and null stay what vim.json.encode makes of them.
+-- deep_equal treats [] and {} (and nil and vim.NIL) alike — fine for values, wrong for data that
+-- is written to disk, where the difference is the file's shape.
+local function canonical(v)
+  if type(v) ~= 'table' or v == vim.NIL or next(v) == nil then
+    return vim.json.encode(v)
+  end
+  local parts = {}
+  if vim.islist(v) then
+    for _, x in ipairs(v) do
+      parts[#parts + 1] = canonical(x)
+    end
+    return '[' .. table.concat(parts, ',') .. ']'
+  end
+  local keys = vim.tbl_keys(v)
+  table.sort(keys, function(a, b)
+    return tostring(a) < tostring(b)
+  end)
+  for _, k in ipairs(keys) do
+    parts[#parts + 1] = vim.json.encode(tostring(k)) .. ':' .. canonical(v[k])
+  end
+  return '{' .. table.concat(parts, ',') .. '}'
+end
+
+--- Strict comparison for data that goes to disk: actual's canonical JSON must equal that of
+--- expected_json_text. Unlike deep_equal it tells [] from {} and null from an absent key.
+function M.json_eq(actual, expected_json_text, msg)
+  local a, e = canonical(actual), canonical(vim.json.decode(expected_json_text))
+  if a ~= e then
+    error(('%sexpected %s, got %s'):format(msg and (msg .. ': ') or '', e, a), 2)
   end
 end
 

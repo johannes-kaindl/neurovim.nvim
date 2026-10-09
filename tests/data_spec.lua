@@ -23,3 +23,18 @@ T.case('counter-check: a file with another schema is refused', function()
     kit.load(data.path(), { schema = 2 })
   end, 'expected 2')
 end)
+
+T.case('default_plugin_data is exact: nulls and empty objects survive', function()
+  local d = data.default_plugin_data()
+  T.eq(d.unlocked, data.get().default_unlocked)
+  T.eq(d.railPin, vim.NIL)
+  T.eq(d.sandbox_bests.easy, vim.NIL)
+  T.json_eq(d.missions, '{}')
+  T.json_eq(d.healedFrontmatters, '{}')
+end)
+
+T.case('default_plugin_data hands out a fresh copy every time', function()
+  local a = data.default_plugin_data()
+  a.unlocked[1] = 'CHANGED'
+  T.eq(data.default_plugin_data().unlocked[1], 'M-01')
+end)
