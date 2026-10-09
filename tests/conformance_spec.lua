@@ -7,7 +7,7 @@ local diff = require('neurovim.rules.diff')
 local par = require('neurovim.rules.par')
 local progression = require('neurovim.rules.progression')
 
--- TS function name → Lua port. Grows with tasks 5–7.
+-- TS function name → Lua port.
 local IMPLS = {
   normalizeMissionText = diff.normalize_mission_text,
   getDiff = diff.get_diff,
@@ -17,15 +17,10 @@ local IMPLS = {
   keystrokesToNextTier = par.keystrokes_to_next_tier,
   recordCompletion = progression.record_completion,
   recordMissionRun = progression.record_mission_run,
-}
-
--- Ports not written yet. Phase 3 only: each is announced as PENDING on every run, never counted
--- as passed, and task 7 deletes this table together with the branch below that reads it.
-local PENDING = {
-  getLevelForXp = true,
-  addXp = true,
-  backfillUnlocks = true,
-  getXpProgress = true,
+  getLevelForXp = progression.get_level_for_xp,
+  addXp = progression.add_xp,
+  backfillUnlocks = progression.backfill_unlocks,
+  getXpProgress = progression.get_xp_progress,
 }
 
 local vectors = C.load_dir(DIR)
@@ -33,23 +28,15 @@ local names = vim.tbl_keys(vectors)
 table.sort(names)
 
 for _, name in ipairs(names) do
-  if PENDING[name] then
-    io.write('PENDING conformance: ' .. name .. '\n')
-  else
-    T.case('conformance: ' .. name, function()
-      T.ok(IMPLS[name], 'no Lua port for ' .. name)
-      T.eq(C.run(vectors[name], IMPLS[name]), {})
-    end)
-  end
+  T.case('conformance: ' .. name, function()
+    T.ok(IMPLS[name], 'no Lua port for ' .. name)
+    T.eq(C.run(vectors[name], IMPLS[name]), {})
+  end)
 end
 
-T.case('every vector is ported or explicitly pending, and no pending entry is stale', function()
+T.case('every vector has a Lua port', function()
   for _, name in ipairs(names) do
-    T.ok(IMPLS[name] or PENDING[name], name .. ' is neither ported nor pending')
-  end
-  for name in pairs(PENDING) do
-    T.ok(vectors[name], name .. ' is pending but has no vector')
-    T.ok(not IMPLS[name], name .. ' is ported and still pending')
+    T.ok(IMPLS[name], 'no Lua port for ' .. name)
   end
 end)
 
