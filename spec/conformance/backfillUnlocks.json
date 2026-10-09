@@ -1,0 +1,209 @@
+{
+  "schema": 1,
+  "function": "backfillUnlocks",
+  "cases": [
+    {
+      "name": "fresh save",
+      "args": [
+        {
+          "missions": {},
+          "total_xp": 0,
+          "streak_current": 0,
+          "streak_last_date": "",
+          "sidebar_module_state": {
+            "mission": true,
+            "cheatsheet": false,
+            "progress": false
+          },
+          "unlocked": [
+            "M-01",
+            "M-02",
+            "M-03",
+            "M-04",
+            "KATA-01"
+          ],
+          "completed_missions": [],
+          "sandbox_bests": {
+            "easy": null,
+            "normal": null,
+            "hard": null
+          },
+          "onboarded": false,
+          "healedFrontmatters": {},
+          "ambient_enabled": false,
+          "vimPrimerSeen": false,
+          "railPin": null
+        }
+      ],
+      "expected": {
+        "missions": {},
+        "total_xp": 0,
+        "streak_current": 0,
+        "streak_last_date": "",
+        "sidebar_module_state": {
+          "mission": true,
+          "cheatsheet": false,
+          "progress": false
+        },
+        "unlocked": [
+          "M-01",
+          "M-02",
+          "M-03",
+          "M-04",
+          "KATA-01"
+        ],
+        "completed_missions": [],
+        "sandbox_bests": {
+          "easy": null,
+          "normal": null,
+          "hard": null
+        },
+        "onboarded": false,
+        "healedFrontmatters": {},
+        "ambient_enabled": false,
+        "vimPrimerSeen": false,
+        "railPin": null
+      }
+    },
+    {
+      "name": "level 3 with empty unlocked list",
+      "args": [
+        {
+          "missions": {},
+          "total_xp": 200,
+          "streak_current": 0,
+          "streak_last_date": "",
+          "sidebar_module_state": {
+            "mission": true,
+            "cheatsheet": false,
+            "progress": false
+          },
+          "unlocked": [],
+          "completed_missions": [],
+          "sandbox_bests": {
+            "easy": null,
+            "normal": null,
+            "hard": null
+          },
+          "onboarded": false,
+          "healedFrontmatters": {},
+          "ambient_enabled": false,
+          "vimPrimerSeen": false,
+          "railPin": null
+        }
+      ],
+      "expected": {
+        "missions": {},
+        "total_xp": 200,
+        "streak_current": 0,
+        "streak_last_date": "",
+        "sidebar_module_state": {
+          "mission": true,
+          "cheatsheet": false,
+          "progress": false
+        },
+        "unlocked": [
+          "M-01",
+          "M-02",
+          "M-03",
+          "M-04",
+          "KATA-01",
+          "M-05",
+          "M-06",
+          "M-07",
+          "M-08",
+          "KATA-02",
+          "KATA-03",
+          "KATA-12",
+          "LOOT-01",
+          "M-09",
+          "M-10",
+          "M-11",
+          "M-12",
+          "KATA-04",
+          "KATA-13",
+          "LOOT-02"
+        ],
+        "completed_missions": [],
+        "sandbox_bests": {
+          "easy": null,
+          "normal": null,
+          "hard": null
+        },
+        "onboarded": false,
+        "healedFrontmatters": {},
+        "ambient_enabled": false,
+        "vimPrimerSeen": false,
+        "railPin": null
+      }
+    },
+    {
+      "name": "completed mission missing from unlocked",
+      "args": [
+        {
+          "missions": {},
+          "total_xp": 0,
+          "streak_current": 0,
+          "streak_last_date": "",
+          "sidebar_module_state": {
+            "mission": true,
+            "cheatsheet": false,
+            "progress": false
+          },
+          "unlocked": [
+            "M-01",
+            "M-02",
+            "M-03",
+            "M-04",
+            "KATA-01"
+          ],
+          "completed_missions": [
+            "R-24"
+          ],
+          "sandbox_bests": {
+            "easy": null,
+            "normal": null,
+            "hard": null
+          },
+          "onboarded": false,
+          "healedFrontmatters": {},
+          "ambient_enabled": false,
+          "vimPrimerSeen": false,
+          "railPin": null
+        }
+      ],
+      "expected": {
+        "missions": {},
+        "total_xp": 0,
+        "streak_current": 0,
+        "streak_last_date": "",
+        "sidebar_module_state": {
+          "mission": true,
+          "cheatsheet": false,
+          "progress": false
+        },
+        "unlocked": [
+          "M-01",
+          "M-02",
+          "M-03",
+          "M-04",
+          "KATA-01",
+          "R-24"
+        ],
+        "completed_missions": [
+          "R-24"
+        ],
+        "sandbox_bests": {
+          "easy": null,
+          "normal": null,
+          "hard": null
+        },
+        "onboarded": false,
+        "healedFrontmatters": {},
+        "ambient_enabled": false,
+        "vimPrimerSeen": false,
+        "railPin": null
+      }
+    }
+  ]
+}

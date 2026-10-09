@@ -1,0 +1,126 @@
+{
+  "schema": 1,
+  "function": "getDiff",
+  "cases": [
+    {
+      "name": "identical",
+      "args": [
+        "a\nb",
+        "a\nb"
+      ],
+      "expected": {
+        "matches": true,
+        "first_divergent_line": -1,
+        "lines_off": 0
+      }
+    },
+    {
+      "name": "trailing whitespace only",
+      "args": [
+        "a  \nb",
+        "a\nb"
+      ],
+      "expected": {
+        "matches": true,
+        "first_divergent_line": -1,
+        "lines_off": 0
+      }
+    },
+    {
+      "name": "host frontmatter added",
+      "args": [
+        "---\ntitle: x\ntags: [a]\n---\na\nb",
+        "a\nb"
+      ],
+      "expected": {
+        "matches": true,
+        "first_divergent_line": -1,
+        "lines_off": 0
+      }
+    },
+    {
+      "name": "CRLF against LF",
+      "args": [
+        "a\r\nb",
+        "a\nb"
+      ],
+      "expected": {
+        "matches": true,
+        "first_divergent_line": -1,
+        "lines_off": 0
+      }
+    },
+    {
+      "name": "one line changed",
+      "args": [
+        "a\nX\nc",
+        "a\nb\nc"
+      ],
+      "expected": {
+        "matches": false,
+        "first_divergent_line": 1,
+        "lines_off": 1
+      }
+    },
+    {
+      "name": "last line missing",
+      "args": [
+        "a\nb",
+        "a\nb\nc"
+      ],
+      "expected": {
+        "matches": false,
+        "first_divergent_line": 2,
+        "lines_off": 1
+      }
+    },
+    {
+      "name": "extra line",
+      "args": [
+        "a\nb\nc\nd",
+        "a\nb\nc"
+      ],
+      "expected": {
+        "matches": false,
+        "first_divergent_line": 3,
+        "lines_off": 1
+      }
+    },
+    {
+      "name": "empty against text",
+      "args": [
+        "",
+        "a"
+      ],
+      "expected": {
+        "matches": false,
+        "first_divergent_line": 0,
+        "lines_off": 1
+      }
+    },
+    {
+      "name": "two lines changed",
+      "args": [
+        "X\nb\nY",
+        "a\nb\nc"
+      ],
+      "expected": {
+        "matches": false,
+        "first_divergent_line": 0,
+        "lines_off": 2
+      }
+    },
+    {
+      "name": "trailing no-break space matches",
+      "args": [
+        "a \nb",
+        "a\nb"
+      ],
+      "expected": {
+        "matches": true,
+        "first_divergent_line": -1,
+        "lines_off": 0
+      }
+    }
+  ]
+}

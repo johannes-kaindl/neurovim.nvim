@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "function": "getLevelForXp",
+  "cases": [
+    {
+      "name": "0 xp",
+      "args": [
+        0
+      ],
+      "expected": 1
+    },
+    {
+      "name": "65 xp",
+      "args": [
+        65
+      ],
+      "expected": 1
+    },
+    {
+      "name": "66 xp",
+      "args": [
+        66
+      ],
+      "expected": 2
+    },
+    {
+      "name": "185 xp",
+      "args": [
+        185
+      ],
+      "expected": 2
+    },
+    {
+      "name": "186 xp",
+      "args": [
+        186
+      ],
+      "expected": 3
+    },
+    {
+      "name": "600 xp",
+      "args": [
+        600
+      ],
+      "expected": 4
+    },
+    {
+      "name": "601 xp",
+      "args": [
+        601
+      ],
+      "expected": 5
+    },
+    {
+      "name": "2499 xp",
+      "args": [
+        2499
+      ],
+      "expected": 9
+    },
+    {
+      "name": "2500 xp",
+      "args": [
+        2500
+      ],
+      "expected": 10
+    },
+    {
+      "name": "99999 xp",
+      "args": [
+        99999
+      ],
+      "expected": 10
+    }
+  ]
+}

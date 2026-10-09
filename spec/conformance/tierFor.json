@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "function": "tierFor",
+  "cases": [
+    {
+      "name": "no keystrokes",
+      "args": [
+        0,
+        60
+      ],
+      "expected": null
+    },
+    {
+      "name": "no par",
+      "args": [
+        10,
+        0
+      ],
+      "expected": null
+    },
+    {
+      "name": "at par is gold",
+      "args": [
+        60,
+        60
+      ],
+      "expected": "gold"
+    },
+    {
+      "name": "just above par is silver",
+      "args": [
+        61,
+        60
+      ],
+      "expected": "silver"
+    },
+    {
+      "name": "silver boundary",
+      "args": [
+        90,
+        60
+      ],
+      "expected": "silver"
+    },
+    {
+      "name": "just above silver is bronze",
+      "args": [
+        91,
+        60
+      ],
+      "expected": "bronze"
+    },
+    {
+      "name": "bronze boundary",
+      "args": [
+        150,
+        60
+      ],
+      "expected": "bronze"
+    },
+    {
+      "name": "beyond bronze has no tier",
+      "args": [
+        151,
+        60
+      ],
+      "expected": null
+    }
+  ]
+}

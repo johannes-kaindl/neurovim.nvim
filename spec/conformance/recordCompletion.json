@@ -1,0 +1,646 @@
+{
+  "schema": 1,
+  "function": "recordCompletion",
+  "cases": [
+    {
+      "name": "first completion ever",
+      "args": [
+        {
+          "missions": {},
+          "total_xp": 0,
+          "streak_current": 0,
+          "streak_last_date": "",
+          "sidebar_module_state": {
+            "mission": true,
+            "cheatsheet": false,
+            "progress": false
+          },
+          "unlocked": [
+            "M-01",
+            "M-02",
+            "M-03",
+            "M-04",
+            "KATA-01"
+          ],
+          "completed_missions": [],
+          "sandbox_bests": {
+            "easy": null,
+            "normal": null,
+            "hard": null
+          },
+          "onboarded": false,
+          "healedFrontmatters": {},
+          "ambient_enabled": false,
+          "vimPrimerSeen": false,
+          "railPin": null
+        },
+        "2026-03-01"
+      ],
+      "expected": {
+        "missions": {},
+        "total_xp": 0,
+        "streak_current": 1,
+        "streak_last_date": "2026-03-01",
+        "sidebar_module_state": {
+          "mission": true,
+          "cheatsheet": false,
+          "progress": false
+        },
+        "unlocked": [
+          "M-01",
+          "M-02",
+          "M-03",
+          "M-04",
+          "KATA-01"
+        ],
+        "completed_missions": [],
+        "sandbox_bests": {
+          "easy": null,
+          "normal": null,
+          "hard": null
+        },
+        "onboarded": false,
+        "healedFrontmatters": {},
+        "ambient_enabled": false,
+        "vimPrimerSeen": false,
+        "railPin": null
+      }
+    },
+    {
+      "name": "same day again",
+      "args": [
+        {
+          "missions": {},
+          "total_xp": 0,
+          "streak_current": 3,
+          "streak_last_date": "2026-03-01",
+          "sidebar_module_state": {
+            "mission": true,
+            "cheatsheet": false,
+            "progress": false
+          },
+          "unlocked": [
+            "M-01",
+            "M-02",
+            "M-03",
+            "M-04",
+            "KATA-01"
+          ],
+          "completed_missions": [],
+          "sandbox_bests": {
+            "easy": null,
+            "normal": null,
+            "hard": null
+          },
+          "onboarded": false,
+          "healedFrontmatters": {},
+          "ambient_enabled": false,
+          "vimPrimerSeen": false,
+          "railPin": null
+        },
+        "2026-03-01"
+      ],
+      "expected": {
+        "missions": {},
+        "total_xp": 0,
+        "streak_current": 3,
+        "streak_last_date": "2026-03-01",
+        "sidebar_module_state": {
+          "mission": true,
+          "cheatsheet": false,
+          "progress": false
+        },
+        "unlocked": [
+          "M-01",
+          "M-02",
+          "M-03",
+          "M-04",
+          "KATA-01"
+        ],
+        "completed_missions": [],
+        "sandbox_bests": {
+          "easy": null,
+          "normal": null,
+          "hard": null
+        },
+        "onboarded": false,
+        "healedFrontmatters": {},
+        "ambient_enabled": false,
+        "vimPrimerSeen": false,
+        "railPin": null
+      }
+    },
+    {
+      "name": "next day",
+      "args": [
+        {
+          "missions": {},
+          "total_xp": 0,
+          "streak_current": 3,
+          "streak_last_date": "2026-03-01",
+          "sidebar_module_state": {
+            "mission": true,
+            "cheatsheet": false,
+            "progress": false
+          },
+          "unlocked": [
+            "M-01",
+            "M-02",
+            "M-03",
+            "M-04",
+            "KATA-01"
+          ],
+          "completed_missions": [],
+          "sandbox_bests": {
+            "easy": null,
+            "normal": null,
+            "hard": null
+          },
+          "onboarded": false,
+          "healedFrontmatters": {},
+          "ambient_enabled": false,
+          "vimPrimerSeen": false,
+          "railPin": null
+        },
+        "2026-03-02"
+      ],
+      "expected": {
+        "missions": {},
+        "total_xp": 0,
+        "streak_current": 4,
+        "streak_last_date": "2026-03-02",
+        "sidebar_module_state": {
+          "mission": true,
+          "cheatsheet": false,
+          "progress": false
+        },
+        "unlocked": [
+          "M-01",
+          "M-02",
+          "M-03",
+          "M-04",
+          "KATA-01"
+        ],
+        "completed_missions": [],
+        "sandbox_bests": {
+          "easy": null,
+          "normal": null,
+          "hard": null
+        },
+        "onboarded": false,
+        "healedFrontmatters": {},
+        "ambient_enabled": false,
+        "vimPrimerSeen": false,
+        "railPin": null
+      }
+    },
+    {
+      "name": "month boundary",
+      "args": [
+        {
+          "missions": {},
+          "total_xp": 0,
+          "streak_current": 4,
+          "streak_last_date": "2026-02-28",
+          "sidebar_module_state": {
+            "mission": true,
+            "cheatsheet": false,
+            "progress": false
+          },
+          "unlocked": [
+            "M-01",
+            "M-02",
+            "M-03",
+            "M-04",
+            "KATA-01"
+          ],
+          "completed_missions": [],
+          "sandbox_bests": {
+            "easy": null,
+            "normal": null,
+            "hard": null
+          },
+          "onboarded": false,
+          "healedFrontmatters": {},
+          "ambient_enabled": false,
+          "vimPrimerSeen": false,
+          "railPin": null
+        },
+        "2026-03-01"
+      ],
+      "expected": {
+        "missions": {},
+        "total_xp": 0,
+        "streak_current": 5,
+        "streak_last_date": "2026-03-01",
+        "sidebar_module_state": {
+          "mission": true,
+          "cheatsheet": false,
+          "progress": false
+        },
+        "unlocked": [
+          "M-01",
+          "M-02",
+          "M-03",
+          "M-04",
+          "KATA-01"
+        ],
+        "completed_missions": [],
+        "sandbox_bests": {
+          "easy": null,
+          "normal": null,
+          "hard": null
+        },
+        "onboarded": false,
+        "healedFrontmatters": {},
+        "ambient_enabled": false,
+        "vimPrimerSeen": false,
+        "railPin": null
+      }
+    },
+    {
+      "name": "year boundary",
+      "args": [
+        {
+          "missions": {},
+          "total_xp": 0,
+          "streak_current": 2,
+          "streak_last_date": "2025-12-31",
+          "sidebar_module_state": {
+            "mission": true,
+            "cheatsheet": false,
+            "progress": false
+          },
+          "unlocked": [
+            "M-01",
+            "M-02",
+            "M-03",
+            "M-04",
+            "KATA-01"
+          ],
+          "completed_missions": [],
+          "sandbox_bests": {
+            "easy": null,
+            "normal": null,
+            "hard": null
+          },
+          "onboarded": false,
+          "healedFrontmatters": {},
+          "ambient_enabled": false,
+          "vimPrimerSeen": false,
+          "railPin": null
+        },
+        "2026-01-01"
+      ],
+      "expected": {
+        "missions": {},
+        "total_xp": 0,
+        "streak_current": 3,
+        "streak_last_date": "2026-01-01",
+        "sidebar_module_state": {
+          "mission": true,
+          "cheatsheet": false,
+          "progress": false
+        },
+        "unlocked": [
+          "M-01",
+          "M-02",
+          "M-03",
+          "M-04",
+          "KATA-01"
+        ],
+        "completed_missions": [],
+        "sandbox_bests": {
+          "easy": null,
+          "normal": null,
+          "hard": null
+        },
+        "onboarded": false,
+        "healedFrontmatters": {},
+        "ambient_enabled": false,
+        "vimPrimerSeen": false,
+        "railPin": null
+      }
+    },
+    {
+      "name": "gap resets",
+      "args": [
+        {
+          "missions": {},
+          "total_xp": 0,
+          "streak_current": 9,
+          "streak_last_date": "2026-02-26",
+          "sidebar_module_state": {
+            "mission": true,
+            "cheatsheet": false,
+            "progress": false
+          },
+          "unlocked": [
+            "M-01",
+            "M-02",
+            "M-03",
+            "M-04",
+            "KATA-01"
+          ],
+          "completed_missions": [],
+          "sandbox_bests": {
+            "easy": null,
+            "normal": null,
+            "hard": null
+          },
+          "onboarded": false,
+          "healedFrontmatters": {},
+          "ambient_enabled": false,
+          "vimPrimerSeen": false,
+          "railPin": null
+        },
+        "2026-03-01"
+      ],
+      "expected": {
+        "missions": {},
+        "total_xp": 0,
+        "streak_current": 1,
+        "streak_last_date": "2026-03-01",
+        "sidebar_module_state": {
+          "mission": true,
+          "cheatsheet": false,
+          "progress": false
+        },
+        "unlocked": [
+          "M-01",
+          "M-02",
+          "M-03",
+          "M-04",
+          "KATA-01"
+        ],
+        "completed_missions": [],
+        "sandbox_bests": {
+          "easy": null,
+          "normal": null,
+          "hard": null
+        },
+        "onboarded": false,
+        "healedFrontmatters": {},
+        "ambient_enabled": false,
+        "vimPrimerSeen": false,
+        "railPin": null
+      }
+    },
+    {
+      "name": "leap day",
+      "args": [
+        {
+          "missions": {},
+          "total_xp": 0,
+          "streak_current": 1,
+          "streak_last_date": "2024-02-29",
+          "sidebar_module_state": {
+            "mission": true,
+            "cheatsheet": false,
+            "progress": false
+          },
+          "unlocked": [
+            "M-01",
+            "M-02",
+            "M-03",
+            "M-04",
+            "KATA-01"
+          ],
+          "completed_missions": [],
+          "sandbox_bests": {
+            "easy": null,
+            "normal": null,
+            "hard": null
+          },
+          "onboarded": false,
+          "healedFrontmatters": {},
+          "ambient_enabled": false,
+          "vimPrimerSeen": false,
+          "railPin": null
+        },
+        "2024-03-01"
+      ],
+      "expected": {
+        "missions": {},
+        "total_xp": 0,
+        "streak_current": 2,
+        "streak_last_date": "2024-03-01",
+        "sidebar_module_state": {
+          "mission": true,
+          "cheatsheet": false,
+          "progress": false
+        },
+        "unlocked": [
+          "M-01",
+          "M-02",
+          "M-03",
+          "M-04",
+          "KATA-01"
+        ],
+        "completed_missions": [],
+        "sandbox_bests": {
+          "easy": null,
+          "normal": null,
+          "hard": null
+        },
+        "onboarded": false,
+        "healedFrontmatters": {},
+        "ambient_enabled": false,
+        "vimPrimerSeen": false,
+        "railPin": null
+      }
+    },
+    {
+      "name": "after EU spring DST switch",
+      "args": [
+        {
+          "missions": {},
+          "total_xp": 0,
+          "streak_current": 1,
+          "streak_last_date": "2026-03-29",
+          "sidebar_module_state": {
+            "mission": true,
+            "cheatsheet": false,
+            "progress": false
+          },
+          "unlocked": [
+            "M-01",
+            "M-02",
+            "M-03",
+            "M-04",
+            "KATA-01"
+          ],
+          "completed_missions": [],
+          "sandbox_bests": {
+            "easy": null,
+            "normal": null,
+            "hard": null
+          },
+          "onboarded": false,
+          "healedFrontmatters": {},
+          "ambient_enabled": false,
+          "vimPrimerSeen": false,
+          "railPin": null
+        },
+        "2026-03-30"
+      ],
+      "expected": {
+        "missions": {},
+        "total_xp": 0,
+        "streak_current": 2,
+        "streak_last_date": "2026-03-30",
+        "sidebar_module_state": {
+          "mission": true,
+          "cheatsheet": false,
+          "progress": false
+        },
+        "unlocked": [
+          "M-01",
+          "M-02",
+          "M-03",
+          "M-04",
+          "KATA-01"
+        ],
+        "completed_missions": [],
+        "sandbox_bests": {
+          "easy": null,
+          "normal": null,
+          "hard": null
+        },
+        "onboarded": false,
+        "healedFrontmatters": {},
+        "ambient_enabled": false,
+        "vimPrimerSeen": false,
+        "railPin": null
+      }
+    },
+    {
+      "name": "after EU autumn DST switch",
+      "args": [
+        {
+          "missions": {},
+          "total_xp": 0,
+          "streak_current": 1,
+          "streak_last_date": "2026-10-25",
+          "sidebar_module_state": {
+            "mission": true,
+            "cheatsheet": false,
+            "progress": false
+          },
+          "unlocked": [
+            "M-01",
+            "M-02",
+            "M-03",
+            "M-04",
+            "KATA-01"
+          ],
+          "completed_missions": [],
+          "sandbox_bests": {
+            "easy": null,
+            "normal": null,
+            "hard": null
+          },
+          "onboarded": false,
+          "healedFrontmatters": {},
+          "ambient_enabled": false,
+          "vimPrimerSeen": false,
+          "railPin": null
+        },
+        "2026-10-26"
+      ],
+      "expected": {
+        "missions": {},
+        "total_xp": 0,
+        "streak_current": 2,
+        "streak_last_date": "2026-10-26",
+        "sidebar_module_state": {
+          "mission": true,
+          "cheatsheet": false,
+          "progress": false
+        },
+        "unlocked": [
+          "M-01",
+          "M-02",
+          "M-03",
+          "M-04",
+          "KATA-01"
+        ],
+        "completed_missions": [],
+        "sandbox_bests": {
+          "easy": null,
+          "normal": null,
+          "hard": null
+        },
+        "onboarded": false,
+        "healedFrontmatters": {},
+        "ambient_enabled": false,
+        "vimPrimerSeen": false,
+        "railPin": null
+      }
+    },
+    {
+      "name": "after US spring DST switch",
+      "args": [
+        {
+          "missions": {},
+          "total_xp": 0,
+          "streak_current": 1,
+          "streak_last_date": "2026-03-08",
+          "sidebar_module_state": {
+            "mission": true,
+            "cheatsheet": false,
+            "progress": false
+          },
+          "unlocked": [
+            "M-01",
+            "M-02",
+            "M-03",
+            "M-04",
+            "KATA-01"
+          ],
+          "completed_missions": [],
+          "sandbox_bests": {
+            "easy": null,
+            "normal": null,
+            "hard": null
+          },
+          "onboarded": false,
+          "healedFrontmatters": {},
+          "ambient_enabled": false,
+          "vimPrimerSeen": false,
+          "railPin": null
+        },
+        "2026-03-09"
+      ],
+      "expected": {
+        "missions": {},
+        "total_xp": 0,
+        "streak_current": 2,
+        "streak_last_date": "2026-03-09",
+        "sidebar_module_state": {
+          "mission": true,
+          "cheatsheet": false,
+          "progress": false
+        },
+        "unlocked": [
+          "M-01",
+          "M-02",
+          "M-03",
+          "M-04",
+          "KATA-01"
+        ],
+        "completed_missions": [],
+        "sandbox_bests": {
+          "easy": null,
+          "normal": null,
+          "hard": null
+        },
+        "onboarded": false,
+        "healedFrontmatters": {},
+        "ambient_enabled": false,
+        "vimPrimerSeen": false,
+        "railPin": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "function": "getXpProgress",
+  "cases": [
+    {
+      "name": "0 xp",
+      "args": [
+        0
+      ],
+      "expected": {
+        "level": 1,
+        "into": 0,
+        "span": 66,
+        "pct": 0,
+        "nextLevelXp": 66,
+        "nextTitle": "GHOST OPERATOR"
+      }
+    },
+    {
+      "name": "100 xp",
+      "args": [
+        100
+      ],
+      "expected": {
+        "level": 2,
+        "into": 34,
+        "span": 120,
+        "pct": 28,
+        "nextLevelXp": 186,
+        "nextTitle": "DEEP COVER"
+      }
+    },
+    {
+      "name": "186 xp",
+      "args": [
+        186
+      ],
+      "expected": {
+        "level": 3,
+        "into": 0,
+        "span": 185,
+        "pct": 0,
+        "nextLevelXp": 371,
+        "nextTitle": "NEON WRAITH"
+      }
+    },
+    {
+      "name": "2499 xp",
+      "args": [
+        2499
+      ],
+      "expected": {
+        "level": 9,
+        "into": 499,
+        "span": 500,
+        "pct": 100,
+        "nextLevelXp": 2500,
+        "nextTitle": "SIGNAL ARCHITECT"
+      }
+    },
+    {
+      "name": "2500 xp",
+      "args": [
+        2500
+      ],
+      "expected": {
+        "level": 10,
+        "into": 0,
+        "span": 0,
+        "pct": 100,
+        "nextLevelXp": null,
+        "nextTitle": null
+      }
+    },
+    {
+      "name": "3000 xp",
+      "args": [
+        3000
+      ],
+      "expected": {
+        "level": 10,
+        "into": 0,
+        "span": 0,
+        "pct": 100,
+        "nextLevelXp": null,
+        "nextTitle": null
+      }
+    }
+  ]
+}

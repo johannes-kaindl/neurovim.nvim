@@ -1,0 +1,22 @@
+{
+  "source": "nvim-kit",
+  "source_path": "nvim-kit",
+  "tag": "0.1.1",
+  "sha": "5d59467342a64751eebde6d8e3e6eab6ea6b488e",
+  "commit": "5d59467342a64751eebde6d8e3e6eab6ea6b488e",
+  "version": "0.1.1",
+  "license": "AGPL-3.0-only",
+  "header": true,
+  "vendored": "3 file(s) from nvim-kit@0.1.1",
+  "files": [
+    "lua/nvim_kit/conformance.lua",
+    "lua/nvim_kit/data.lua",
+    "lua/nvim_kit/test.lua"
+  ],
+  "map": {
+    "lua/nvim_kit/conformance.lua": "lua/neurovim/kit/conformance.lua",
+    "lua/nvim_kit/data.lua": "lua/neurovim/kit/data.lua",
+    "lua/nvim_kit/test.lua": "lua/neurovim/kit/test.lua"
+  },
+  "note": "Verbatim copies (below a one-line provenance header for .lua when header is true). Never edit — re-vendor."
+}

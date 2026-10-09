@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "function": "keystrokesToNextTier",
+  "cases": [
+    {
+      "name": "gold has no next tier",
+      "args": [
+        50,
+        60
+      ],
+      "expected": null
+    },
+    {
+      "name": "silver to gold",
+      "args": [
+        80,
+        60
+      ],
+      "expected": {
+        "nextTier": "gold",
+        "delta": 20
+      }
+    },
+    {
+      "name": "bronze to silver",
+      "args": [
+        120,
+        60
+      ],
+      "expected": {
+        "nextTier": "silver",
+        "delta": 30
+      }
+    },
+    {
+      "name": "below bronze to bronze",
+      "args": [
+        200,
+        60
+      ],
+      "expected": {
+        "nextTier": "bronze",
+        "delta": 50
+      }
+    },
+    {
+      "name": "no keystrokes",
+      "args": [
+        0,
+        60
+      ],
+      "expected": null
+    }
+  ]
+}

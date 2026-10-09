@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "function": "resolvePar",
+  "cases": [
+    {
+      "name": "authored override wins",
+      "args": [
+        {
+          "parOverride": 35,
+          "difficulty": 2
+        }
+      ],
+      "expected": 35
+    },
+    {
+      "name": "zero override falls back to difficulty",
+      "args": [
+        {
+          "parOverride": 0,
+          "difficulty": 2
+        }
+      ],
+      "expected": 60
+    },
+    {
+      "name": "no override, difficulty 1",
+      "args": [
+        {
+          "parOverride": null,
+          "difficulty": 1
+        }
+      ],
+      "expected": 40
+    },
+    {
+      "name": "no difficulty uses fallback",
+      "args": [
+        {
+          "parOverride": null,
+          "difficulty": null
+        }
+      ],
+      "expected": 80
+    }
+  ]
+}

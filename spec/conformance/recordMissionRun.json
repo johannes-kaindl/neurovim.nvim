@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "function": "recordMissionRun",
+  "cases": [
+    {
+      "name": "first run",
+      "args": [
+        null,
+        {
+          "elapsed_ms": 42000,
+          "keystrokes": 37,
+          "ks_per_min": 52.9
+        },
+        "2026-03-01"
+      ],
+      "expected": {
+        "best_time_ms": 42000,
+        "best_keystrokes": 37,
+        "best_ks_per_min": 52.9,
+        "runs": 1,
+        "last_run": "2026-03-01"
+      }
+    },
+    {
+      "name": "faster but more keys",
+      "args": [
+        {
+          "best_time_ms": 50000,
+          "best_keystrokes": 30,
+          "best_ks_per_min": 40,
+          "runs": 2,
+          "last_run": "2026-02-01"
+        },
+        {
+          "elapsed_ms": 42000,
+          "keystrokes": 37,
+          "ks_per_min": 52.9
+        },
+        "2026-03-01"
+      ],
+      "expected": {
+        "best_time_ms": 42000,
+        "best_keystrokes": 30,
+        "best_ks_per_min": 52.9,
+        "runs": 3,
+        "last_run": "2026-03-01"
+      }
+    },
+    {
+      "name": "zero bests are replaced",
+      "args": [
+        {
+          "best_time_ms": 0,
+          "best_keystrokes": 0,
+          "best_ks_per_min": 0,
+          "runs": 0,
+          "last_run": ""
+        },
+        {
+          "elapsed_ms": 1000,
+          "keystrokes": 5,
+          "ks_per_min": 300
+        },
+        "2026-03-01"
+      ],
+      "expected": {
+        "best_time_ms": 1000,
+        "best_keystrokes": 5,
+        "best_ks_per_min": 300,
+        "runs": 1,
+        "last_run": "2026-03-01"
+      }
+    }
+  ]
+}

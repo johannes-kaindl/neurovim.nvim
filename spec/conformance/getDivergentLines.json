@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "function": "getDivergentLines",
+  "cases": [
+    {
+      "name": "identical",
+      "args": [
+        "a\nb",
+        "a\nb"
+      ],
+      "expected": []
+    },
+    {
+      "name": "one line changed",
+      "args": [
+        "a\nX\nc",
+        "a\nb\nc"
+      ],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "name": "frontmatter shifts document indices",
+      "args": [
+        "---\ntitle: x\ntags: [a]\n---\na\nX",
+        "a\nb"
+      ],
+      "expected": [
+        5
+      ]
+    },
+    {
+      "name": "missing lines are reported past the end",
+      "args": [
+        "a",
+        "a\nb\nc"
+      ],
+      "expected": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "leading blank lines shift indices",
+      "args": [
+        "\n\na\nX",
+        "a\nb"
+      ],
+      "expected": [
+        3
+      ]
+    }
+  ]
+}

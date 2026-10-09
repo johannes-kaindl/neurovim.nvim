@@ -1,0 +1,172 @@
+{
+  "schema": 1,
+  "function": "normalizeMissionText",
+  "cases": [
+    {
+      "name": "plain text",
+      "args": [
+        "alpha\nbeta"
+      ],
+      "expected": {
+        "lines": [
+          "alpha",
+          "beta"
+        ],
+        "offset": 0
+      }
+    },
+    {
+      "name": "trailing whitespace stripped",
+      "args": [
+        "alpha  \nbeta\t"
+      ],
+      "expected": {
+        "lines": [
+          "alpha",
+          "beta"
+        ],
+        "offset": 0
+      }
+    },
+    {
+      "name": "leading and trailing blank lines dropped",
+      "args": [
+        "\n\nalpha\nbeta\n\n"
+      ],
+      "expected": {
+        "lines": [
+          "alpha",
+          "beta"
+        ],
+        "offset": 2
+      }
+    },
+    {
+      "name": "frontmatter removed, offset counts its lines",
+      "args": [
+        "---\ntitle: x\ntags: [a]\n---\nalpha\nbeta"
+      ],
+      "expected": {
+        "lines": [
+          "alpha",
+          "beta"
+        ],
+        "offset": 4
+      }
+    },
+    {
+      "name": "CRLF frontmatter removed",
+      "args": [
+        "---\r\ntitle: x\r\n---\r\nalpha\r\nbeta"
+      ],
+      "expected": {
+        "lines": [
+          "alpha",
+          "beta"
+        ],
+        "offset": 3
+      }
+    },
+    {
+      "name": "BOM before frontmatter",
+      "args": [
+        "﻿---\ntitle: x\ntags: [a]\n---\nalpha"
+      ],
+      "expected": {
+        "lines": [
+          "alpha"
+        ],
+        "offset": 4
+      }
+    },
+    {
+      "name": "lone rule without closing fence stays content",
+      "args": [
+        "---\nalpha\nbeta"
+      ],
+      "expected": {
+        "lines": [
+          "---",
+          "alpha",
+          "beta"
+        ],
+        "offset": 0
+      }
+    },
+    {
+      "name": "blank line after frontmatter shifts offset",
+      "args": [
+        "---\ntitle: x\ntags: [a]\n---\n\nalpha"
+      ],
+      "expected": {
+        "lines": [
+          "alpha"
+        ],
+        "offset": 5
+      }
+    },
+    {
+      "name": "empty text",
+      "args": [
+        ""
+      ],
+      "expected": {
+        "lines": [],
+        "offset": 1
+      }
+    },
+    {
+      "name": "unicode box drawing kept",
+      "args": [
+        "╔══╗\n║ x║\n╚══╝"
+      ],
+      "expected": {
+        "lines": [
+          "╔══╗",
+          "║ x║",
+          "╚══╝"
+        ],
+        "offset": 0
+      }
+    },
+    {
+      "name": "trailing no-break space stripped",
+      "args": [
+        "alpha \nbeta"
+      ],
+      "expected": {
+        "lines": [
+          "alpha",
+          "beta"
+        ],
+        "offset": 0
+      }
+    },
+    {
+      "name": "trailing ideographic space stripped",
+      "args": [
+        "alpha　"
+      ],
+      "expected": {
+        "lines": [
+          "alpha"
+        ],
+        "offset": 0
+      }
+    },
+    {
+      "name": "no-break-space-only line is blank",
+      "args": [
+        "alpha\n \nbeta\n "
+      ],
+      "expected": {
+        "lines": [
+          "alpha",
+          "",
+          "beta"
+        ],
+        "offset": 0
+      }
+    }
+  ]
+}
