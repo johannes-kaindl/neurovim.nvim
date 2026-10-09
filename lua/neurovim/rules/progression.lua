@@ -7,20 +7,12 @@ local date = require('neurovim.kit.date')
 
 local M = {}
 
-local function copy(t)
-  local out = {}
-  for k, v in pairs(t) do
-    out[k] = v
-  end
-  return out
-end
-
 function M.record_completion(d, today)
   today = today or date.utc_today()
   if d.streak_last_date == today then
     return d
   end
-  local r = copy(d)
+  local r = vim.tbl_extend('force', {}, d)
   r.streak_current = d.streak_last_date == date.add_days(today, -1) and d.streak_current + 1 or 1
   r.streak_last_date = today
   return r
@@ -89,7 +81,7 @@ function M.add_xp(d, amount)
     level_up =
       { old_level = old_level, new_level = new_level, unlocked_missions = u.missions, unlocked_loot = u.loot }
   end
-  local new_data = copy(d)
+  local new_data = vim.tbl_extend('force', {}, d)
   new_data.total_xp = new_xp
   new_data.unlocked = unlocked
   return { new_data = new_data, level_up = level_up }
@@ -123,7 +115,7 @@ function M.backfill_unlocks(d)
   for _, id in ipairs(d.completed_missions or {}) do
     add(id)
   end
-  local r = copy(d)
+  local r = vim.tbl_extend('force', {}, d)
   r.unlocked = out
   return r
 end

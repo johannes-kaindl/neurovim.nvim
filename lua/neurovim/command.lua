@@ -31,13 +31,9 @@ function M.run(fargs)
 end
 
 local function starting(list, lead)
-  local out = {}
-  for _, x in ipairs(list) do
-    if x:lower():sub(1, #lead) == lead:lower() then
-      out[#out + 1] = x
-    end
-  end
-  return out
+  return vim.tbl_filter(function(x)
+    return vim.startswith(x:lower(), lead:lower())
+  end, list)
 end
 
 function M.complete(arglead, cmdline)

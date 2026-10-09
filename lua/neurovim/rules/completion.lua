@@ -19,20 +19,12 @@ local function bump_run_only(prev, today)
   }
 end
 
-local function copy(t)
-  local out = {}
-  for k, v in pairs(t) do
-    out[k] = v
-  end
-  return out
-end
-
 function M.complete_mission(d, mission, metrics, today)
   today = today or date.utc_today()
   local added = progression.add_xp(d, mission.xp_reward)
-  local nd = copy(progression.record_completion(added.new_data, today))
+  local nd = vim.tbl_extend('force', {}, progression.record_completion(added.new_data, today))
   if not vim.tbl_contains(nd.completed_missions, mission.mission_id) then
-    local list = copy(nd.completed_missions)
+    local list = vim.tbl_extend('force', {}, nd.completed_missions)
     list[#list + 1] = mission.mission_id
     nd.completed_missions = list
   end
@@ -40,7 +32,7 @@ function M.complete_mission(d, mission, metrics, today)
   local prev = nd.missions[mission.mission_id]
   local record = unverified and bump_run_only(prev, today)
     or progression.record_mission_run(prev, metrics, today)
-  local missions = copy(nd.missions)
+  local missions = vim.tbl_extend('force', {}, nd.missions)
   missions[mission.mission_id] = record
   nd.missions = missions
   local p = par.resolve_par({ parOverride = mission.par_keystrokes, difficulty = mission.difficulty })

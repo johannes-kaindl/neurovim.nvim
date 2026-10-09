@@ -85,3 +85,11 @@ T.case('long objective lines are wrapped to the window, not cut off', function()
     end
   end
 end)
+
+T.case(':bdelete ends the run: no zombie mission after :buffer', function()
+  local buf = mission.start('M-01')
+  keys('x')
+  vim.cmd('enew')
+  vim.cmd('bdelete! ' .. buf)
+  T.eq(mission.run(buf), nil)
+end)

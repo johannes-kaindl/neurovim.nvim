@@ -85,11 +85,16 @@ function M.start(id)
       set_winbar(buf, vim.api.nvim_get_current_win())
     end,
   })
-  vim.api.nvim_create_autocmd('BufWipeout', {
+  -- :bdelete unloads without wiping: the text is gone, so the run ends either way.
+  vim.api.nvim_create_autocmd({ 'BufUnload', 'BufWipeout' }, {
     group = group,
     buffer = buf,
     callback = function()
-      runs[buf] = nil
+      if runs[buf] then
+        runs[buf].tracker.stop()
+        runs[buf] = nil
+      end
+      pcall(vim.api.nvim_del_augroup_by_id, group)
     end,
   })
   return buf
