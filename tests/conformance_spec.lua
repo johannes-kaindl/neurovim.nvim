@@ -4,12 +4,19 @@ local root = vim.fn.fnamemodify(debug.getinfo(1, 'S').source:sub(2), ':p:h:h')
 local DIR = root .. '/spec/conformance'
 
 local diff = require('neurovim.rules.diff')
+local par = require('neurovim.rules.par')
+local progression = require('neurovim.rules.progression')
 
 -- TS function name → Lua port. Grows with tasks 5–7.
 local IMPLS = {
   normalizeMissionText = diff.normalize_mission_text,
   getDiff = diff.get_diff,
   getDivergentLines = diff.get_divergent_lines,
+  resolvePar = par.resolve_par,
+  tierFor = par.tier_for,
+  keystrokesToNextTier = par.keystrokes_to_next_tier,
+  recordCompletion = progression.record_completion,
+  recordMissionRun = progression.record_mission_run,
 }
 
 -- Ports not written yet. Phase 3 only: each is announced as PENDING on every run, never counted
@@ -18,12 +25,7 @@ local PENDING = {
   getLevelForXp = true,
   addXp = true,
   backfillUnlocks = true,
-  recordCompletion = true,
-  recordMissionRun = true,
   getXpProgress = true,
-  resolvePar = true,
-  tierFor = true,
-  keystrokesToNextTier = true,
 }
 
 local vectors = C.load_dir(DIR)
