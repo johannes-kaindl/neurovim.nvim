@@ -13,7 +13,11 @@
 | Path | What |
 |---|---|
 | `lua/neurovim/rules/` | domain rules ported from the TS core (pure Lua, `-- domain: neurovim`) |
-| `lua/neurovim/data.lua` | loads the vendored export `data/neurovim-data.json` through the kit's schema-checked loader |
+| `lua/neurovim/data.lua` | loads the vendored export `data/neurovim-data.json` through the kit's schema-checked loader; `default_plugin_data()` exact (null and {} kept) |
+| `lua/neurovim/state.lua` | the save file (PluginData) under `stdpath('data')/neurovim/`, through `kit.store` |
+| `lua/neurovim/missions.lua` | the 40 story missions (no KATA), chapters, status per player |
+| `lua/neurovim/ui/` | NEXUS, briefing, mission buffer (panel, winbar, keytrack, check, reveal, restart), result float |
+| `lua/neurovim/command.lua`, `plugin/neurovim.lua` | `:NeuroVim`, Tab completion, `<Plug>` mappings, version check |
 | `lua/neurovim/kit/` | vendored from `nvim-kit` (`VENDOR.json`) — never edit |
 | `data/`, `spec/conformance/` | vendored from `neurovim` (`data/VENDOR.json`): the content export and the conformance vectors — never edit |
 | `tests/` | specs for the kit's headless runner; `tests/conformance_spec.lua` runs every vector against its Lua port |
@@ -48,8 +52,11 @@ After a rule change upstream:
 
 ## Gotchas
 
-- **`vim.NIL` is truthy.** JSON goes through the kit's loader with `luanil`, so `null` inside objects is an absent field; `null` in arrays stays `vim.NIL`.
-- **`nvim_feedkeys` needs the flag `t`** (`'ntx'`) for keys to count as typed (macros, keystroke counting).
+- **`vim.NIL` is truthy.** The game data goes through the kit's loader with `luanil`, so `null` inside objects is an absent field there. The save file and `data.default_plugin_data()` are read **without** `luanil` on purpose: `null` stays `vim.NIL` and `{}` stays an object, so the file keeps the shape NeuroVim's other builds read.
+- **`nvim_feedkeys` needs the flag `t`** (`'ntx'`) for keys to count as typed (macros, keystroke counting); **without `n`** (`'tx'`) for keys that must hit a mapping (the briefing's and NEXUS's `<CR>`).
+- **`tests/run.lua` points `XDG_DATA_HOME` at a temp dir** — never remove it, or tests write the player's real save.
+- **Headless `nvim -l` never fires `CursorMoved`**; tests that depend on it raise it with `nvim_exec_autocmds`.
+- **`T.eq(x, vim.NIL)` passes for `nil`** (`deep_equal`); check a JSON null with `rawequal(x, vim.NIL)` or compare with `T.json_eq`.
 - **StyLua must skip `kit/`** (`.styluaignore`); otherwise it reformats the vendored copies and `vendor-check` turns red.
 
 ## Memory

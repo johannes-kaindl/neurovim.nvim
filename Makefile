@@ -1,9 +1,9 @@
 .PHONY: check fmt lint test vendor-check release-check
 check: fmt lint test vendor-check
 fmt:
-	stylua --check lua tests
+	stylua --check lua tests plugin
 lint:
-	selene lua tests
+	selene lua tests plugin
 test:
 	nvim --headless -u NONE -l tests/run.lua
 vendor-check:

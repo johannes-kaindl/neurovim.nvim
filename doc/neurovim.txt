@@ -8,15 +8,17 @@ CONTENTS                                                   *neurovim-contents*
   1. Status ................................................ |neurovim-status|
   2. Requirements .................................... |neurovim-requirements|
   3. Commands .............................................. |neurovim-commands|
+     Mappings ............................................. |neurovim-mappings|
+     Save file ................................................ |neurovim-save|
   4. License ................................................ |neurovim-license|
 
 ==============================================================================
 1. STATUS                                                    *neurovim-status*
 
-In development (phase 3 of 5 done). The game rules — scoring, progression,
-par tiers — are ported to Lua and pass all conformance vectors from
-NeuroVim's TypeScript core. The plugin defines no commands yet; the
-interface follows in phase 4. The repository is private and not released.
+In development (phase 4 of 5 done). The 40 story missions are playable:
+NEXUS, briefings, missions with timer and keystroke count, results and a
+save file. The game rules pass all conformance vectors from NeuroVim's
+TypeScript core. The repository is private and not released.
 
 ==============================================================================
 2. REQUIREMENTS                                        *neurovim-requirements*
@@ -27,15 +29,46 @@ interface follows in phase 4. The repository is private and not released.
 ==============================================================================
 3. COMMANDS                                                *neurovim-commands*
 
-None yet. Planned for phase 4 (subject to change):
+                                                                   *:NeuroVim*
+:NeuroVim               NEXUS: level, XP, streak and the missions by chapter.
+                        <CR> opens the mission under the cursor, q closes.
 
-  :NeuroVim               NEXUS: status and mission list.
-  :NeuroVim mission {id}  Briefing, then the mission buffer.
-  :NeuroVim check         Score the mission buffer.
-  :NeuroVim reveal        Highlight the lines that still differ.
-  :NeuroVim restart       Reload the corrupted text, reset time and keys.
+:NeuroVim mission {id}  The briefing of mission {id} (Tab completes the ids).
+                        <CR> starts the mission, q closes the briefing.
+                        A locked mission names the level that unlocks it.
 
-The plugin will set no global keys; it will offer |<Plug>| mappings.
+:NeuroVim check         Score the current mission buffer: the number of lines
+                        still corrupted, or the result in a floating window
+                        (it closes when the cursor moves). One completion per
+                        run; |:NeuroVim| restart plays it again.
+
+:NeuroVim reveal        Highlight the lines that still differ (|hl-DiffChange|).
+
+:NeuroVim restart       Reload the corrupted text, reset time and keys.
+
+A mission is the buffer neurovim://{id}. The objective stands above line 1;
+the winbar shows id, time, keys and par. Time and keys count from the first
+key typed in the mission buffer; |:NeuroVim| commands themselves do not count.
+A run solved without a single key (pasted, already solved) counts and earns
+its XP, but sets no bests.
+
+                                                           *neurovim-mappings*
+The plugin sets no global keys. These |<Plug>| mappings are yours to map:
+
+  <Plug>(neurovim-nexus)      |:NeuroVim|
+  <Plug>(neurovim-check)      :NeuroVim check
+  <Plug>(neurovim-reveal)     :NeuroVim reveal
+  <Plug>(neurovim-restart)    :NeuroVim restart
+
+Example: >lua
+  vim.keymap.set('n', '<leader>nc', '<Plug>(neurovim-check)')
+<
+                                                               *neurovim-save*
+Progress is saved in stdpath('data')/neurovim/state.json, in the format of
+NeuroVim's other builds. Each save re-reads the file first, so two Neovim
+instances do not overwrite each other. A file that cannot be read is moved to
+state.json.broken-{time} with a warning, and the game starts fresh. Streak
+days roll over at 00:00 UTC.
 
 ==============================================================================
 4. LICENSE                                                  *neurovim-license*
