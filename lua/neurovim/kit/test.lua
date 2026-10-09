@@ -1,4 +1,4 @@
--- vendored from nvim-kit@0.1.1 (lua/nvim_kit/test.lua) — do not edit; re-vendor
+-- vendored from nvim-kit@0.2.0 (lua/nvim_kit/test.lua) — do not edit; re-vendor
 -- nvim-kit test runner: plain Lua specs, run in headless Neovim, no external test dependency.
 --   nvim --headless -u NONE -l tests/run.lua
 -- A spec file registers cases with T.case(name, fn); a case fails by raising (T.eq, T.ok, T.raises).
