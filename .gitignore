@@ -2,3 +2,4 @@
 .remember/
 .claude/
 __pycache__/
+docs/demo/.build/

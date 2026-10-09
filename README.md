@@ -4,6 +4,8 @@
 
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 
+<img src="https://raw.githubusercontent.com/johannes-kaindl/neurovim.nvim/main/docs/images/demo.gif" width="800" alt="Playing mission M-01 in Neovim: NEXUS lists the missions, the briefing opens, a recorded macro deletes every stray X and Z, and :NeuroVim check shows the result with XP and tier">
+
 **Status:** in development (phase 4 of 5 done). The 40 story missions are playable in Neovim: NEXUS, briefings, missions with a timer and a keystroke count, results and a save file. The game logic passes all 103 conformance vectors from NeuroVim's TypeScript core. End-to-end tests over every mission, `:checkhealth` and the full manual follow in phase 5. The repository is private and not released yet.
 
 ## Requirements
