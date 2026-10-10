@@ -17,6 +17,7 @@
 | `lua/neurovim/state.lua` | the save file (PluginData) under `stdpath('data')/neurovim/`, through `kit.store` |
 | `lua/neurovim/missions.lua` | all 54 missions (40 story, 14 KATA), chapters + KATAS section, status per player, `next_unlock` for the replay hint |
 | `lua/neurovim/ui/` | NEXUS, briefing, mission buffer (panel, winbar, keytrack, check, reveal, restart), result float |
+| `lua/neurovim/health.lua` | `:checkhealth neurovim` from the kit's read-only health blocks |
 | `lua/neurovim/command.lua`, `plugin/neurovim.lua` | `:NeuroVim`, Tab completion, `<Plug>` mappings, version check |
 | `lua/neurovim/kit/` | vendored from `nvim-kit` (`VENDOR.json`) — never edit |
 | `data/`, `spec/conformance/` | vendored from `neurovim` (`data/VENDOR.json`): the content export and the conformance vectors — never edit |

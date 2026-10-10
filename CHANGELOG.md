@@ -5,6 +5,7 @@ All notable changes to this project are documented here. The format is based on 
 ## [Unreleased]
 
 ### Added
+- `:checkhealth neurovim`: Neovim version, game data, save file (an unreadable one is a warning and stays untouched), save directory, vendored versions.
 - KATAs: the 14 drills are playable — their own NEXUS section, Tab completion, no briefing (`:NeuroVim mission <id>` starts them at once).
 - NEXUS shows the way past the walls: when every free mission is solved, "Replay solved missions for XP — level N (X XP) unlocks …".
 - End-to-end tests through `:NeuroVim` over all 54 missions, M-01 with real keys up to the first level-up, the way through the game; the SKILLS commands of the briefings run in real Neovim (20 solve their mission, 6 are named placeholders).

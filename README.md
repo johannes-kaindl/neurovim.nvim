@@ -57,7 +57,7 @@ No options yet.
 
 ## Troubleshooting
 
-`:help neurovim-troubleshooting` covers the usual questions: an objective you cannot see, a result window that closed, more keys than you typed, a locked mission, a save that seems gone.
+Run `:checkhealth neurovim` first: it checks the Neovim version, the game data, the save file and its directory, and changes nothing. `:help neurovim-troubleshooting` covers the usual questions: an objective you cannot see, a result window that closed, more keys than you typed, a locked mission, a save that seems gone.
 
 ## Documentation
 

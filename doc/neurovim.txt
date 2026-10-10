@@ -15,8 +15,9 @@ CONTENTS                                                   *neurovim-contents*
      What counts as a key .................................... |neurovim-keys|
   6. Progress ............................................ |neurovim-progress|
   7. Save file ............................................... |neurovim-save|
-  8. Troubleshooting .............................. |neurovim-troubleshooting|
-  9. License .............................................. |neurovim-license|
+  8. Health ................................................ |neurovim-health|
+  9. Troubleshooting .............................. |neurovim-troubleshooting|
+ 10. License .............................................. |neurovim-license|
 
 ==============================================================================
 1. INTRODUCTION                                               *neurovim-intro*
@@ -146,7 +147,27 @@ cannot be read is moved to state.json.broken-{time} with a warning, and the
 game starts fresh — nothing is dropped silently.
 
 ==============================================================================
-8. TROUBLESHOOTING                                  *neurovim-troubleshooting*
+8. HEALTH                                                    *neurovim-health*
+
+`:checkhealth neurovim` is the first thing to run when something looks wrong.
+It reports:
+
+Neovim     the version, and whether it is 0.10 or newer.
+Game data  the missions and tables the plugin ships, their schema, and the
+           number of missions (54: 40 story, 14 KATA).
+Save file  whether state.json is there and readable (no save yet is fine),
+           and whether its directory can be written. An unreadable save is a
+           warning: the check leaves the file untouched; NeuroVim moves it
+           aside on its next start (|neurovim-save|).
+Vendored   which library version and which game-data commit are built in.
+
+The check only reads. It moves, repairs and creates nothing.
+
+==============================================================================
+9. TROUBLESHOOTING                                  *neurovim-troubleshooting*
+
+Something looks wrong ~
+  Run `:checkhealth neurovim` first (|neurovim-health|).
 
 The objective is not visible ~
   It stands above line 1. `gg` brings it back; so does <C-y> at the top.
@@ -168,7 +189,7 @@ My progress is gone ~
   NeuroVim moved an unreadable file there instead of dropping it.
 
 ==============================================================================
-9. LICENSE                                                  *neurovim-license*
+10. LICENSE                                                 *neurovim-license*
 
 Code: AGPL-3.0 (LICENSE, dual licensing in LICENSING.md). Documentation and
 texts: CC BY-SA 4.0 (LICENSE-DOCS).
