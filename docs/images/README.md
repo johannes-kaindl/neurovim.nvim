@@ -1,6 +1,6 @@
 # Images
 
-Every image the README embeds, and how it is made. Regenerate all of them with `make demo` (needs `vhs`, `ttyd` and `ffmpeg`; it plays on a throw-away save, never the real one).
+Every image the README embeds, and how it is made. Regenerate all of them with `make demo` (needs `vhs`, `ttyd` and `ffmpeg`; it plays in a throw-away config, state and save, never your own).
 
 | File | Shows | Made by |
 |---|---|---|

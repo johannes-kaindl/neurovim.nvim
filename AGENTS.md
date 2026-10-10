@@ -36,7 +36,7 @@ make test NVIM=/path/to/nvim   # the suite with another Neovim — the minimum v
 # make test NVIM="$D/nvim-macos-arm64/bin/nvim"
 ```
 
-Tools: `brew install stylua selene`. Neovim ≥ 0.10. The Dach (`..`) must be present for `vendor-check` and `release-check`.
+Tools: `brew install stylua selene`. Neovim ≥ 0.10. The Dach (`..`) must be present for `vendor-check` and `release-check`; without it they print `SKIPPED`, which is not a pass. Releases: [`docs/releasing.md`](docs/releasing.md).
 
 ## Rules
 
