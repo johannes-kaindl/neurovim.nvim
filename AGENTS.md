@@ -22,7 +22,9 @@
 | `lua/neurovim/init.lua` | `setup()` without options, so lazy.nvim's `opts = {}` does no harm |
 | `lua/neurovim/kit/` | vendored from `nvim-kit` (`VENDOR.json`) — never edit |
 | `data/`, `spec/conformance/` | vendored from `neurovim` (`data/VENDOR.json`): the content export and the conformance vectors — never edit |
-| `tests/` | specs for the kit's headless runner; `tests/conformance_spec.lua` runs every vector against its Lua port |
+| `tests/` | specs for the kit's headless runner; `tests/conformance_spec.lua` runs every vector against its Lua port, `tests/docs_spec.lua` checks the reference tables in `docs/` against the game data and every relative link in `docs/` |
+| `doc/neurovim.txt` | the manual, `:help neurovim` — commands and mappings live only here |
+| `docs/` | user docs by Diátaxis (index `docs/README.md`: tutorial, how-to, reference, explanation) plus maintainer pages (`releasing.md`, `images/`, `demo/`) |
 
 ## Commands
 
@@ -44,6 +46,7 @@ Tools: `brew install stylua selene`. Neovim ≥ 0.10. The Dach (`..`) must be pr
 - **Never edit vendored files** (`lua/neurovim/kit/`, `data/`, `spec/conformance/`). Fix upstream, re-vendor with `../tools/kit/vendor.py add`; `make check` fails on any drift.
 - **Every module under `lua/neurovim/` except `kit/` carries `-- domain: neurovim` on line 1.** A module without it is gate-pflichtig under "Bibliothek ab Eins" (`../AGENTS.md`).
 - Every test has a counter-check that shows it can fail.
+- **A user-visible change updates the docs in the same commit:** `doc/neurovim.txt` for commands, mappings and messages; `docs/how-to/troubleshooting.md` quotes every `vim.notify` text word for word — a new or changed message goes there too.
 
 ## Conformance
 
@@ -77,4 +80,4 @@ After a rule change upstream:
 ## Abweichungen von der Leitkonvention
 
 - README-Tier `nvim-plugin` (`_docs/readme/readme-spec.json`).
-- Nutzer-Doku (CORE-META-04): ein Handbuch `doc/neurovim.txt` statt Diátaxis-Ordnern. `:help neurovim` ist der Ort, an dem Neovim-Nutzer suchen; Tutorial (§ 4 Getting started), Referenz (§ 5 Commands), Erklärung (§ 6 Progress, What counts as a key) und How-to (§ 9 Troubleshooting) stehen dort als Abschnitte, die README verlinkt es.
+- Nutzer-Doku doppelt angelegt, mit klarer Teilung: `:help neurovim` ist das Handbuch im Editor (dort suchen Neovim-Nutzer), `docs/` die Diátaxis-Doku online (CORE-META-04). Befehle und Mappings stehen nur in der Hilfe, `docs/` verlinkt sie; die Zahlen-Tabellen in `docs/reference/` prüft `tests/docs_spec.lua` gegen die Spieldaten, damit zwei Orte nicht still auseinanderlaufen (CORE-META-16).

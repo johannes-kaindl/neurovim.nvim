@@ -61,7 +61,7 @@ Run `:checkhealth neurovim` first: it checks the Neovim version, the game data, 
 
 ## Documentation
 
-The manual lives in Neovim: `:help neurovim` ([`doc/neurovim.txt`](doc/neurovim.txt)); a map of all documentation, including how to cut a release: [`docs/`](docs/README.md). Contributor notes: [`AGENTS.md`](AGENTS.md); changes: [`CHANGELOG.md`](CHANGELOG.md).
+The manual lives in Neovim: `:help neurovim`. Online, sorted by what you need: the [documentation index](https://github.com/johannes-kaindl/neurovim.nvim/blob/main/docs/README.md), with [Getting started](https://github.com/johannes-kaindl/neurovim.nvim/blob/main/docs/tutorials/getting-started.md) and [Troubleshooting](https://github.com/johannes-kaindl/neurovim.nvim/blob/main/docs/how-to/troubleshooting.md). Contributor notes: [`AGENTS.md`](AGENTS.md); changes: [`CHANGELOG.md`](CHANGELOG.md).
 
 ## License
 

@@ -50,7 +50,7 @@ git -C "$E/data/nvim/lazy/neurovim.nvim" log --oneline -1 --decorate   # shows t
 nvim --headless -c 'checkhealth neurovim' -c "w! $E/health.txt" -c 'qa!'; cat "$E/health.txt"
 ```
 
-Expected: the tag at HEAD, `:checkhealth neurovim` all OK with the vendored nvim-kit and neurovim pins, no error from `opts = {}`.
+Expected: the tag at HEAD, `:checkhealth neurovim` without a warning or an error and with the vendored nvim-kit and neurovim pins, no error from `opts = {}`.
 
 ## 5. Afterwards
 
