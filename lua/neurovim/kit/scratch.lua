@@ -1,4 +1,4 @@
--- vendored from nvim-kit@0.5.0 (lua/nvim_kit/scratch.lua) — do not edit; re-vendor
+-- vendored from nvim-kit@0.5.1 (lua/nvim_kit/scratch.lua) — do not edit; re-vendor
 -- A plugin's own view buffer: named, not backed by a file, with buffer-local keys only (a
 -- plugin sets no global mappings). Opening a name again replaces the old buffer in every window
 -- that showed it; the initial text is not part of the undo history.

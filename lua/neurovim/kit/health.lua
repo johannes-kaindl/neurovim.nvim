@@ -1,4 +1,4 @@
--- vendored from nvim-kit@0.5.0 (lua/nvim_kit/health.lua) — do not edit; re-vendor
+-- vendored from nvim-kit@0.5.1 (lua/nvim_kit/health.lua) — do not edit; re-vendor
 -- Building blocks for a plugin's :checkhealth. Diagnosis only: a check reads and reports; it never
 -- moves, repairs, creates or writes anything (a broken file stays exactly as the person left it).
 local M = {}
@@ -33,13 +33,22 @@ end
 function M.json(path, opts)
   opts = opts or {}
   local label = opts.label or path
-  local f = io.open(path, 'rb')
+  local f, err = io.open(path, 'rb')
   if not f then
-    say(
-      opts.missing or 'error',
-      ('%s: %s'):format(label, opts.missing_text or ('not found at ' .. path)),
-      opts.advice
-    )
+    if (vim.uv or vim.loop).fs_stat(path) then
+      -- exists but unreadable: never "missing", or the plugin's next write would replace it
+      say(
+        opts.invalid or 'error',
+        ('%s: %s cannot be read (%s)'):format(label, path, tostring(err)),
+        opts.advice
+      )
+    else
+      say(
+        opts.missing or 'error',
+        ('%s: %s'):format(label, opts.missing_text or ('not found at ' .. path)),
+        opts.advice
+      )
+    end
     return nil
   end
   local text = f:read('*a')

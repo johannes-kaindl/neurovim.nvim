@@ -25,7 +25,7 @@ T.case('a fresh install: Neovim, game data, no save yet, vendored pins — and n
     T.ok(out:find('OK Neovim', 1, true), out)
     T.ok(out:find('54 missions: 40 story, 14 KATA', 1, true), out)
     T.ok(out:find('no save yet', 1, true), out)
-    T.ok(out:find('nvim-kit@0.5.0', 1, true), out)
+    T.ok(out:find('nvim-kit@0.5.1', 1, true), out)
     T.ok(out:find('neurovim@', 1, true), out)
     T.eq(out:find('ERROR', 1, true), nil, out)
   end)
