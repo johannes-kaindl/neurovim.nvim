@@ -1,5 +1,6 @@
 # README demo: NEXUS → M-01 briefing → mission → a recorded macro → :NeuroVim check.
-# Reproducible: make demo. Plays on a throw-away save (XDG_DATA_HOME) — never the real one.
+# Reproducible: make demo. Plays in a throw-away config, state and save (XDG_*_HOME) — never the
+# player's own config, ShaDa or save.
 # vhs 0.12 writes 25 fps whatever Set Framerate says (measured); make demo converts this raw
 # recording to the 20 fps GIF and MP4 the README embeds (D13: 20–24 fps).
 Output docs/demo/.build/demo.mp4
@@ -11,7 +12,7 @@ Set TypingSpeed 70ms
 Set Padding 12
 
 Hide
-Type "XDG_DATA_HOME=$(mktemp -d) nvim -u docs/demo/init.lua" Enter
+Type "D=$(mktemp -d); XDG_CONFIG_HOME=$D XDG_STATE_HOME=$D XDG_DATA_HOME=$D nvim -u docs/demo/init.lua" Enter
 Sleep 1.5s
 Show
 
