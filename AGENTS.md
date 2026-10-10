@@ -19,6 +19,7 @@
 | `lua/neurovim/ui/` | NEXUS, briefing, mission buffer (panel, winbar, keytrack, check, reveal, restart), result float |
 | `lua/neurovim/health.lua` | `:checkhealth neurovim` from the kit's read-only health blocks |
 | `lua/neurovim/command.lua`, `plugin/neurovim.lua` | `:NeuroVim`, Tab completion, `<Plug>` mappings, version check |
+| `lua/neurovim/init.lua` | `setup()` without options, so lazy.nvim's `opts = {}` does no harm |
 | `lua/neurovim/kit/` | vendored from `nvim-kit` (`VENDOR.json`) — never edit |
 | `data/`, `spec/conformance/` | vendored from `neurovim` (`data/VENDOR.json`): the content export and the conformance vectors — never edit |
 | `tests/` | specs for the kit's headless runner; `tests/conformance_spec.lua` runs every vector against its Lua port |
@@ -46,7 +47,7 @@ Tools: `brew install stylua selene`. Neovim ≥ 0.10. The Dach (`..`) must be pr
 
 ## Conformance
 
-The rules in `lua/neurovim/rules/` are ports of neurovim's TS core (`packages/core/src/utils/diff.ts`, `engine/ProgressionEngine.ts`, `engine/ParTier.ts`). `tests/conformance_spec.lua` runs every vector file in `spec/conformance/` against its Lua function (table `IMPLS`, TS name → Lua function); a vector without a port is a red case, and the vector count is pinned (`12`) so a new function shows up.
+The rules in `lua/neurovim/rules/` are ports of neurovim's TS core (`packages/core/src/utils/diff.ts`, `engine/ProgressionEngine.ts`, `engine/ParTier.ts`, `engine/MissionCompletion.ts`, `engine/MetricsTracker.ts`). `tests/conformance_spec.lua` runs every vector file in `spec/conformance/` against its Lua function (table `IMPLS`, TS name → Lua function); a vector without a port is a red case, and the vector count is pinned (`15`) so a new function shows up.
 
 After a rule change upstream:
 
@@ -63,6 +64,7 @@ After a rule change upstream:
 - **Specs that complete missions use their own save** (`with_fresh_save` in `tests/e2e_spec.lua`) and give `XDG_DATA_HOME` back afterwards, also on failure — spec files share one Neovim, and later specs expect the save `tests/run.lua` set up.
 - **KATAs have no briefing** (`briefing == ''`): `briefing.open` starts their mission buffer directly.
 - **`make demo`** needs `vhs`, `ttyd`, `ffmpeg`; vhs 0.12 writes 25 fps whatever the tape says, so the Makefile converts to the 20 fps GIF/MP4 (D13).
+- **Typed keys in specs go through `:silent call feedkeys(g:neurovim_test_keys, "ntx")`**: it keeps the echo of searches and commands out of the test report and the keys still count. Don't build the command with `vim.fn.string(keys)` — a `<CR>` in it ends the command line.
 - **Headless `nvim -l` never fires `CursorMoved`**; tests that depend on it raise it with `nvim_exec_autocmds`.
 - **`T.eq(x, vim.NIL)` passes for `nil`** (`deep_equal`); check a JSON null with `rawequal(x, vim.NIL)` or compare with `T.json_eq`.
 - **StyLua must skip `kit/`** (`.styluaignore`); otherwise it reformats the vendored copies and `vendor-check` turns red.
@@ -74,4 +76,5 @@ After a rule change upstream:
 
 ## Abweichungen von der Leitkonvention
 
-- Keine bekannt. README-Tier `nvim-plugin` (`_docs/readme/readme-spec.json`); README und `doc/neurovim.txt` beschreiben ehrlich den Entwicklungsstand, bis Phase 4/5 Befehle und Installation liefern.
+- README-Tier `nvim-plugin` (`_docs/readme/readme-spec.json`).
+- Nutzer-Doku (CORE-META-04): ein Handbuch `doc/neurovim.txt` statt Diátaxis-Ordnern. `:help neurovim` ist der Ort, an dem Neovim-Nutzer suchen; Tutorial (§ 4 Getting started), Referenz (§ 5 Commands), Erklärung (§ 6 Progress, What counts as a key) und How-to (§ 9 Troubleshooting) stehen dort als Abschnitte, die README verlinkt es.

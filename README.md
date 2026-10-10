@@ -2,11 +2,11 @@
 
 **NeuroVim — a Vim-learning spy thriller — as a Neovim plugin: story missions you solve with real Vim motions, in your own editor.**
 
-[![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
+[![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE) [![Release](https://img.shields.io/github/v/tag/johannes-kaindl/neurovim.nvim?label=release)](CHANGELOG.md)
 
 <img src="https://raw.githubusercontent.com/johannes-kaindl/neurovim.nvim/main/docs/images/demo.gif" width="800" alt="Playing mission M-01 in Neovim: NEXUS lists the missions, the briefing opens, a recorded macro deletes every stray X and Z, and :NeuroVim check shows the result with XP and tier">
 
-**Status:** ready for a first release, still private. All 54 missions — 40 story missions with briefings and 14 KATA drills — are playable in Neovim and tested end to end; the game logic passes all 103 conformance vectors from NeuroVim's TypeScript core.
+**Status:** first release, 0.1.0. All 54 missions — 40 story missions with briefings and 14 KATA drills — are playable in Neovim and tested end to end; the game logic passes all 103 conformance vectors from NeuroVim's TypeScript core.
 
 ## Requirements
 
@@ -15,7 +15,7 @@
 
 ## Install
 
-With [lazy.nvim](https://github.com/folke/lazy.nvim), once the repository is public (it is private until the first release):
+With [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
 { "johannes-kaindl/neurovim.nvim" }
@@ -27,7 +27,7 @@ From a local checkout:
 { dir = "~/path/to/neurovim.nvim" }
 ```
 
-There is no `setup()`: the plugin defines `:NeuroVim` and four `<Plug>` mappings when it loads.
+There are no options: the plugin defines `:NeuroVim` and four `<Plug>` mappings when it loads. `setup()` exists only so that `opts = {}` does no harm; it takes nothing and warns about any option you pass.
 
 ## Usage
 

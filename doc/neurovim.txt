@@ -42,14 +42,16 @@ colours, keys and everything else to your own configuration.
 ==============================================================================
 3. INSTALL                                                  *neurovim-install*
 
-With lazy.nvim, once the repository is public: >lua
+With lazy.nvim: >lua
   { "johannes-kaindl/neurovim.nvim" }
 <
 From a local checkout: >lua
   { dir = "~/path/to/neurovim.nvim" }
 <
-There is no setup() and no option: the plugin defines |:NeuroVim| and four
-|<Plug>| mappings when it loads, nothing else.
+There are no options: the plugin defines |:NeuroVim| and four |<Plug>|
+mappings when it loads, nothing else. setup() exists only so that a plugin
+manager calling it (lazy.nvim with `opts = {}`) does no harm; it takes nothing
+and warns about any option you pass.
 
 ==============================================================================
 4. GETTING STARTED                                            *neurovim-start*

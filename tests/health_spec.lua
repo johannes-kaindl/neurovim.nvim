@@ -13,7 +13,7 @@ local function with_fresh_save(fn)
 end
 
 local function checkhealth()
-  vim.cmd('checkhealth neurovim')
+  vim.cmd('silent checkhealth neurovim') -- silent: no progress line in the test report
   local text = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), '\n')
   vim.cmd('bwipeout!')
   return text
@@ -35,10 +35,15 @@ T.case('a broken save is a WARNING, and checkhealth leaves the file exactly as i
   with_fresh_save(function()
     local p = state.path()
     vim.fn.mkdir(vim.fn.fnamemodify(p, ':h'), 'p')
-    vim.fn.writefile({ '{ broken' }, p)
+    local before = '{ broken\r\n\0 no final newline'
+    local f = assert(io.open(p, 'wb'))
+    f:write(before)
+    f:close()
     local out = checkhealth()
     T.ok(out:find('WARNING save', 1, true), out)
-    T.eq(vim.fn.readfile(p), { '{ broken' })
+    f = assert(io.open(p, 'rb'))
+    T.eq(f:read('*a'), before)
+    f:close()
     T.eq(vim.fn.glob(p .. '.broken-*', false, true), {})
   end)
 end)

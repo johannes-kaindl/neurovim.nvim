@@ -4,7 +4,10 @@ local mission = require('neurovim.ui.mission')
 local missions = require('neurovim.missions')
 
 local function keys(k)
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(k, true, false, true), 'ntx', false)
+  -- :silent keeps the echo of typed searches and commands out of the test report; keys still count.
+  vim.g.neurovim_test_keys = vim.api.nvim_replace_termcodes(k, true, false, true)
+  vim.cmd('silent call feedkeys(g:neurovim_test_keys, "ntx")')
+  vim.g.neurovim_test_keys = nil
 end
 
 -- Mapped keys (the briefing's <CR>) need remapping: no n flag.

@@ -50,7 +50,10 @@ local function float_text()
 end
 
 local function typed(k)
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(k, true, false, true), 'ntx', false)
+  -- :silent keeps the echo of typed searches and commands out of the test report; keys still count.
+  vim.g.neurovim_test_keys = vim.api.nvim_replace_termcodes(k, true, false, true)
+  vim.cmd('silent call feedkeys(g:neurovim_test_keys, "ntx")')
+  vim.g.neurovim_test_keys = nil
 end
 
 local function mapped(k)
@@ -122,10 +125,15 @@ T.case('M-01 with real keys and the typed :NeuroVim check: level 2, unlocks, bes
     local f = float_text()
     T.ok(f:find('LEVEL UP: 1 → 2', 1, true), f)
     T.ok(f:find('M-05', 1, true) and f:find('KATA-02', 1, true), f)
+    local par = missions.par(missions.get('M-01'))
+    T.ok(19 <= par, 'M-01 par ' .. par .. ' must allow GOLD at 19 keys')
+    T.ok(f:find(('Time %%d%%d:%%d%%d · 19 keys · par %d'):format(par)), f)
+    T.ok(f:find('Tier: **GOLD**', 1, true), f)
     close_floats()
     local s = state.load()
     T.eq(s.total_xp, 75)
     T.eq(s.missions['M-01'].best_keystrokes, 19)
+    T.eq(type(s.missions['M-01'].best_time_ms), 'number')
     T.ok(vim.tbl_contains(s.unlocked, 'M-05'))
     local r = require('neurovim.ui.nexus').render(s)
     for _, l in ipairs(r.lines) do
@@ -176,6 +184,7 @@ end)
 T.case(
   'a save that cannot be read: check wins nothing and keeps the run, a second check after the fix saves it',
   function()
+    close_floats() -- a float left open by a failed case before would read as this case's result
     with_fresh_save(function()
       state.update(function(s)
         return s

@@ -6,4 +6,5 @@ vim.o.termguicolors = true
 vim.o.laststatus = 2
 vim.o.hlsearch = false -- the macro's search would mark every X, also in "XP" of the result
 vim.o.shortmess = vim.o.shortmess .. 'I'
+vim.o.shadafile = 'NONE' -- the demo's macro register and history stay out of the recording machine's ShaDa
 vim.cmd.runtime('plugin/neurovim.lua')

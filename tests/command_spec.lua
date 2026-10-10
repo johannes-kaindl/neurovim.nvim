@@ -2,7 +2,10 @@ local T = require('neurovim.kit.test')
 local command = require('neurovim.command')
 
 local function keys(k)
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(k, true, false, true), 'ntx', false)
+  -- :silent keeps the echo of typed searches and commands out of the test report; keys still count.
+  vim.g.neurovim_test_keys = vim.api.nvim_replace_termcodes(k, true, false, true)
+  vim.cmd('silent call feedkeys(g:neurovim_test_keys, "ntx")')
+  vim.g.neurovim_test_keys = nil
 end
 
 T.case('the plugin file adds the command and only <Plug> mappings', function()
@@ -60,4 +63,42 @@ T.case('typing :NeuroVim check does not count as keystrokes', function()
   keys('x:NeuroVim check<CR>')
   vim.notify = orig
   T.eq(mission.run(buf).tracker.keys(), 1)
+end)
+
+local function notices(fn)
+  local seen, orig = {}, vim.notify
+  vim.notify = function(msg, level)
+    seen[#seen + 1] = { msg = msg, level = level }
+  end
+  local ok, err = pcall(fn)
+  vim.notify = orig
+  assert(ok, err)
+  return seen
+end
+
+T.case('mission ids in lower case go through :NeuroVim mission too', function()
+  notices(function()
+    command.run({ 'mission', 'm-01' })
+  end)
+  T.eq(vim.api.nvim_buf_get_name(0), 'neurovim://briefing/M-01')
+  vim.cmd('bwipeout!')
+end)
+
+T.case("setup() exists for lazy.nvim's opts = {}: it changes nothing and says nothing", function()
+  local maps = #vim.api.nvim_get_keymap('n')
+  local seen = notices(function()
+    require('neurovim').setup()
+    require('neurovim').setup({})
+  end)
+  T.eq(seen, {})
+  T.eq(#vim.api.nvim_get_keymap('n'), maps)
+end)
+
+T.case('setup() with options warns that NeuroVim has none, naming them', function()
+  local seen = notices(function()
+    require('neurovim').setup({ keys = true })
+  end)
+  T.eq(#seen, 1)
+  T.eq(seen[1].level, vim.log.levels.WARN)
+  T.ok(seen[1].msg:find('keys', 1, true), seen[1].msg)
 end)

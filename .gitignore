@@ -3,3 +3,4 @@
 .claude/
 __pycache__/
 docs/demo/.build/
+doc/tags
