@@ -172,3 +172,40 @@ T.case('the way through the game: every mission reachable, replays only at the m
   end
   T.eq(walls, { 955, 1035, 1115, 1465, 1545, 1780, 1860, 1940 })
 end)
+
+T.case(
+  'a save that cannot be read: check wins nothing and keeps the run, a second check after the fix saves it',
+  function()
+    with_fresh_save(function()
+      state.update(function(s)
+        return s
+      end)
+      local m = missions.get('M-01')
+      local buf = open_through_command(m)
+      vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(m.solution, '\n'))
+      vim.fn.setfperm(state.path(), '---------')
+      local first
+      local seen = quiet(function()
+        first = mission.check(buf)
+      end)
+      vim.fn.setfperm(state.path(), 'rw-r--r--')
+      T.eq(first, 'save-failed')
+      T.ok(
+        vim.iter(seen):any(function(n)
+          return n.level == vim.log.levels.ERROR and n.msg:find('cannot read', 1, true) ~= nil
+        end),
+        vim.inspect(seen)
+      )
+      T.eq(float_text(), '')
+      T.eq(state.load().completed_missions, {})
+      local second
+      quiet(function()
+        second = mission.check(buf)
+      end)
+      T.eq(second, 'match')
+      T.eq(state.load().completed_missions, { 'M-01' })
+      close_floats()
+      vim.cmd('bwipeout!')
+    end)
+  end
+)

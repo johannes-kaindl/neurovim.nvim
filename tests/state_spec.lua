@@ -99,3 +99,57 @@ T.case('a second Neovim saving in between is not overwritten', function()
   T.eq(extra, 'extra')
   T.eq(state.load(p).completed_missions, { 'M-01', 'M-02', 'M-03' })
 end)
+
+-- A save that exists but cannot be read (no permission) is not a missing save: nothing may overwrite it.
+local function unreadable_save()
+  local p = tmp()
+  store.write(p, { total_xp = 777, unlocked = { 'M-01' }, completed_missions = { 'M-01' } })
+  local f = assert(io.open(p, 'rb'))
+  local bytes = f:read('*a')
+  f:close()
+  vim.fn.setfperm(p, '---------')
+  return p, bytes
+end
+
+local function bytes_after(p)
+  vim.fn.setfperm(p, 'rw-r--r--')
+  local f = assert(io.open(p, 'rb'))
+  local b = f:read('*a')
+  f:close()
+  return b
+end
+
+T.case('an unreadable save: load says so as an ERROR, plays from the defaults and writes nothing', function()
+  local p, before = unreadable_save()
+  local d
+  local seen = capture_notify(function()
+    d = state.load(p)
+  end)
+  local after = bytes_after(p)
+  T.eq(d.total_xp, 0)
+  T.eq(#seen, 1)
+  T.eq(seen[1].level, vim.log.levels.ERROR)
+  T.ok(seen[1].msg:find(p, 1, true), seen[1].msg)
+  T.eq(after, before)
+  T.eq(vim.fn.glob(p .. '.broken-*', false, true), {})
+end)
+
+T.case('an unreadable save: update says so as an ERROR, returns nil and never overwrites it', function()
+  local p, before = unreadable_save()
+  local called, r1, r2 = false, nil, nil
+  local seen = capture_notify(function()
+    r1, r2 = state.update(function(d)
+      called = true
+      d.total_xp = 1
+      return d, 'extra'
+    end, p)
+  end)
+  local after = bytes_after(p)
+  T.eq(called, false)
+  T.eq(r1, nil)
+  T.eq(r2, nil)
+  T.eq(#seen, 1)
+  T.eq(seen[1].level, vim.log.levels.ERROR)
+  T.eq(after, before)
+  T.eq(vim.fn.glob(p .. '.broken-*', false, true), {})
+end)

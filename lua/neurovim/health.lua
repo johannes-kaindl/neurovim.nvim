@@ -1,6 +1,7 @@
 -- domain: neurovim
 -- :checkhealth neurovim — what a player checks first when something looks wrong. Diagnosis only:
--- the save file is read, never moved or repaired (NeuroVim itself sets a broken one aside on start).
+-- the save file is read, never moved or repaired (NeuroVim itself sets a broken one aside the next
+-- time it reads it).
 local kit = require('neurovim.kit.health')
 local data = require('neurovim.data')
 local state = require('neurovim.state')
@@ -33,7 +34,10 @@ function M.check()
     missing = 'ok',
     missing_text = 'no save yet — it is written after the first solved mission',
     invalid = 'warn',
-    advice = { 'NeuroVim keeps it as state.json.broken-<time> on the next start and begins a fresh save.' },
+    advice = {
+      'Broken: NeuroVim keeps it as state.json.broken-<time> the next time NeuroVim reads it (any :NeuroVim) and begins a fresh save.',
+      'Cannot be read: fix its permissions — NeuroVim leaves it untouched and saves nothing until then.',
+    },
   })
   kit.writable(vim.fn.fnamemodify(state.path(), ':h'), 'save directory')
 

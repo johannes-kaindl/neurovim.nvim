@@ -128,9 +128,6 @@ function M.check(buf)
     )
     return 'mismatch'
   end
-  run.done = true
-  run.tracker.stop()
-  vim.api.nvim_buf_clear_namespace(buf, reveal_ns, 0, -1)
   local mt = metrics.metrics_result(run.tracker.keys(), run.tracker.elapsed_ms())
   local m = run.mission
   local s, outcome = state.update(function(cur)
@@ -142,6 +139,13 @@ function M.check(buf)
     }, mt)
     return o.data, o
   end)
+  -- The save could not be read (state said so): the run stays open, a later check can still save it.
+  if not s then
+    return 'save-failed'
+  end
+  run.done = true
+  run.tracker.stop()
+  vim.api.nvim_buf_clear_namespace(buf, reveal_ns, 0, -1)
   require('neurovim.ui.result').show(require('neurovim.ui.result').lines(outcome, s, m, mt))
   require('neurovim.ui.nexus').refresh()
   return 'match'

@@ -49,7 +49,7 @@ vim.keymap.set("n", "<leader>nc", "<Plug>(neurovim-check)")
 
 Every solved mission earns XP, also when you replay it; levels unlock new missions. The missions alone do not reach the last levels: when every free mission is solved, NEXUS tells you to replay for XP and which level unlocks what (`:help neurovim-progress`).
 
-Progress is saved in `stdpath('data')/neurovim/state.json`, in the same format as NeuroVim's other builds. A file that cannot be read is kept as `state.json.broken-<time>` and you start fresh, with a warning. Streak days roll over at 00:00 UTC.
+Progress is saved in `stdpath('data')/neurovim/state.json`, in the same format as NeuroVim's other builds. A broken file is kept as `state.json.broken-<time>` and you start fresh, with a warning; a file NeuroVim has no permission to read is left untouched, and an error says so. Streak days roll over at 00:00 UTC.
 
 ## Configuration
 

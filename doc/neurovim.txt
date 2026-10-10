@@ -143,8 +143,10 @@ Streak  Days in a row with at least one solved mission. Days roll over at
 Progress is saved in stdpath('data')/neurovim/state.json, in the format of
 NeuroVim's other builds. Each save re-reads the file first, so two Neovim
 instances do not overwrite each other, and writes it atomically. A file that
-cannot be read is moved to state.json.broken-{time} with a warning, and the
-game starts fresh — nothing is dropped silently.
+is not valid save data is moved to state.json.broken-{time} with a warning,
+and the game starts fresh — nothing is dropped silently. A file NeuroVim has
+no permission to read is left untouched: an error says so, and nothing is
+saved until its permissions are fixed.
 
 ==============================================================================
 8. HEALTH                                                    *neurovim-health*
@@ -156,9 +158,11 @@ Neovim     the version, and whether it is 0.10 or newer.
 Game data  the missions and tables the plugin ships, their schema, and the
            number of missions (54: 40 story, 14 KATA).
 Save file  whether state.json is there and readable (no save yet is fine),
-           and whether its directory can be written. An unreadable save is a
-           warning: the check leaves the file untouched; NeuroVim moves it
-           aside on its next start (|neurovim-save|).
+           and whether its directory can be written. A broken save, or one
+           that cannot be read, is a warning; the check leaves the file
+           untouched. NeuroVim moves a broken one aside the next time it
+           reads it (any |:NeuroVim|) and leaves an unreadable one alone
+           (|neurovim-save|).
 Vendored   which library version and which game-data commit are built in.
 
 The check only reads. It moves, repairs and creates nothing.
@@ -186,7 +190,12 @@ A mission is locked ~
 
 My progress is gone ~
   Look for state.json.broken-{time} next to state.json (|neurovim-save|):
-  NeuroVim moved an unreadable file there instead of dropping it.
+  NeuroVim moved a broken file there instead of dropping it.
+
+Progress is not saved ~
+  An error names a state.json NeuroVim cannot read: give it back read and
+  write permission (`chmod u+rw`); the solved mission can then be checked
+  again. `:checkhealth neurovim` shows the file (|neurovim-health|).
 
 ==============================================================================
 10. LICENSE                                                 *neurovim-license*
