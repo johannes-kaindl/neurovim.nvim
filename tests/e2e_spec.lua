@@ -61,6 +61,11 @@ local function mapped(k)
 end
 
 local function open_through_command(m)
+  -- A run of this mission left open by an earlier spec would be resumed, not started.
+  local old = vim.fn.bufnr('neurovim://' .. m.id)
+  if old > 0 then
+    vim.cmd('bwipeout! ' .. old)
+  end
   quiet(function()
     vim.cmd('NeuroVim mission ' .. m.id)
   end)
@@ -223,7 +228,7 @@ T.case('a second check of a solved run points to :NeuroVim result, which shows t
   with_fresh_save(function()
     close_floats()
     local m = missions.get('M-01')
-    local buf = mission.start(m.id)
+    local buf = mission.start(m.id, { fresh = true })
     vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(m.solution, '\n', { plain = true }))
     quiet(function()
       mission.check(buf)
@@ -241,5 +246,53 @@ T.case('a second check of a solved run points to :NeuroVim result, which shows t
     T.eq(float_text(), first)
     T.ok(first:find('TRANSMISSION RESTORED — M-01', 1, true), first)
     close_floats()
+  end)
+end)
+
+-- Keys count only in the mission buffer, so an edit made from another buffer (:bufdo, :windo, a
+-- command typed elsewhere) would be free. Decision Johannes 2026-10-14: such a run is unverified —
+-- its XP counts, its bests do not, as for a paste.
+local function solve_from(where)
+  local m = missions.get('M-01')
+  vim.g.neurovim_test_solution = m.solution
+  local buf = mission.start(m.id, { fresh = true })
+  typed('x')
+  if where == 'outside' then
+    vim.cmd('split')
+    vim.cmd('enew')
+  end
+  typed(
+    (':lua vim.api.nvim_buf_set_lines(%d, 0, -1, false, vim.split(vim.g.neurovim_test_solution, "\\n"))<CR>'):format(
+      buf
+    )
+  )
+  vim.cmd('silent! only')
+  vim.api.nvim_set_current_buf(buf)
+  quiet(function()
+    T.eq(mission.check(buf), 'match')
+  end)
+  vim.g.neurovim_test_solution = nil
+  return float_text()
+end
+
+T.case('an edit made from outside the mission buffer wins the XP but sets no best', function()
+  with_fresh_save(function()
+    close_floats()
+    local f = solve_from('outside')
+    close_floats()
+    T.ok(f:find('changed from outside the mission buffer', 1, true), f)
+    local s = state.load()
+    T.eq(s.total_xp, missions.get('M-01').xp_reward)
+    T.eq(s.missions['M-01'].best_keystrokes, 0)
+  end)
+end)
+
+T.case('counter-check: the same command typed in the mission buffer is a normal run', function()
+  with_fresh_save(function()
+    close_floats()
+    local f = solve_from('inside')
+    close_floats()
+    T.ok(not f:find('outside', 1, true), f)
+    T.ok(state.load().missions['M-01'].best_keystrokes > 0)
   end)
 end)

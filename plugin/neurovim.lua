@@ -23,3 +23,22 @@ for name, args in pairs({ nexus = {}, check = { 'check' }, reveal = { 'reveal' }
     require('neurovim.command').run(args)
   end, { desc = 'NeuroVim: ' .. name })
 end
+
+local group = vim.api.nvim_create_augroup('neurovim', { clear = true })
+vim.api.nvim_create_autocmd('SessionLoadPost', {
+  group = group,
+  callback = function()
+    require('neurovim.session').sweep()
+  end,
+})
+vim.api.nvim_create_autocmd('BufReadCmd', {
+  group = group,
+  pattern = 'neurovim://*',
+  callback = function(ev)
+    require('neurovim.session').read(ev.buf)
+  end,
+})
+-- Loaded lazily (lazy.nvim `cmd`), the plugin comes after the session: clear what it left now.
+if vim.v.vim_did_enter == 1 then
+  require('neurovim.session').sweep()
+end

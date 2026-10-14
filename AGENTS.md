@@ -21,6 +21,7 @@
 | `lua/neurovim/command.lua`, `plugin/neurovim.lua` | `:NeuroVim`, Tab completion, `<Plug>` mappings, version check |
 | `lua/neurovim/init.lua`, `lua/neurovim/config.lua` | `setup()` with its one option `isolate`; `config` holds the values a mission reads when it starts |
 | `lua/neurovim/isolate.lua` | a buffer in plain Neovim (Vim keys, default options, editor helpers off) — mission buffers unless `isolate = false`; knows nothing about missions |
+| `lua/neurovim/session.lua` | what a saved session or `:edit` leaves under `neurovim://`: sweep on `SessionLoadPost` and on load, `BufReadCmd` (autocmds in `plugin/neurovim.lua`) |
 | `lua/neurovim/kit/` | vendored from `nvim-kit` (`VENDOR.json`) — never edit |
 | `data/`, `spec/conformance/` | vendored from `neurovim` (`data/VENDOR.json`): the content export and the conformance vectors — never edit |
 | `tests/` | specs for the kit's headless runner; `tests/conformance_spec.lua` runs every vector against its Lua port, `tests/docs_spec.lua` checks the reference tables in `docs/` against the game data and every relative link in `docs/` |
@@ -66,6 +67,7 @@ After a rule change upstream:
 - **`nvim_feedkeys` needs the flag `t`** (`'ntx'`) for keys to count as typed (macros, keystroke counting); **without `n`** (`'tx'`) for keys that must hit a mapping (the briefing's and NEXUS's `<CR>`).
 - **`tests/run.lua` points `XDG_DATA_HOME` at a temp dir** — never remove it, or tests write the player's real save.
 - **Specs that complete missions use their own save** (`with_fresh_save` in `tests/e2e_spec.lua`) and give `XDG_DATA_HOME` back afterwards, also on failure — spec files share one Neovim, and later specs expect the save `tests/run.lua` set up.
+- **`mission.start(id)` resumes a run that is still open** (also one an earlier spec left behind); a spec that needs a new run passes `{ fresh = true }`, and a spec that goes through the briefing's `<CR>` wipes `neurovim://<id>` first.
 - **KATAs have no briefing** (`briefing == ''`): `briefing.open` starts their mission buffer directly.
 - **`make demo`** needs `vhs`, `ttyd`, `ffmpeg`; vhs 0.12 writes 25 fps whatever the tape says, so the Makefile converts to the 20 fps GIF/MP4 (D13).
 - **Typed keys in specs go through `:silent call feedkeys(g:neurovim_test_keys, "ntx")`**: it keeps the echo of searches and commands out of the test report and the keys still count. Don't build the command with `vim.fn.string(keys)` — a `<CR>` in it ends the command line.

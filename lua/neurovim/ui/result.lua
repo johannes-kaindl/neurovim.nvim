@@ -10,7 +10,8 @@ local M = {}
 local ns = vim.api.nvim_create_namespace('neurovim.result')
 local last, shown -- the lines of the last result, and its float while open
 
-function M.lines(outcome, s, m, metrics)
+--- opts.outside: the text was changed from another buffer (the run is unverified for that reason).
+function M.lines(outcome, s, m, metrics, opts)
   local out = {
     ('TRANSMISSION RESTORED — %s'):format(m.id),
     '',
@@ -26,7 +27,11 @@ function M.lines(outcome, s, m, metrics)
     ),
   }
   local r = outcome.record
-  if outcome.unverified then
+  if outcome.unverified and opts and opts.outside then
+    out[#out + 1] = ('The text was changed from outside the mission buffer — the win counts, bests stay as they were. Run %d.'):format(
+      r.runs
+    )
+  elseif outcome.unverified then
     -- Parity with the Obsidian plugin: the win and its XP count, the bests do not.
     out[#out + 1] = ('No keystroke was counted (pasted or already solved?) — the win counts, bests stay as they were. Run %d.'):format(
       r.runs

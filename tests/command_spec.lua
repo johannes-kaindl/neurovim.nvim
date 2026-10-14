@@ -59,7 +59,7 @@ T.case('typing :NeuroVim check does not count as keystrokes', function()
   local orig = vim.notify
   vim.notify = function() end
   local mission = require('neurovim.ui.mission')
-  local buf = mission.start('M-02')
+  local buf = mission.start('M-02', { fresh = true })
   keys('x:NeuroVim check<CR>')
   vim.notify = orig
   T.eq(mission.run(buf).tracker.keys(), 1)

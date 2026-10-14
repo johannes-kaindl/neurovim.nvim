@@ -48,6 +48,22 @@ Find the message you see, or the symptom, and follow the fix. When in doubt, sta
 
 **Cause:** `:NeuroVim mission` without an id. **Fix:** add the id, for example `:NeuroVim mission M-01`; Tab completes the ids.
 
+### `M-01 is still running — back to it. :NeuroVim restart starts it over.`
+
+**Cause:** you opened a mission whose run is not finished, from NEXUS or with `:NeuroVim mission`. NeuroVim takes you back to it with your text, time and keys. **Fix:** nothing to fix; to begin again, `:NeuroVim restart` in the mission buffer.
+
+### `neurovim: :edit reloaded M-01 — a mission has no file, so the run starts over.`
+
+**Cause:** `:edit` (or `:e!`) in a mission buffer. There is no file behind a mission, so Neovim emptied the buffer; NeuroVim started the mission over instead of leaving it empty. **Fix:** `u` does not bring the old text back; play on from the start. To undo edits, use `u` instead of `:e!`.
+
+### `neurovim: 1 buffer from a saved session cleared — missions are not restored; :NeuroVim opens NEXUS.`
+
+**Cause:** a saved session (`:mksession`, persistence.nvim and the like) had a mission on screen and brought back an empty buffer under its name. NeuroVim removed it. **Fix:** nothing to fix; open the mission again from NEXUS.
+
+### `E382: Cannot write, 'buftype' option is set`
+
+**Cause:** `:w` (or a save mapping such as `<C-s>`) in a mission buffer. A mission is not a file and is not saved; your progress is saved by `:NeuroVim check`. **Fix:** nothing to fix; `:NeuroVim check` when the text is right.
+
 ### `neurovim: not a mission buffer — open one with :NeuroVim mission <id>.`
 
 **Cause:** `check`, `reveal` and `restart` work only in a mission buffer (`neurovim://<id>`), and the current buffer is another one — or the mission buffer was deleted, which ends its run. **Fix:** switch to the mission window, or open the mission again.
@@ -69,6 +85,10 @@ It stands above line 1 and scrolls with the text. `gg` brings it back; so does `
 ### The result window disappeared
 
 It closes when the cursor moves. `:NeuroVim result` shows it again, until you quit Neovim; `:NeuroVim` shows your XP, level and tiers.
+
+### A run won its XP but set no best
+
+Either no key was counted (a paste, or the text was already right), or the text was changed from outside the mission buffer — with `:bufdo`, `:windo`, or a command typed in another window. The result window says which. [Scoring and progress](../explanation/scoring-and-progress.md#why-a-run-without-keys-earns-xp-but-no-bests) explains why.
 
 ### More keys than I typed
 

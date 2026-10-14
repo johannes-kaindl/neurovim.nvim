@@ -34,6 +34,10 @@ T.case('briefing: a locked mission is refused', function()
 end)
 
 T.case('briefing: read-only markdown; <CR> starts the mission', function()
+  local old = vim.fn.bufnr('neurovim://M-01') -- a run left by an earlier spec would be resumed
+  if old > 0 then
+    vim.cmd('bwipeout! ' .. old)
+  end
   local buf = briefing.open('M-01')
   T.eq(vim.api.nvim_buf_get_name(buf), 'neurovim://briefing/M-01')
   T.eq(vim.bo[buf].modifiable, false)
@@ -43,7 +47,7 @@ T.case('briefing: read-only markdown; <CR> starts the mission', function()
 end)
 
 T.case('mission buffer: raw text, editable, objective above line 1', function()
-  local buf = mission.start('M-01')
+  local buf = mission.start('M-01', { fresh = true })
   local m = missions.get('M-01')
   T.eq(table.concat(vim.api.nvim_buf_get_lines(buf, 0, -1, false), '\n'), m.transmission)
   T.eq(vim.bo[buf].modifiable, true)
@@ -51,7 +55,7 @@ T.case('mission buffer: raw text, editable, objective above line 1', function()
 end)
 
 T.case('winbar: id, clock, keys, par — and only in the mission buffer', function()
-  local buf = mission.start('M-01')
+  local buf = mission.start('M-01', { fresh = true })
   local w = vim.api.nvim_get_current_win()
   local function shown()
     return vim.api.nvim_eval_statusline(vim.wo[w].winbar, { winid = w, use_winbar = true }).str
@@ -66,7 +70,7 @@ T.case('winbar: id, clock, keys, par — and only in the mission buffer', functi
 end)
 
 T.case('restart: raw text back, counter at zero', function()
-  local buf = mission.start('M-01')
+  local buf = mission.start('M-01', { fresh = true })
   keys('xxx')
   T.eq(mission.run(buf).tracker.keys(), 3)
   local again = mission.restart(buf)
@@ -75,7 +79,7 @@ T.case('restart: raw text back, counter at zero', function()
 end)
 
 T.case('long objective lines are wrapped to the window, not cut off', function()
-  local buf = mission.start('M-01')
+  local buf = mission.start('M-01', { fresh = true })
   local marks = vim.api.nvim_buf_get_extmarks(buf, -1, 0, -1, { details = true })
   local width = vim.api.nvim_win_get_width(0)
   for _, mk in ipairs(marks) do
@@ -90,7 +94,7 @@ T.case('long objective lines are wrapped to the window, not cut off', function()
 end)
 
 T.case(':bdelete ends the run: no zombie mission after :buffer', function()
-  local buf = mission.start('M-01')
+  local buf = mission.start('M-01', { fresh = true })
   keys('x')
   vim.cmd('enew')
   vim.cmd('bdelete! ' .. buf)
@@ -119,7 +123,7 @@ T.case('the objective fits beside number and sign columns, and again after a spl
   vim.cmd('silent! only')
   vim.o.number = true
   vim.o.signcolumn = 'yes'
-  local buf = mission.start('M-01')
+  local buf = mission.start('M-01', { fresh = true })
   local win = vim.api.nvim_get_current_win()
   T.ok(widest_virt_line(buf) <= textwidth(win), ('%d > %d'):format(widest_virt_line(buf), textwidth(win)))
   vim.cmd('vsplit')
@@ -133,7 +137,7 @@ end)
 
 T.case('restart keeps the layout: both windows show the new run with its winbar', function()
   vim.cmd('silent! only')
-  local buf = mission.start('M-01')
+  local buf = mission.start('M-01', { fresh = true })
   vim.cmd('vsplit')
   local again = mission.restart(buf)
   local wins = vim.fn.win_findbuf(again)
@@ -147,7 +151,7 @@ T.case('restart keeps the layout: both windows show the new run with its winbar'
 end)
 
 T.case('u stops at the raw text; mouse scrolling is not a keystroke', function()
-  local buf = mission.start('M-01')
+  local buf = mission.start('M-01', { fresh = true })
   vim.o.mouse = 'nvi'
   vim.cmd('silent! normal! xuuuu')
   T.eq(table.concat(vim.api.nvim_buf_get_lines(buf, 0, -1, false), '\n'), missions.get('M-01').transmission)
@@ -165,4 +169,113 @@ T.case('a KATA has no briefing: mission <id> starts its buffer directly; locked 
     T.eq(briefing.open('KATA-02'), nil)
   end)
   T.ok(seen[1].msg:find('level 2', 1, true), seen[1].msg)
+end)
+
+-- Agent play test 2026-10-14: opening a running mission again from NEXUS restarted it silently
+-- (KATA-01 with 109 keys: text and keys gone, no warning).
+T.case('opening a running mission again goes back to it: text and keys stay', function()
+  local buf = mission.start('M-01', { fresh = true })
+  keys('xx')
+  local text = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+  vim.cmd('enew')
+  local seen = silence(function()
+    T.eq(mission.start('M-01'), buf)
+  end)
+  T.eq(vim.api.nvim_get_current_buf(), buf)
+  T.eq(vim.api.nvim_buf_get_lines(buf, 0, -1, false), text)
+  T.eq(mission.run(buf).tracker.keys(), 2)
+  T.eq(seen[1].msg, 'M-01 is still running — back to it. :NeuroVim restart starts it over.')
+end)
+
+T.case('counter-check: restart and a solved run still start fresh', function()
+  local buf = mission.start('M-01', { fresh = true })
+  keys('xx')
+  local again = mission.restart(buf)
+  T.eq(mission.run(again).tracker.keys(), 0)
+  mission.run(again).done = true
+  local fresh = mission.start('M-01')
+  T.ok(fresh ~= again, 'a solved run is not resumed')
+  T.eq(mission.run(fresh).tracker.keys(), 0)
+end)
+
+T.case('mission buffers are not listed (no bufferline tab, not saved by :mksession as badd)', function()
+  local buf = mission.start('M-01', { fresh = true })
+  T.eq(vim.bo[buf].buflisted, false)
+end)
+
+-- Measured 2026-10-14: :edit on a mission buffer emptied it and ended the run without a word.
+T.case(':edit in a mission buffer starts the mission over and says so', function()
+  local buf = mission.start('M-01', { fresh = true })
+  keys('xx')
+  local seen = silence(function()
+    vim.cmd('edit')
+    vim.wait(50)
+  end)
+  local now = vim.api.nvim_get_current_buf()
+  T.eq(vim.api.nvim_buf_get_name(now), 'neurovim://M-01')
+  T.eq(table.concat(vim.api.nvim_buf_get_lines(now, 0, -1, false), '\n'), missions.get('M-01').transmission)
+  T.ok(mission.run(now) ~= nil, 'a run again')
+  T.eq(seen[#seen].msg, 'neurovim: :edit reloaded M-01 — a mission has no file, so the run starts over.')
+  T.ok(buf ~= now or mission.run(now).tracker.keys() == 0)
+end)
+
+-- A session saves a window that shows a mission as `file neurovim://M-02`: an empty, normal
+-- buffer by that name comes back (measured with :mksession 2026-10-14). Typed into, it asks to be
+-- saved on quit.
+T.case('buffers a session left behind under neurovim:// are cleared away', function()
+  vim.cmd('enew')
+  local taken = vim.fn.bufnr('neurovim://M-40')
+  if taken > 0 then
+    vim.cmd('bwipeout! ' .. taken)
+  end
+  vim.cmd('file neurovim://M-40')
+  local phantom = vim.api.nvim_get_current_buf()
+  vim.api.nvim_buf_set_lines(phantom, 0, -1, false, { 'typed into it' })
+  local seen = silence(function()
+    vim.api.nvim_exec_autocmds('SessionLoadPost', {})
+    vim.wait(50)
+  end)
+  T.eq(vim.api.nvim_buf_is_valid(phantom), false)
+  T.eq(
+    seen[1].msg,
+    'neurovim: 1 buffer from a saved session cleared — missions are not restored; :NeuroVim opens NEXUS.'
+  )
+end)
+
+T.case('counter-check: the sweep leaves running missions and other buffers alone', function()
+  local buf = mission.start('M-01', { fresh = true })
+  vim.cmd('split')
+  vim.cmd('enew')
+  vim.cmd('file notes-neurovim.txt')
+  local other = vim.api.nvim_get_current_buf()
+  local seen = silence(function()
+    vim.api.nvim_exec_autocmds('SessionLoadPost', {})
+    vim.wait(50)
+  end)
+  T.eq(vim.api.nvim_buf_is_valid(buf), true)
+  T.eq(vim.api.nvim_buf_is_valid(other), true)
+  T.eq(seen, {})
+  vim.cmd('bwipeout! ' .. other)
+end)
+
+T.case('a real :mksession and :source with a mission on screen leave no phantom buffer', function()
+  vim.cmd('silent! only')
+  mission.start('M-03', { fresh = true })
+  local file = vim.fn.tempname()
+  vim.cmd('mksession! ' .. file)
+  T.ok(
+    table.concat(vim.fn.readfile(file), '\n'):find('neurovim://M-03', 1, true),
+    'the session names the mission'
+  )
+  vim.cmd('enew')
+  vim.cmd('bwipeout! neurovim://M-03')
+  silence(function()
+    vim.cmd('silent source ' .. file)
+    vim.wait(50)
+  end)
+  for _, b in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_get_name(b):find('^neurovim://') then
+      T.ok(vim.bo[b].buftype == 'nofile', 'left behind: ' .. vim.api.nvim_buf_get_name(b))
+    end
+  end
 end)

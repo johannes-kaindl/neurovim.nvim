@@ -58,13 +58,55 @@ function M.run(buf)
   return runs[buf or vim.api.nvim_get_current_buf()]
 end
 
-function M.start(id)
+-- ended[buf] = id for a run that ended by unloading its buffer; :edit unloads and then reads it.
+local ended = {}
+
+-- Keys count only in the mission buffer. A change to its text while the keys go to another buffer
+-- (:bufdo, :windo, a command typed elsewhere) makes the run unverified, like a paste: XP yes,
+-- bests no (decision Johannes 2026-10-14).
+local typed_in, key_ns
+local function watch(buf)
+  key_ns = key_ns
+    or vim.on_key(function(_, typed)
+      if typed and typed ~= '' then
+        typed_in = vim.api.nvim_get_current_buf()
+      end
+    end)
+  vim.api.nvim_buf_attach(buf, false, {
+    on_lines = function()
+      local run = runs[buf]
+      if not run then
+        return true
+      end
+      if typed_in ~= buf then
+        run.outside = true
+      end
+    end,
+  })
+end
+
+function M.ended(buf)
+  return ended[buf]
+end
+
+--- Start mission id, or go back to its run while that is not solved yet. opts.fresh always
+--- starts over (:NeuroVim restart).
+function M.start(id, opts)
   local m = missions.get(id)
+  local running = scratch.find('neurovim://' .. id)
+  if running and runs[running] and not runs[running].done and not (opts and opts.fresh) then
+    vim.api.nvim_set_current_buf(running)
+    vim.notify(
+      ('%s is still running — back to it. :NeuroVim restart starts it over.'):format(id),
+      vim.log.levels.INFO
+    )
+    return running
+  end
   local buf = scratch.open('neurovim://' .. id, vim.split(m.transmission, '\n', { plain = true }), {
     filetype = not config.isolate and 'markdown' or nil,
     modifiable = true,
     bufhidden = 'hide',
-    listed = true,
+    listed = false,
   })
   if config.isolate then
     isolate.apply(
@@ -86,6 +128,7 @@ function M.start(id)
       end,
     }),
   }
+  watch(buf)
   winbar.attach(buf, M.winbar)
   local group = vim.api.nvim_create_augroup('neurovim.mission.' .. buf, { clear = true })
   -- :bdelete unloads without wiping: the text is gone, so the run ends either way.
@@ -96,6 +139,10 @@ function M.start(id)
       if runs[buf] then
         runs[buf].tracker.stop()
         runs[buf] = nil
+        ended[buf] = id
+        vim.schedule(function()
+          ended[buf] = nil
+        end)
       end
       pcall(vim.api.nvim_del_augroup_by_id, group)
     end,
@@ -110,7 +157,7 @@ function M.restart(buf)
     return nil
   end
   run.tracker.stop()
-  return M.start(run.id)
+  return M.start(run.id, { fresh = true })
 end
 
 local function text(buf)
@@ -140,6 +187,8 @@ function M.check(buf)
     return 'mismatch'
   end
   local mt = metrics.metrics_result(run.tracker.keys(), run.tracker.elapsed_ms())
+  -- The core's rule for "unverified" is a run without a keystroke.
+  local scored = run.outside and metrics.metrics_result(0, mt.elapsed_ms) or mt
   local m = run.mission
   local s, outcome = state.update(function(cur)
     local o = completion.complete_mission(cur, {
@@ -147,7 +196,7 @@ function M.check(buf)
       xp_reward = m.xp_reward,
       par_keystrokes = m.par_keystrokes,
       difficulty = m.difficulty,
-    }, mt)
+    }, scored)
     return o.data, o
   end)
   -- The save could not be read (state said so): the run stays open, a later check can still save it.
@@ -157,7 +206,9 @@ function M.check(buf)
   run.done = true
   run.tracker.stop()
   vim.api.nvim_buf_clear_namespace(buf, reveal_ns, 0, -1)
-  require('neurovim.ui.result').show(require('neurovim.ui.result').lines(outcome, s, m, mt))
+  require('neurovim.ui.result').show(
+    require('neurovim.ui.result').lines(outcome, s, m, mt, { outside = run.outside })
+  )
   require('neurovim.ui.nexus').refresh()
   return 'match'
 end

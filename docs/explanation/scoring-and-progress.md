@@ -27,6 +27,8 @@ A bare key count says little: 40 keys is excellent for one mission and wasteful 
 
 If you paste a solution, or the text was already right, the run has zero counted keys. NeuroVim still counts the win and its XP — it cannot tell a paste from a memory of the answer, and refusing the win would feel like a bug. But it sets no best time, no best key count and no tier, so bests and tiers keep meaning "this is how well I did it in Vim". The rule comes from NeuroVim's core, like all scoring rules here.
 
+The same holds when the text was changed from outside the mission buffer — with `:bufdo` or `:windo`, or a command typed in another buffer. Keys count only where the mission is, so such an edit would otherwise be free. The result says which of the two happened.
+
 ## Why replays
 
 Solving every mission once earns 1555 XP, which is level 8; the last two levels need more. Earlier on there are gaps as well: right after the start, M-01 to M-04 give 65 XP and level 2 needs 66, so KATA-01 or a replay bridges it. The thresholds come from NeuroVim's game data, not from this plugin.

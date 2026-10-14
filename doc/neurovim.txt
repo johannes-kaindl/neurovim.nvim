@@ -140,6 +140,15 @@ wrapped to the window; the winbar shows id, time, keys and par. Time and keys
 count from the first key typed in the mission buffer. `u` stops at the
 corrupted text the mission started with.
 
+Opening a mission that is still running, from NEXUS or with
+`:NeuroVim mission`, goes back to it: text, time and keys stay. Only
+`:NeuroVim restart` starts it over, and so does `:edit` in the mission
+buffer, which says so (a mission has no file to read). A solved mission
+opens fresh. Mission buffers are not listed (|'buflisted'|) and are not
+files: `:w` answers E382. A saved session does not bring missions back; the
+empty buffers it would leave under neurovim:// are cleared when the session
+loads or when NeuroVim loads, with a message.
+
                                                               *neurovim-katas*
 KATAs are drills: one skill, no story, no briefing. They earn XP like story
 missions and unlock with levels like them; KATA-01 is free from the start.
@@ -183,7 +192,8 @@ Par     Each mission has a par: its authored value, or 20 + 20 × difficulty.
         fewer would reach the next tier.
 Bests   Per mission: best time, fewest keys, best keys per minute, runs. A
         run without a single key (pasted, already solved) earns its XP but
-        sets no bests.
+        sets no bests; so does a run whose text was changed from outside
+        the mission buffer (|:bufdo|, |:windo|, a command typed elsewhere).
 Streak  Days in a row with at least one solved mission. Days roll over at
         00:00 UTC.
 

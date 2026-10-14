@@ -10,6 +10,10 @@ All notable changes to this project are documented here. The format is based on 
 ### Fixed
 - The result window no longer vanishes when `:NeuroVim check` is typed at a "Press ENTER" prompt (for example after three `:s` in one command line): the `CursorMoved` of the jump before the prompt arrived only after the check and closed the window at once, while XP, level-up and unlocks were saved unseen. The window now closes only when the cursor has really moved.
 - The result window shows plain text with highlighted headings instead of raw Markdown (`# TRANSMISSION RESTORED`, `**+15 XP**`).
+- Opening a mission that is still running — from NEXUS or with `:NeuroVim mission` — goes back to it with its text, time and keys, instead of starting it over without a word. `:NeuroVim restart` still starts over; a solved mission opens fresh.
+- `:edit` in a mission buffer emptied it and ended the run silently; it now starts the mission over and says so.
+- Mission buffers are no longer listed, so they stay out of bufferline and out of the buffer list a session saves. Empty buffers a saved session brings back under `neurovim://` are cleared when the session loads (or when NeuroVim loads after it), with a message.
+- A run whose text was changed from outside the mission buffer (`:bufdo`, `:windo`, a command typed in another buffer) no longer counts as a normal run with only the keys typed in the mission: like a paste it earns its XP and sets no bests, and the result says why.
 
 ### Added
 - `:NeuroVim result` shows the last result of this session again; a second `:NeuroVim check` of a solved run points to it.

@@ -22,7 +22,7 @@ end
 
 T.case('a wrong text: lines off, nothing saved', function()
   local before = state.load().total_xp
-  mission.start('M-01')
+  mission.start('M-01', { fresh = true })
   local outcome, seen = quiet(function()
     return mission.check()
   end)
@@ -32,7 +32,7 @@ T.case('a wrong text: lines off, nothing saved', function()
 end)
 
 T.case('reveal marks the divergent lines, clamped to the buffer', function()
-  local buf = mission.start('M-01')
+  local buf = mission.start('M-01', { fresh = true })
   local marked = mission.reveal(buf)
   T.ok(#marked > 0)
   local last = vim.api.nvim_buf_line_count(buf) - 1
@@ -47,7 +47,7 @@ T.case('reveal marks the divergent lines, clamped to the buffer', function()
 end)
 
 T.case('M-01 played with real keys: saved once, XP, unlocks, bests', function()
-  local buf = mission.start('M-01')
+  local buf = mission.start('M-01', { fresh = true })
   keys('gg0qa/\\C[XZ]<CR>xq29@a')
   local outcome = quiet(function()
     return mission.check(buf)
@@ -71,7 +71,7 @@ end)
 T.case('a solution pasted without a keystroke wins its XP but keeps the bests', function()
   local before = state.load()
   T.eq(before.missions['M-01'].best_keystrokes, 19)
-  local buf = mission.start('M-01')
+  local buf = mission.start('M-01', { fresh = true })
   local m = require('neurovim.missions').get('M-01')
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(m.solution, '\n', { plain = true }))
   T.eq(
