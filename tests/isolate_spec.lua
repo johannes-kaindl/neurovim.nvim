@@ -97,15 +97,16 @@ T.case('counter-check: isolate = false, the same keys run into the user mappings
   end)
 end)
 
--- A key that maps to itself costs one key. A covered mapping of two keys (iw) still counts as
--- one: the kit's keytrack counts one per vim.on_key call, and Neovim reports a mapping's whole lhs
--- in one call. Without isolation the user's own iw counts the same; the fix belongs to nvim-kit.
-T.case('isolated: the plain-Vim mappings cost no extra keys', function()
+-- A key that maps to itself costs one key, and a covered mapping of two keys (iw) costs two:
+-- Neovim reports a mapping's whole lhs in one vim.on_key call, and keytrack counts its keys.
+T.case('isolated: the plain-Vim mappings cost the keys typed, no more, no less', function()
   with_setup(true, function()
     local _, n = play('0fcx', { 'abcabc' })
     T.eq(n, 4)
     _, n = play('sX<Esc>', { 'abc' })
     T.eq(n, 3)
+    _, n = play('wciwNEW<Esc>', { 'old mid end' })
+    T.eq(n, 8)
   end)
 end)
 
@@ -161,6 +162,38 @@ T.case('isolated: a mapping a plugin adds after the start is covered on the next
     pcall(vim.keymap.del, 'o', 'aw')
     assert(ok, err)
   end)
+end)
+
+local function maps_f(buf)
+  for _, m in ipairs(vim.api.nvim_buf_get_keymap(buf, 'n')) do
+    if m.lhs == 'f' then
+      return true
+    end
+  end
+  return false
+end
+
+-- The kit's precondition: :enew reuses an unnamed, empty buffer and resets it, isolation included.
+-- A mission buffer has its name and text before isolate.apply, so :enew opens a new one.
+T.case('isolated: :enew in the mission window opens a new buffer, the mission stays isolated', function()
+  with_setup(true, function()
+    local buf = mission.start('M-01', { fresh = true })
+    vim.cmd('enew')
+    T.ok(vim.api.nvim_get_current_buf() ~= buf, ':enew reused the mission buffer')
+    T.eq(vim.bo[buf].filetype, 'neurovim-mission')
+    T.eq(maps_f(buf), true)
+  end)
+end)
+
+T.case('counter-check: an unnamed, empty buffer loses its isolation to :enew', function()
+  vim.cmd('enew')
+  local buf = vim.api.nvim_get_current_buf()
+  require('neurovim.kit.isolate').apply(buf, { filetype = 'neurovim-mission' })
+  T.eq(maps_f(buf), true)
+  vim.cmd('enew')
+  T.eq(vim.api.nvim_get_current_buf(), buf)
+  T.eq(vim.bo[buf].filetype, '')
+  T.eq(maps_f(buf), false)
 end)
 
 T.case('isolated: own filetype, Neovim defaults for options that change the text', function()
@@ -219,7 +252,7 @@ T.case('nvim --clean has no mapping that counts as an override, Y and matchit in
   local root = vim.fn.fnamemodify(debug.getinfo(1, 'S').source:sub(2), ':p:h:h')
   local lua = ([[vim.opt.rtp:prepend(%q)
 local out = {}
-for _, o in ipairs(require('neurovim.isolate').overrides()) do out[#out + 1] = o.mode .. ' ' .. o.lhs end
+for _, o in ipairs(require('neurovim.kit.isolate').overrides()) do out[#out + 1] = o.mode .. ' ' .. o.lhs end
 local n = 0
 for _, mode in ipairs({ 'n', 'x', 'o' }) do n = n + #vim.api.nvim_get_keymap(mode) end
 io.stdout:write(n .. ' mappings; overrides: ' .. table.concat(out, ', '))

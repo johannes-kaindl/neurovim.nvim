@@ -1,7 +1,8 @@
+-- vendored from nvim-kit@0.7.0 (lua/nvim_kit/isolate.lua) — do not edit; re-vendor
 -- A buffer in plain Neovim: what a user's setup changes about keys, options and editor helpers is
--- put back to what `nvim --clean` does, in this buffer only. Mission buffers use it so that the
--- objective, par and key count mean what they say (:help neurovim-isolate). Nothing here knows
--- about missions: no domain line, it is a candidate for nvim-kit (Bibliothek ab Eins, ../AGENTS.md).
+-- put back to what `nvim --clean` does, in this buffer only. For a plugin whose buffer has to
+-- behave the same for everyone (a game that counts keys, an exercise with a par). Moved from
+-- neurovim.nvim 1e4c619 (lua/neurovim/isolate.lua), where it was measured against LazyVim.
 local MOD = ...
 local M = {}
 

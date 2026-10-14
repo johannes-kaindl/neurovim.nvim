@@ -12,7 +12,7 @@ local metrics = require('neurovim.rules.metrics')
 local completion = require('neurovim.rules.completion')
 local state = require('neurovim.state')
 local config = require('neurovim.config')
-local isolate = require('neurovim.isolate')
+local isolate = require('neurovim.kit.isolate')
 
 local M = {}
 

@@ -20,9 +20,8 @@
 | `lua/neurovim/health.lua` | `:checkhealth neurovim` from the kit's read-only health blocks |
 | `lua/neurovim/command.lua`, `plugin/neurovim.lua` | `:NeuroVim`, Tab completion, `<Plug>` mappings, version check |
 | `lua/neurovim/init.lua`, `lua/neurovim/config.lua` | `setup()` with its one option `isolate`; `config` holds the values a mission reads when it starts |
-| `lua/neurovim/isolate.lua` | a buffer in plain Neovim (Vim keys, default options, editor helpers off) — mission buffers unless `isolate = false`; knows nothing about missions |
 | `lua/neurovim/session.lua` | what a saved session or `:edit` leaves under `neurovim://`: sweep on `SessionLoadPost` and on load, `BufReadCmd` (autocmds in `plugin/neurovim.lua`) |
-| `lua/neurovim/kit/` | vendored from `nvim-kit` (`VENDOR.json`) — never edit |
+| `lua/neurovim/kit/` | vendored from `nvim-kit` (`VENDOR.json`) — never edit; among them `isolate` (a buffer in plain Neovim: mission buffers unless `isolate = false`) and `keytrack` (keys and time of a run) |
 | `data/`, `spec/conformance/` | vendored from `neurovim` (`data/VENDOR.json`): the content export and the conformance vectors — never edit |
 | `tests/` | specs for the kit's headless runner; `tests/conformance_spec.lua` runs every vector against its Lua port, `tests/docs_spec.lua` checks the reference tables in `docs/` against the game data and every relative link in `docs/` |
 | `doc/neurovim.txt` | the manual, `:help neurovim` — commands and mappings live only here |
@@ -74,8 +73,8 @@ After a rule change upstream:
 - **Headless `nvim -l` never fires `CursorMoved`**; tests that depend on it raise it with `nvim_exec_autocmds`.
 - **`T.eq(x, vim.NIL)` passes for `nil`** (`deep_equal`); check a JSON null with `rawequal(x, vim.NIL)` or compare with `T.json_eq`.
 - **Scheduled reactions need `vim.wait` in specs.** Neovim's floating preview closes on `CursorMoved` through `vim.schedule`; a spec that raises the event and asserts at once measures nothing. Raise, `vim.wait(20)`, then assert (`tests/result_spec.lua`).
-- **`vim.on_key` reports a mapping's whole lhs in one call** (`typed = "iw"`, `"<Space>p"`), so keytrack 0.6.0 counts a mapping as one key; requested for nvim-kit 0.7.0 (B1).
-- **Neovim's own default mappings have `sid = -8` in a normal start** (like any Lua mapping) but `sid = 1` under `nvim -l`; `isolate.lua` tells them by callback source and `desc`, and a spec asks a real `nvim --clean` (`vim.system`), because the test runner's start differs.
+- **`vim.on_key` reports a mapping's whole lhs in one call** (`typed = "iw"`, `"<Space>p"`); keytrack counts the keys of that lhs since nvim-kit 0.7.0 (0.6.0 counted one per mapping).
+- **Neovim's own default mappings have `sid = -8` in a normal start** (like any Lua mapping) but `sid = 1` under `nvim -l`; `kit/isolate.lua` tells them by callback source and `desc`, and a spec asks a real `nvim --clean` (`vim.system`), because the test runner's start differs.
 - **Play tests in a real setup without touching it:** APFS-clone `~/.config/nvim`, `~/.local/share/nvim/{lazy,mason,site}` into a scratch dir (`cp -cR`), point `XDG_CONFIG_HOME`, `XDG_DATA_HOME`, `XDG_STATE_HOME`, `XDG_CACHE_HOME` there, turn the lazy checker off in the copy; start `nvim --listen <sock>` in tmux (session name with PID), type with `tmux send-keys` at human pace (0.2 s; a bare `;` must be sent as `\;`, tmux reads it as a command separator), read state with `nvim --server <sock> --remote-expr`, and take the expected text from `nvim --clean`. Used for the isolate re-test of 2026-10-14 (task note „Missionsbuffer gegen das Nutzer-Setup abschirmen“).
 - **Pass `vendor.py`'s `SRC:DEST` list as separate arguments.** A zsh variable holding the list is not split: `vendor.py` gets one argument and removes every other copy as "no longer in" the source.
 - **StyLua must skip `kit/`** (`.styluaignore`); otherwise it reformats the vendored copies and `vendor-check` turns red.

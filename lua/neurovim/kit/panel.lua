@@ -1,4 +1,4 @@
--- vendored from nvim-kit@0.6.0 (lua/nvim_kit/panel.lua) — do not edit; re-vendor
+-- vendored from nvim-kit@0.7.0 (lua/nvim_kit/panel.lua) — do not edit; re-vendor
 -- Virtual lines above line 1 (a heading, an objective): shown, never part of the text. Neovim
 -- draws virtual lines above the first line only when the window's topfill makes room, and gg
 -- resets topfill to 0; this module makes room again when the cursor is on line 1 without it.

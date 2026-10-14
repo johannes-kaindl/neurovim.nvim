@@ -6,7 +6,7 @@ local kit = require('neurovim.kit.health')
 local data = require('neurovim.data')
 local state = require('neurovim.state')
 local config = require('neurovim.config')
-local isolate = require('neurovim.isolate')
+local isolate = require('neurovim.kit.isolate')
 
 local M = {}
 
