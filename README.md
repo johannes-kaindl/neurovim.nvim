@@ -6,7 +6,7 @@
 
 <img src="https://raw.githubusercontent.com/johannes-kaindl/neurovim.nvim/main/docs/images/demo.gif" width="800" alt="Playing mission M-01 in Neovim: NEXUS lists the missions, the briefing opens, a recorded macro deletes every stray X and Z, and :NeuroVim check shows the result with XP and tier">
 
-**Status:** first release, 0.1.0. All 54 missions — 40 story missions with briefings and 14 KATA drills — are playable in Neovim and tested end to end; the game logic passes all 103 conformance vectors from NeuroVim's TypeScript core.
+**Status:** 0.1.1. All 54 missions — 40 story missions with briefings and 14 KATA drills — are playable in Neovim and tested end to end; the game logic passes all 103 conformance vectors from NeuroVim's TypeScript core.
 
 ## Requirements
 

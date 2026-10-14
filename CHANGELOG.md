@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/), and the project follows [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.1.1] — 2026-10-14
 
 ### Changed
 - NeuroVim's game data from commit abb1ec4 (was 981d25c): the briefings no longer open with the wrong line "Timer starts on file open" (time starts with the first key you type in the mission). The conformance vectors are unchanged.
@@ -49,4 +49,5 @@ First release. NeuroVim — a Vim-learning spy thriller — as a Neovim plugin, 
 - The manual `:help neurovim`: install, getting started, commands, KATAs, mappings, what counts as a key, progress, save file, health, troubleshooting.
 - Tests in headless Neovim: end to end through `:NeuroVim` over all 54 missions, M-01 with real keys up to the first level-up, the way through the game, the SKILLS commands of the briefings against real Neovim; `make test NVIM=<path>` runs them with another Neovim (0.10.4 measured green). `make demo` records the README GIF.
 
+[0.1.1]: https://github.com/johannes-kaindl/neurovim.nvim/releases/tag/0.1.1
 [0.1.0]: https://github.com/johannes-kaindl/neurovim.nvim/releases/tag/0.1.0
