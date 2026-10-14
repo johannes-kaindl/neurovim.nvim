@@ -3,6 +3,7 @@
 local missions = require('neurovim.missions')
 local state = require('neurovim.state')
 local scratch = require('neurovim.kit.scratch')
+local winbar = require('neurovim.kit.winbar')
 
 local M = {}
 
@@ -27,7 +28,7 @@ function M.open(id)
     -- KATAs are drills without a briefing: straight to the mission buffer.
     return require('neurovim.ui.mission').start(id)
   end
-  return scratch.open('neurovim://briefing/' .. id, vim.split(m.briefing, '\n', { plain = true }), {
+  local buf = scratch.open('neurovim://briefing/' .. id, vim.split(m.briefing, '\n', { plain = true }), {
     filetype = 'markdown',
     keys = {
       ['<CR>'] = function()
@@ -38,6 +39,23 @@ function M.open(id)
       end,
     },
   })
+  winbar.attach(buf, function()
+    return id .. ' briefing · <CR> start the mission · q close'
+  end)
+  -- Wrap at word boundaries: the briefing is prose (measured: "us|e" at 80 columns).
+  local function linebreak(win)
+    vim.api.nvim_set_option_value('linebreak', true, { scope = 'local', win = win })
+  end
+  for _, win in ipairs(vim.fn.win_findbuf(buf)) do
+    linebreak(win)
+  end
+  vim.api.nvim_create_autocmd('BufWinEnter', {
+    buffer = buf,
+    callback = function()
+      linebreak(vim.api.nvim_get_current_win())
+    end,
+  })
+  return buf
 end
 
 return M

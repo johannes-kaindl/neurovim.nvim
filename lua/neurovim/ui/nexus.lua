@@ -4,6 +4,7 @@ local missions = require('neurovim.missions')
 local progression = require('neurovim.rules.progression')
 local state = require('neurovim.state')
 local scratch = require('neurovim.kit.scratch')
+local winbar = require('neurovim.kit.winbar')
 local kit_text = require('neurovim.kit.text')
 
 local M = {}
@@ -51,7 +52,8 @@ function M.render(s)
         add(('    %s  %s'):format(m.id, m.title))
       else
         add(
-          ('  🔒 %s  %s%s'):format(
+          -- 🔒 takes two cells: one space less keeps the ids in the column of ✓ and open rows.
+          (' 🔒 %s  %s%s'):format(
             m.id,
             m.title,
             st.unlock_level and ('  (level ' .. st.unlock_level .. ')') or ''
@@ -106,6 +108,9 @@ function M.show()
     },
   })
   paint(buf, r)
+  winbar.attach(buf, function()
+    return 'NEXUS · <CR> open the mission · q close'
+  end)
   return buf
 end
 

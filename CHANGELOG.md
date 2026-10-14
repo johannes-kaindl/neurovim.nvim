@@ -15,9 +15,15 @@ All notable changes to this project are documented here. The format is based on 
 - Mission buffers are no longer listed, so they stay out of bufferline and out of the buffer list a session saves. Empty buffers a saved session brings back under `neurovim://` are cleared when the session loads (or when NeuroVim loads after it), with a message.
 - A run whose text was changed from outside the mission buffer (`:bufdo`, `:windo`, a command typed in another buffer) no longer counts as a normal run with only the keys typed in the mission: like a paste it earns its XP and sets no bests, and the result says why.
 
+- The briefing wraps at word boundaries (`'linebreak'`) instead of mid-word.
+- NEXUS lines up the ids of locked missions with the others (🔒 is two cells wide).
+- A `reveal` mark goes once its line is right, instead of staying until the next `reveal`.
+
 ### Added
 - `:NeuroVim result` shows the last result of this session again; a second `:NeuroVim check` of a solved run points to it.
 - The result names the new level on a level-up (`LEVEL UP: 1 → 2 · GHOST OPERATOR`) and ends with the next step: `:NeuroVim` opens NEXUS.
+- NEXUS and the briefing show in their winbar what `<CR>` and `q` do.
+- `reveal` marks each line with `◀ differs` at its end and uses its own highlight groups, `NeuroVimReveal` (default `DiffChange`) and `NeuroVimRevealMark` (default `DiagnosticWarn`), so it stays visible in colour schemes where `DiffChange` barely differs from the background.
 - The option `isolate` (default `true`); `opts = { isolate = false }` plays missions with your whole setup, as in 0.1.0. `setup()` warns about unknown options and a wrong type.
 - `:checkhealth neurovim` has a section *Mission buffers*: whether they are isolated, the mappings that change Vim keys when they are not, and the global options that change Vim keys (`'ignorecase'`, `'smartcase'` …), which a buffer cannot isolate.
 

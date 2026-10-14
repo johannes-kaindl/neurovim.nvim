@@ -113,13 +113,14 @@ isolate     boolean, default true. A mission buffer runs in plain Neovim, as
 :NeuroVim               NEXUS: level, XP, streak and the missions by chapter,
                         then the KATAs. ✓ solved (with its tier), 🔒 locked
                         (with the level that unlocks it). <CR> opens the
-                        mission under the cursor, q closes NEXUS.
+                        mission under the cursor, q closes NEXUS; the winbar
+                        says so.
 
 :NeuroVim mission {id}  The briefing of mission {id}; Tab completes the ids,
                         upper or lower case. <CR> starts the mission, q closes
-                        the briefing. A KATA has no briefing and starts at
-                        once. A locked mission names the level that unlocks
-                        it and does not open.
+                        the briefing; the winbar says so. A KATA has no
+                        briefing and starts at once. A locked mission names
+                        the level that unlocks it and does not open.
 
 :NeuroVim check         Score the current mission buffer: the number of lines
                         still corrupted, or the result in a floating window.
@@ -129,9 +130,17 @@ isolate     boolean, default true. A mission buffer runs in plain Neovim, as
 
 :NeuroVim result        Show the last result of this session again.
 
-:NeuroVim reveal        Highlight the lines that still differ
-                        (|hl-DiffChange|). A missing line is marked on the
-                        last line.
+:NeuroVim reveal        Highlight the lines that still differ, with a
+                        mark "◀ differs" at the line end. A missing line is
+                        marked on the last line. A mark goes once its line
+                        is right; reveal again to see the lines that are
+                        still wrong.
+                                                             *neurovim-reveal*
+                        Highlight groups, yours to override:
+                        NeuroVimReveal       the line (default:
+                                             |hl-DiffChange|)
+                        NeuroVimRevealMark   the mark (default:
+                                             DiagnosticWarn)
 
 :NeuroVim restart       Reload the corrupted text, reset time and keys.
 

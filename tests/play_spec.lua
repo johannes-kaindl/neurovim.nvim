@@ -94,3 +94,25 @@ T.case('check outside a mission buffer reports instead of throwing', function()
   T.eq(outcome, 'not-a-mission')
   T.eq(seen[1].level, vim.log.levels.ERROR)
 end)
+
+T.case('reveal: own highlight groups, a mark at the line end, gone once the line is repaired', function()
+  local m = require('neurovim.missions').get('M-01')
+  local buf = mission.start('M-01', { fresh = true })
+  local ns = vim.api.nvim_get_namespaces()['neurovim.reveal']
+  local marked = mission.reveal(buf)
+  T.ok(#marked > 1, vim.inspect(marked))
+  local first = vim.api.nvim_buf_get_extmarks(buf, ns, 0, -1, { details = true })[1][4]
+  T.eq(first.line_hl_group, 'NeuroVimReveal')
+  T.eq(first.virt_text[1][2], 'NeuroVimRevealMark')
+  T.eq(vim.api.nvim_get_hl(0, { name = 'NeuroVimReveal' }).link, 'DiffChange')
+  -- Repair the first marked line; headless Neovim does not raise TextChanged itself.
+  local solution = vim.split(m.solution, '\n', { plain = true })
+  vim.api.nvim_buf_set_lines(buf, marked[1], marked[1] + 1, false, { solution[marked[1] + 1] })
+  vim.api.nvim_exec_autocmds('TextChanged', { buffer = buf })
+  local rows = {}
+  for _, mk in ipairs(vim.api.nvim_buf_get_extmarks(buf, ns, 0, -1, {})) do
+    rows[#rows + 1] = mk[2]
+  end
+  T.eq(#rows, #marked - 1)
+  T.ok(not vim.tbl_contains(rows, marked[1]), vim.inspect(rows))
+end)

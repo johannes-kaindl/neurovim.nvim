@@ -53,7 +53,7 @@ When you think you are done, check it:
 :NeuroVim check
 ```
 
-If lines are still wrong, Neovim says how many, for example `2 lines still corrupted.` Then `:NeuroVim reveal` highlights them. Fix them and check again.
+If lines are still wrong, Neovim says how many, for example `2 lines still corrupted.` Then `:NeuroVim reveal` highlights them and marks them `◀ differs` at the line end; a mark goes away once its line is right. Fix them and check again.
 
 ## 6. Read the result
 

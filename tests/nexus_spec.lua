@@ -70,3 +70,38 @@ T.case('NEXUS shows the replay hint only when every free mission is solved', fun
     'Replay solved missions for XP — level 2 (66 XP) unlocks M-05, M-06, M-07, M-08, KATA-02, KATA-03, KATA-12.'
   )
 end)
+
+-- Agent play test 2026-10-14: 🔒 is two cells wide, so the ids of locked rows stood one column right.
+T.case('render: ids of done, open and locked rows start in the same screen column', function()
+  local s = data.default_plugin_data()
+  s.total_xp = 100
+  s.unlocked = { 'M-01', 'M-02', 'M-03', 'M-04', 'M-05' }
+  s.completed_missions = { 'M-01' }
+  s.missions =
+    { ['M-01'] = { best_keystrokes = 10, best_time_ms = 1, best_ks_per_min = 1, runs = 1, last_run = '' } }
+  local r = nexus.render(s)
+  local cols = {}
+  for _, id in ipairs({ 'M-01', 'M-02', 'M-09' }) do
+    local _, l = find(r.lines, id)
+    cols[#cols + 1] = vim.fn.strdisplaywidth(l:sub(1, l:find(id, 1, true) - 1))
+  end
+  T.eq(cols[2], cols[1])
+  T.eq(cols[3], cols[1])
+end)
+
+T.case('NEXUS and the briefing say in their winbar how to go on', function()
+  local function winbar()
+    local w = vim.api.nvim_get_current_win()
+    return vim.api.nvim_eval_statusline(vim.wo[w].winbar, { winid = w, use_winbar = true }).str
+  end
+  nexus.show()
+  T.eq(winbar(), 'NEXUS · <CR> open the mission · q close')
+  local old = vim.fn.bufnr('neurovim://M-01')
+  if old > 0 then
+    vim.cmd('bwipeout! ' .. old)
+  end
+  require('neurovim.ui.briefing').open('M-01')
+  T.eq(winbar(), 'M-01 briefing · <CR> start the mission · q close')
+  T.eq(vim.wo.linebreak, true)
+  vim.cmd('bwipeout!')
+end)

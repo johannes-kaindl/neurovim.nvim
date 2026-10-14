@@ -19,6 +19,18 @@ local M = {}
 local runs = {} -- buf -> { id, mission, tracker, done }
 local reveal_ns = vim.api.nvim_create_namespace('neurovim.reveal')
 
+-- reveal's highlights, yours to override (:help neurovim-reveal). A colour scheme clears them,
+-- so they come back with every :colorscheme.
+local function reveal_highlights()
+  vim.api.nvim_set_hl(0, 'NeuroVimReveal', { link = 'DiffChange', default = true })
+  vim.api.nvim_set_hl(0, 'NeuroVimRevealMark', { link = 'DiagnosticWarn', default = true })
+end
+reveal_highlights()
+vim.api.nvim_create_autocmd('ColorScheme', {
+  group = vim.api.nvim_create_augroup('neurovim.reveal', { clear = true }),
+  callback = reveal_highlights,
+})
+
 local function not_a_mission()
   vim.notify('neurovim: not a mission buffer — open one with :NeuroVim mission <id>.', vim.log.levels.ERROR)
 end
@@ -213,6 +225,17 @@ function M.check(buf)
   return 'match'
 end
 
+-- The rows (0-based) that differ from the solution; a missing line lies past the end of the
+-- buffer and counts for the last line.
+local function divergent(buf, run)
+  local last = vim.api.nvim_buf_line_count(buf) - 1
+  local rows = {}
+  for _, l in ipairs(diff.get_divergent_lines(text(buf), run.mission.solution)) do
+    rows[math.min(l, last)] = true
+  end
+  return rows
+end
+
 function M.reveal(buf)
   buf = buf or vim.api.nvim_get_current_buf()
   local run = runs[buf]
@@ -221,14 +244,35 @@ function M.reveal(buf)
     return nil
   end
   vim.api.nvim_buf_clear_namespace(buf, reveal_ns, 0, -1)
-  local last = vim.api.nvim_buf_line_count(buf) - 1
   local marked = {}
-  for _, l in ipairs(diff.get_divergent_lines(text(buf), run.mission.solution)) do
-    -- A missing line lies past the end of the buffer; mark the last line instead.
-    local at = math.min(l, last)
-    vim.api.nvim_buf_set_extmark(buf, reveal_ns, at, 0, { line_hl_group = 'DiffChange' })
+  for at in pairs(divergent(buf, run)) do
+    vim.api.nvim_buf_set_extmark(buf, reveal_ns, at, 0, {
+      line_hl_group = 'NeuroVimReveal',
+      virt_text = { { ' ◀ differs', 'NeuroVimRevealMark' } },
+      virt_text_pos = 'eol',
+    })
     marked[#marked + 1] = at
   end
+  table.sort(marked)
+  -- A mark goes once its line is right; reveal never adds marks on its own.
+  vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI' }, {
+    group = vim.api.nvim_create_augroup('neurovim.reveal.' .. buf, { clear = true }),
+    buffer = buf,
+    callback = function()
+      local still = runs[buf] and vim.api.nvim_buf_get_extmarks(buf, reveal_ns, 0, -1, {}) or {}
+      if #still == 0 then
+        return true
+      end
+      -- Replacing or moving lines can push a mark onto a marked line: keep one per line.
+      local off, seen = divergent(buf, runs[buf]), {}
+      for _, mk in ipairs(still) do
+        if not off[mk[2]] or seen[mk[2]] then
+          vim.api.nvim_buf_del_extmark(buf, reveal_ns, mk[1])
+        end
+        seen[mk[2]] = true
+      end
+    end,
+  })
   return marked
 end
 

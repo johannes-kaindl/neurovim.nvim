@@ -37,7 +37,7 @@ The plugin defines `:NeuroVim` and four `<Plug>` mappings when it loads; calling
 | `:NeuroVim mission <id>` | The briefing of a mission (Tab completes the ids). `<CR>` starts it, `q` closes. A KATA has no briefing and starts at once. |
 | `:NeuroVim check` | Scores the mission buffer: either how many lines are still corrupted, or the result with XP, tier, bests and unlocks. |
 | `:NeuroVim result` | Shows the last result of this session again. |
-| `:NeuroVim reveal` | Highlights the lines that still differ from the solution. |
+| `:NeuroVim reveal` | Highlights the lines that still differ from the solution, with a mark at the line end; a mark goes once its line is right. |
 | `:NeuroVim restart` | Reloads the corrupted text and resets time and keys. |
 
 A mission is a scratch buffer `neurovim://<id>` with the objective above line 1 and a winbar like `M-01 · 01:23 · 37 keys · par 40`. Time and keys count from your first key in that buffer; `:NeuroVim …` itself, mouse clicks, the scroll wheel and a paste from the terminal do not count (`:help neurovim-keys`). The result opens in a floating window that closes when the cursor moves; `:NeuroVim result` shows it again.
