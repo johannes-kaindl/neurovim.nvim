@@ -27,7 +27,7 @@ From a local checkout:
 { dir = "~/path/to/neurovim.nvim" }
 ```
 
-There are no options: the plugin defines `:NeuroVim` and four `<Plug>` mappings when it loads. `setup()` exists only so that `opts = {}` does no harm; it takes nothing and warns about any option you pass.
+The plugin defines `:NeuroVim` and four `<Plug>` mappings when it loads; calling `setup()` is not needed. Missions run in plain Neovim even inside a full setup (see [Configuration](#configuration)).
 
 ## Usage
 
@@ -41,7 +41,7 @@ There are no options: the plugin defines `:NeuroVim` and four `<Plug>` mappings 
 
 A mission is a scratch buffer `neurovim://<id>` with the objective above line 1 and a winbar like `M-01 · 01:23 · 37 keys · par 40`. Time and keys count from your first key in that buffer; `:NeuroVim …` itself, mouse clicks, the scroll wheel and a paste from the terminal do not count (`:help neurovim-keys`). The result opens in a floating window that closes when the cursor moves.
 
-The plugin sets no global keys. Map the `<Plug>` mappings yourself — `<Plug>(neurovim-nexus)`, `<Plug>(neurovim-check)`, `<Plug>(neurovim-reveal)`, `<Plug>(neurovim-restart)`:
+The plugin sets no global keys. Map the `<Plug>` mappings yourself — `<Plug>(neurovim-nexus)`, `<Plug>(neurovim-check)`, `<Plug>(neurovim-reveal)`, `<Plug>(neurovim-restart)` — under `<Leader>` or a function key (in a mission buffer the other keys are plain Vim keys):
 
 ```lua
 vim.keymap.set("n", "<leader>nc", "<Plug>(neurovim-check)")
@@ -53,7 +53,13 @@ Progress is saved in `stdpath('data')/neurovim/state.json`, in the same format a
 
 ## Configuration
 
-No options yet.
+One option, `isolate` (default `true`). A mission buffer then runs in plain Neovim, as `nvim --clean` would run it, so that the objective, par and the key count mean what they say: the Vim keys in Normal, Visual and Operator-pending mode do what Vim does, options that change the text take Neovim's defaults, and completion, auto-pairs, Markdown rendering and linting stay out. Your mappings under `<Leader>`, function keys and window keys keep working. The full list is in `:help neurovim-isolate`.
+
+To play with your whole setup instead:
+
+```lua
+{ "johannes-kaindl/neurovim.nvim", opts = { isolate = false } }
+```
 
 ## Troubleshooting
 

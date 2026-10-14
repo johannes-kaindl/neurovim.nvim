@@ -8,6 +8,7 @@ CONTENTS                                                   *neurovim-contents*
   1. Introduction ........................................... |neurovim-intro|
   2. Requirements .................................... |neurovim-requirements|
   3. Install .............................................. |neurovim-install|
+     Options ............................................ |neurovim-options|
   4. Getting started ........................................ |neurovim-start|
   5. Commands ............................................ |neurovim-commands|
      KATAs .................................................. |neurovim-katas|
@@ -48,10 +49,52 @@ With lazy.nvim: >lua
 From a local checkout: >lua
   { dir = "~/path/to/neurovim.nvim" }
 <
-There are no options: the plugin defines |:NeuroVim| and four |<Plug>|
-mappings when it loads, nothing else. setup() exists only so that a plugin
-manager calling it (lazy.nvim with `opts = {}`) does no harm; it takes nothing
-and warns about any option you pass.
+The plugin defines |:NeuroVim| and four |<Plug>| mappings when it loads,
+nothing else. Calling setup() is not needed.
+
+                                                            *neurovim-options*
+setup() takes one option; each call starts from the defaults. With lazy.nvim:
+>lua
+  { "johannes-kaindl/neurovim.nvim", opts = { isolate = false } }
+<
+Without a plugin manager: >lua
+  require('neurovim').setup({ isolate = false })
+<
+                                                            *neurovim-isolate*
+isolate     boolean, default true. A mission buffer runs in plain Neovim, as
+            `nvim --clean` would run it, so that the objective, par and the
+            key count mean what they say. In the mission buffer only:
+
+            - Keys in Normal, Visual and Operator-pending mode do what Vim
+              does: every printable key, <C-a> <C-b> <C-d> <C-e> <C-f> <C-o>
+              <C-r> <C-u> <C-v> <C-x> <C-y>, <CR>, <BS> and the arrow keys,
+              and every mapping of yours that starts with one of them.
+              Neovim's own default mappings stay (|default-mappings|), and
+              so does matchit's %.
+            - Yours stay: mappings under <Leader> and <LocalLeader>, function
+              keys, window keys such as <C-w> and <C-h>, Insert mode.
+            - Options that change what a key does to the text take Neovim's
+              default: 'autoindent' 'cindent' 'expandtab' 'formatexpr'
+              'formatoptions' 'indentexpr' 'iskeyword' 'lisp' 'matchpairs'
+              'nrformats' 'shiftwidth' 'smartindent' 'softtabstop' 'tabstop'
+              'textwidth' 'wrapmargin', and in its windows 'conceallevel'
+              'foldmethod' 'scrolloff' 'sidescrolloff' 'virtualedit'.
+            - The filetype is `neurovim-mission`, so plugins for Markdown
+              (rendering, linting, snippets) leave the buffer alone.
+              Diagnostics are off.
+            - Editor helpers with a buffer switch are switched off:
+              completion (vim.b.completion, blink.cmp), mini.nvim's ai,
+              clue, completion, jump, jump2d, pairs and surround
+              (vim.b.mini*_disable), minuet-ai, copilot.vim.
+
+            Global options stay yours, among them 'ignorecase' and
+            'smartcase': a buffer cannot have its own value.
+            `:checkhealth neurovim` lists the ones that change Vim keys.
+
+            isolate = false runs missions with your whole setup, as before
+            0.1.1 (filetype markdown). The objective and par may then not fit
+            what your keys do; `:checkhealth neurovim` names the mappings
+            that change Vim keys.
 
 ==============================================================================
 4. GETTING STARTED                                            *neurovim-start*
@@ -109,6 +152,8 @@ The plugin sets no global keys. These |<Plug>| mappings are yours to map:
 Example: >lua
   vim.keymap.set('n', '<leader>nc', '<Plug>(neurovim-check)')
 <
+Put them under <Leader>, <LocalLeader> or a function key: in a mission
+buffer every other key is a plain Vim key (|neurovim-isolate|).
                                                                *neurovim-keys*
 What counts as a key: every key you type in the mission buffer, a macro once
 for the keys that start it (not for what it replays), and a search or an Ex
@@ -165,6 +210,11 @@ Save file  whether state.json is there and readable (no save yet is fine),
            untouched. NeuroVim moves a broken one aside the next time it
            reads it (any |:NeuroVim|) and leaves an unreadable one alone
            (|neurovim-save|).
+Mission buffers
+           whether they run in plain Neovim (|neurovim-isolate|). With
+           isolate = false, a warning names your mappings that change Vim
+           keys. Either way it lists global options that change Vim keys,
+           such as 'ignorecase'.
 Vendored   which library version and which game-data commit are built in.
 
 The check only reads. It moves, repairs and creates nothing.

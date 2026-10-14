@@ -76,3 +76,34 @@ T.case('a save that cannot be read is a WARNING, and checkhealth leaves it exact
     T.eq(vim.fn.glob(p .. '.broken-*', false, true), {})
   end)
 end)
+
+T.case('mission buffers: isolated by default is OK; global options that change keys are named', function()
+  local before = vim.o.ignorecase
+  vim.o.ignorecase = true
+  local ok, out = pcall(checkhealth)
+  vim.o.ignorecase = before
+  assert(ok, out)
+  T.ok(out:find('OK mission buffers run in plain Neovim (isolate = true)', 1, true), out)
+  T.ok(out:find('ignorecase=true', 1, true), out)
+end)
+
+T.case('mission buffers: isolate = false with a mapping on a Vim key is a WARNING naming it', function()
+  local config = require('neurovim.config')
+  config.isolate = false
+  vim.keymap.set('n', 'f', 'F', { desc = 'flash-like' })
+  local ok, out = pcall(checkhealth)
+  config.isolate = true
+  vim.keymap.del('n', 'f')
+  assert(ok, out)
+  T.ok(out:find('WARNING mission buffers run with your setup (isolate = false)', 1, true), out)
+  T.ok(out:find('n f', 1, true), out)
+end)
+
+T.case('counter-check: isolate = false without such a mapping warns about nothing', function()
+  local config = require('neurovim.config')
+  config.isolate = false
+  local ok, out = pcall(checkhealth)
+  config.isolate = true
+  assert(ok, out)
+  T.ok(out:find('OK mission buffers run with your setup (isolate = false)', 1, true), out)
+end)

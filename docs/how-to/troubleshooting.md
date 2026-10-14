@@ -12,9 +12,13 @@ Find the message you see, or the symptom, and follow the fix. When in doubt, sta
 
 **Cause:** the plugin is not on the runtimepath — not installed, or your plugin manager has not loaded it. **Fix:** check the plugin spec (`{ "johannes-kaindl/neurovim.nvim" }` with lazy.nvim), run `:Lazy` to see whether it is installed, then restart Neovim.
 
-### `neurovim: there are no options — ignored: ….`
+### `neurovim: unknown option — ignored: ….`
 
-**Cause:** your plugin spec passes options, for example `opts = { keys = true }`. NeuroVim has none. **Fix:** remove them; `opts = {}` or no `opts` at all is fine. For keys, see [Map keys](map-keys.md).
+**Cause:** your plugin spec passes an option NeuroVim does not have, for example `opts = { keys = true }`. The only option is `isolate` (`:help neurovim-options`). **Fix:** remove the others; `opts = {}` or no `opts` at all is fine. For keys, see [Map keys](map-keys.md).
+
+### `neurovim: isolate must be true or false — ignored.`
+
+**Cause:** `isolate` got something other than `true` or `false`, for example `opts = { isolate = "no" }`. NeuroVim keeps the default, `true`. **Fix:** write `isolate = false` without quotes.
 
 ### `M-05 is locked — it unlocks at level 2.`
 

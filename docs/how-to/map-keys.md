@@ -20,6 +20,8 @@ vim.keymap.set('n', '<leader>nR', '<Plug>(neurovim-restart)', { desc = 'NeuroVim
 
 No `remap = true` is needed: Neovim always applies a `<Plug>` in the right-hand side, even in a non-recursive mapping (`:help <Plug>`). Outside a mission buffer, check, reveal and restart only say that this is not a mission buffer.
 
+Put them under `<Leader>`, `<LocalLeader>` or a function key such as `<F5>`. In a mission buffer every other key is a plain Vim key, also when one of your mappings starts with it: `,c` would be Vim's `,` and `c` there (`:help neurovim-isolate`). With `isolate = false` any key works.
+
 ## With lazy.nvim
 
 Put the keys into the plugin spec; lazy.nvim then also loads the plugin on the first key press:

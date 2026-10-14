@@ -11,6 +11,8 @@ local diff = require('neurovim.rules.diff')
 local metrics = require('neurovim.rules.metrics')
 local completion = require('neurovim.rules.completion')
 local state = require('neurovim.state')
+local config = require('neurovim.config')
+local isolate = require('neurovim.isolate')
 
 local M = {}
 
@@ -59,11 +61,17 @@ end
 function M.start(id)
   local m = missions.get(id)
   local buf = scratch.open('neurovim://' .. id, vim.split(m.transmission, '\n', { plain = true }), {
-    filetype = 'markdown',
+    filetype = not config.isolate and 'markdown' or nil,
     modifiable = true,
     bufhidden = 'hide',
     listed = true,
   })
+  if config.isolate then
+    isolate.apply(
+      buf,
+      { filetype = 'neurovim-mission', desc = 'neurovim: plain Neovim key (:help neurovim-isolate)' }
+    )
+  end
   panel.set(buf, function(width)
     return objective(m, width)
   end)

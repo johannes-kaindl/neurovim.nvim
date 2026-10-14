@@ -19,7 +19,8 @@
 | `lua/neurovim/ui/` | NEXUS, briefing, mission buffer (panel, winbar, keytrack, check, reveal, restart), result float |
 | `lua/neurovim/health.lua` | `:checkhealth neurovim` from the kit's read-only health blocks |
 | `lua/neurovim/command.lua`, `plugin/neurovim.lua` | `:NeuroVim`, Tab completion, `<Plug>` mappings, version check |
-| `lua/neurovim/init.lua` | `setup()` without options, so lazy.nvim's `opts = {}` does no harm |
+| `lua/neurovim/init.lua`, `lua/neurovim/config.lua` | `setup()` with its one option `isolate`; `config` holds the values a mission reads when it starts |
+| `lua/neurovim/isolate.lua` | a buffer in plain Neovim (Vim keys, default options, editor helpers off) — mission buffers unless `isolate = false`; knows nothing about missions |
 | `lua/neurovim/kit/` | vendored from `nvim-kit` (`VENDOR.json`) — never edit |
 | `data/`, `spec/conformance/` | vendored from `neurovim` (`data/VENDOR.json`): the content export and the conformance vectors — never edit |
 | `tests/` | specs for the kit's headless runner; `tests/conformance_spec.lua` runs every vector against its Lua port, `tests/docs_spec.lua` checks the reference tables in `docs/` against the game data and every relative link in `docs/` |

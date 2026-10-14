@@ -20,9 +20,11 @@ The save file uses NeuroVim's `PluginData` format and keeps every field, also th
 
 ## Neovim is the interface
 
-The plugin draws only what Neovim lacks: a mission list (NEXUS), the objective as virtual lines above the text, a winbar with time, keys and par, and the result in Neovim's own floating preview. Everything else is the player's Neovim — colour scheme, options, mappings, plugins. That is the point: you train in the editor you actually use, with the setup you actually have.
+The plugin draws only what Neovim lacks: a mission list (NEXUS), the objective as virtual lines above the text, a winbar with time, keys and par, and the result in Neovim's own floating preview. Around the mission buffer everything is the player's Neovim — colour scheme, mappings, plugins: you train in the editor you actually use.
 
-For the same reason there are no global keys and no options. The plugin defines `:NeuroVim` and four `<Plug>` mappings; `setup()` exists only so that a plugin manager calling it does no harm.
+Inside the mission buffer the keys are Vim's, not the setup's. The first play test ran in a full LazyVim setup and showed why: which-key counted prefix keys twice, flash.nvim made `f` jump across lines, blink.cmp turned `<CR>` into a snippet, mini.ai changed the text objects a mission teaches, and render-markdown hid the very brackets the objective names. A mission teaches a Vim key and sets par for it; when the key does something else, the lesson, par and the key count stop meaning anything. So a mission buffer runs as `nvim --clean` would run it (`:help neurovim-isolate`): Vim keys and Neovim's own default mappings, default options for what changes the text, a filetype no Markdown plugin knows, and editor helpers switched off by their own buffer switches. Mappings under `<Leader>`, function keys and window keys stay the player's, so the way out of a mission and the `<Plug>` mappings keep working. Global options such as `'ignorecase'` cannot differ per buffer and stay the player's; `:checkhealth neurovim` names them. `isolate = false` is the way back to the whole setup, for whoever wants it.
+
+There are no global keys. The plugin defines `:NeuroVim` and four `<Plug>` mappings; `isolate` is its one option.
 
 ## A small library underneath
 
