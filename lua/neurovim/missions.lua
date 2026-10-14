@@ -114,4 +114,13 @@ function M.next_unlock(s)
   return { level = lowest, xp = xp, ids = ids }
 end
 
+function M.level_title(level)
+  for _, l in ipairs(data.get().levels) do
+    if l.level == level then
+      return l.title
+    end
+  end
+  return nil
+end
+
 return M

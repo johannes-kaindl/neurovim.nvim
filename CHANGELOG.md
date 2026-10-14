@@ -7,7 +7,13 @@ All notable changes to this project are documented here. The format is based on 
 ### Changed
 - Mission buffers run in plain Neovim, as `nvim --clean` would run them, so that the objective, par and the key count mean what they say in a full setup too (`:help neurovim-isolate`). In the mission buffer only: the Vim keys in Normal, Visual and Operator-pending mode — and every mapping that starts with one — do what Vim does, Neovim's own default mappings and matchit stay; options that change the text (`'textwidth'`, `'shiftwidth'`, `'nrformats'`, `'iskeyword'`, `'conceallevel'`, `'scrolloff'` and others) take Neovim's defaults; the filetype is `neurovim-mission` instead of `markdown`, so Markdown rendering, linting and snippets stay out; diagnostics are off; completion (blink.cmp), mini.nvim's ai, pairs, surround and jump, minuet-ai and copilot.vim are switched off by their buffer switches. Mappings under `<Leader>` and `<LocalLeader>`, function keys and window keys stay yours. Found in a play test in LazyVim: which-key counted prefix keys twice, flash.nvim made `f` jump across lines, blink.cmp inserted snippets on `<CR>`, mini.ai changed the text objects, render-markdown hid the brackets the objective names.
 
+### Fixed
+- The result window no longer vanishes when `:NeuroVim check` is typed at a "Press ENTER" prompt (for example after three `:s` in one command line): the `CursorMoved` of the jump before the prompt arrived only after the check and closed the window at once, while XP, level-up and unlocks were saved unseen. The window now closes only when the cursor has really moved.
+- The result window shows plain text with highlighted headings instead of raw Markdown (`# TRANSMISSION RESTORED`, `**+15 XP**`).
+
 ### Added
+- `:NeuroVim result` shows the last result of this session again; a second `:NeuroVim check` of a solved run points to it.
+- The result names the new level on a level-up (`LEVEL UP: 1 → 2 · GHOST OPERATOR`) and ends with the next step: `:NeuroVim` opens NEXUS.
 - The option `isolate` (default `true`); `opts = { isolate = false }` plays missions with your whole setup, as in 0.1.0. `setup()` warns about unknown options and a wrong type.
 - `:checkhealth neurovim` has a section *Mission buffers*: whether they are isolated, the mappings that change Vim keys when they are not, and the global options that change Vim keys (`'ignorecase'`, `'smartcase'` …), which a buffer cannot isolate.
 

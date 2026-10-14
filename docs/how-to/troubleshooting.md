@@ -32,9 +32,21 @@ Find the message you see, or the symptom, and follow the fix. When in doubt, sta
 
 **Cause:** the text differs from the original in that many lines. **Fix:** `:NeuroVim reveal` highlights them. A line can be wrong because of a character you changed by accident or a blank line missing or added inside the text (spaces at the end of a line and blank lines at the very start or end do not count); `u` undoes your edits back to the corrupted text the mission started with, and `:NeuroVim restart` starts over.
 
-### `Transmission already restored — :NeuroVim restart plays it again.`
+### `Transmission already restored — :NeuroVim result shows the result again, :NeuroVim restart plays the mission again.`
 
 **Cause:** you already solved this run; one run counts once. **Fix:** `:NeuroVim restart` to play it again (it earns XP again), or `:NeuroVim` for your progress.
+
+### `neurovim: no result yet in this session — :NeuroVim check scores a mission.`
+
+**Cause:** `:NeuroVim result` shows the last result since Neovim started, and there is none yet. Results are not kept across restarts. **Fix:** solve a mission and `:NeuroVim check` it; NEXUS (`:NeuroVim`) shows your XP, level and tiers at any time.
+
+### `neurovim: unknown subcommand … — use mission, check, reveal, restart or result.`
+
+**Cause:** `:NeuroVim` got a word it does not know, often a typo. **Fix:** type `:NeuroVim ` and press Tab for the list; `:help neurovim-commands` describes each one.
+
+### `Usage: :NeuroVim mission <id>`
+
+**Cause:** `:NeuroVim mission` without an id. **Fix:** add the id, for example `:NeuroVim mission M-01`; Tab completes the ids.
 
 ### `neurovim: not a mission buffer — open one with :NeuroVim mission <id>.`
 
@@ -56,7 +68,7 @@ It stands above line 1 and scrolls with the text. `gg` brings it back; so does `
 
 ### The result window disappeared
 
-It closes when the cursor moves, like every hover window. `:NeuroVim` shows your XP, level and tiers.
+It closes when the cursor moves. `:NeuroVim result` shows it again, until you quit Neovim; `:NeuroVim` shows your XP, level and tiers.
 
 ### More keys than I typed
 

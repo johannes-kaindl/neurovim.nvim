@@ -125,7 +125,10 @@ function M.check(buf)
     return 'not-a-mission'
   end
   if run.done then
-    vim.notify('Transmission already restored — :NeuroVim restart plays it again.', vim.log.levels.INFO)
+    vim.notify(
+      'Transmission already restored — :NeuroVim result shows the result again, :NeuroVim restart plays the mission again.',
+      vim.log.levels.INFO
+    )
     return 'already'
   end
   local d = diff.get_diff(text(buf), run.mission.solution)

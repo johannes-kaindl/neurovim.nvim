@@ -2,7 +2,7 @@
 -- :NeuroVim and its subcommands.
 local M = {}
 
-local SUB = { 'check', 'mission', 'restart', 'reveal' }
+local SUB = { 'check', 'mission', 'restart', 'result', 'reveal' }
 
 function M.run(fargs)
   local sub = fargs[1]
@@ -16,6 +16,9 @@ function M.run(fargs)
     end
     return require('neurovim.ui.briefing').open(fargs[2]:upper())
   end
+  if sub == 'result' then
+    return require('neurovim.ui.result').again()
+  end
   local mission = require('neurovim.ui.mission')
   if sub == 'check' then
     return mission.check()
@@ -25,7 +28,7 @@ function M.run(fargs)
     return mission.restart()
   end
   vim.notify(
-    ('neurovim: unknown subcommand %s — use mission, check, reveal or restart.'):format(sub),
+    ('neurovim: unknown subcommand %s — use mission, check, reveal, restart or result.'):format(sub),
     vim.log.levels.ERROR
   )
 end

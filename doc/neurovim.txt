@@ -122,9 +122,12 @@ isolate     boolean, default true. A mission buffer runs in plain Neovim, as
                         it and does not open.
 
 :NeuroVim check         Score the current mission buffer: the number of lines
-                        still corrupted, or the result in a floating window
-                        (it closes when the cursor moves). One completion per
-                        run; `:NeuroVim restart` plays it again.
+                        still corrupted, or the result in a floating window.
+                        It closes when the cursor moves (or with q inside
+                        it). One completion per run; `:NeuroVim restart`
+                        plays it again.
+
+:NeuroVim result        Show the last result of this session again.
 
 :NeuroVim reveal        Highlight the lines that still differ
                         (|hl-DiffChange|). A missing line is marked on the
@@ -229,8 +232,8 @@ The objective is not visible ~
   It stands above line 1. `gg` brings it back; so does <C-y> at the top.
 
 The result window disappeared ~
-  It closes when the cursor moves. `:NeuroVim check` again only says the
-  transmission is already restored; NEXUS shows your XP, level and tiers.
+  It closes when the cursor moves. `:NeuroVim result` shows it again, until
+  you quit Neovim; NEXUS shows your XP, level and tiers.
 
 More keys than I typed ~
   The keys of your own mapping to a |<Plug>| mapping count, and so does a

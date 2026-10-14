@@ -32,7 +32,7 @@ T.case('the plugin file adds the command and only <Plug> mappings', function()
 end)
 
 T.case('completion: subcommands, then mission ids (story, then KATA)', function()
-  T.eq(command.complete('', 'NeuroVim '), { 'check', 'mission', 'restart', 'reveal' })
+  T.eq(command.complete('', 'NeuroVim '), { 'check', 'mission', 'restart', 'result', 'reveal' })
   T.eq(command.complete('m', 'NeuroVim m'), { 'mission' })
   T.eq(#command.complete('M-0', 'NeuroVim mission M-0'), 9)
   T.eq(#command.complete('KATA', 'NeuroVim mission KATA'), 14)

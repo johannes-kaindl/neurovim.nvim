@@ -57,7 +57,7 @@ If lines are still wrong, Neovim says how many, for example `2 lines still corru
 
 ## 6. Read the result
 
-When the text is right, a window shows the result: the XP you earned (15 for M-01), your time, your keys against par, and your tier. Gold means at most par keys (40 for M-01), silver at most 1.5 × par, bronze at most 2.5 × par. If you missed a tier, the window says how many keys fewer would have reached the next one. The window closes when you move the cursor.
+When the text is right, a window shows the result: the XP you earned (15 for M-01), your time, your keys against par, and your tier. Gold means at most par keys (40 for M-01), silver at most 1.5 × par, bronze at most 2.5 × par. If you missed a tier, the window says how many keys fewer would have reached the next one. The window closes when you move the cursor; `:NeuroVim result` brings it back.
 
 Your progress is saved now. `:NeuroVim` shows M-01 with ✓ and its tier.
 

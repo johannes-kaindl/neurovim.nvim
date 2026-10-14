@@ -128,7 +128,7 @@ T.case('M-01 with real keys and the typed :NeuroVim check: level 2, unlocks, bes
     local par = missions.par(missions.get('M-01'))
     T.ok(19 <= par, 'M-01 par ' .. par .. ' must allow GOLD at 19 keys')
     T.ok(f:find(('Time %%d%%d:%%d%%d · 19 keys · par %d'):format(par)), f)
-    T.ok(f:find('Tier: **GOLD**', 1, true), f)
+    T.ok(f:find('Tier: GOLD', 1, true), f)
     close_floats()
     local s = state.load()
     T.eq(s.total_xp, 75)
@@ -218,3 +218,28 @@ T.case(
     end)
   end
 )
+
+T.case('a second check of a solved run points to :NeuroVim result, which shows that result', function()
+  with_fresh_save(function()
+    close_floats()
+    local m = missions.get('M-01')
+    local buf = mission.start(m.id)
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(m.solution, '\n', { plain = true }))
+    quiet(function()
+      mission.check(buf)
+    end)
+    local first = float_text()
+    close_floats()
+    local seen = quiet(function()
+      mission.check(buf)
+    end)
+    T.eq(
+      seen[1].msg,
+      'Transmission already restored — :NeuroVim result shows the result again, :NeuroVim restart plays the mission again.'
+    )
+    require('neurovim.command').run({ 'result' })
+    T.eq(float_text(), first)
+    T.ok(first:find('TRANSMISSION RESTORED — M-01', 1, true), first)
+    close_floats()
+  end)
+end)

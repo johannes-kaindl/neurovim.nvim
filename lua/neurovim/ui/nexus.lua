@@ -20,12 +20,7 @@ function M.render(s)
     end
   end
   local p = progression.get_xp_progress(s.total_xp)
-  local title
-  for _, l in ipairs(require('neurovim.data').get().levels) do
-    if l.level == p.level then
-      title = l.title
-    end
-  end
+  local title = missions.level_title(p.level)
   add('NEUROVIM // NEXUS', 'Title')
   add(('Level %d · %s · %d XP'):format(p.level, title, s.total_xp))
   if p.nextLevelXp then
