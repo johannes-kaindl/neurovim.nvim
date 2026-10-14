@@ -1,4 +1,4 @@
--- vendored from nvim-kit@0.7.1 (lua/nvim_kit/isolate.lua) — do not edit; re-vendor
+-- vendored from nvim-kit@0.7.2 (lua/nvim_kit/isolate.lua) — do not edit; re-vendor
 -- A buffer in plain Neovim: what a user's setup changes about keys, options and editor helpers is
 -- put back to what `nvim --clean` does, in this buffer only. For a plugin whose buffer has to
 -- behave the same for everyone (a game that counts keys, an exercise with a par). Moved from
@@ -210,13 +210,21 @@ end
 
 -- which-key starts on its own when Operator-pending or Visual mode begins (ModeChanged), with no
 -- mapping to cover, and counts the keys it replays twice. Its only switch for one buffer is its
--- filetype list; it may load after the buffer opened, so BufEnter asks again. The list is read only
--- when which-key adds its triggers to a buffer, and it adds them on BufEnter, before apply set the
--- filetype (<Space> among them, swallowing <Space>p; measured in LazyVim 2026-10-14). So the
--- triggers already there are cleared; with the filetype listed, which-key adds none again.
+-- filetype list; it may load after the buffer opened, so BufEnter asks again. A listed filetype
+-- keeps which-key from building new modes for the buffer, but the modes it built on BufEnter, before
+-- apply set the filetype, stay. Their triggers (<Space> among them, swallowing <Space>p) are not mapped there but by a
+-- 0 ms timer: applied in the same tick, `clear` would find nothing mapped and drop the modes, and
+-- the timer would map the triggers anyway. So the triggers each waiting mode holds are emptied
+-- first, then `clear` unmaps whatever is mapped already; with the filetype listed, which-key builds
+-- no mode again. `bufs`, `modes` and `triggers` are which-key internals (measured with which-key
+-- 3aab214, 2026-10-14: 5 triggers left in the same tick without them, 0 with them); each is checked
+-- by type, so a which-key without them only loses the same-tick case.
 local function which_key_off(buf, filetype)
   local wk = package.loaded['which-key.config']
-  local disable = type(wk) == 'table' and type(wk.options) == 'table' and wk.options.disable
+  -- rawget: which-key's config runs its setup() on the first read of a missing field, which would
+  -- set it up with defaults before the user's own setup (measured).
+  local options = type(wk) == 'table' and rawget(wk, 'options')
+  local disable = type(options) == 'table' and options.disable
   local list = type(disable) == 'table' and disable.ft
   if not filetype or type(list) ~= 'table' then
     return
@@ -225,7 +233,18 @@ local function which_key_off(buf, filetype)
     table.insert(list, filetype)
   end
   local wb = package.loaded['which-key.buf']
-  if type(wb) == 'table' and type(wb.clear) == 'function' then
+  if type(wb) ~= 'table' then
+    return
+  end
+  local state = type(wb.bufs) == 'table' and wb.bufs[buf]
+  if type(state) == 'table' and type(state.modes) == 'table' then
+    for _, mode in pairs(state.modes) do
+      if type(mode) == 'table' and type(mode.triggers) == 'table' then
+        mode.triggers = {}
+      end
+    end
+  end
+  if type(wb.clear) == 'function' then
     pcall(wb.clear, { buf = buf })
   end
 end
@@ -238,7 +257,13 @@ end
 
 --- Put buf into plain Neovim. opts.filetype replaces the buffer's filetype (one plugins do not
 --- know, so Markdown rendering, linting and snippets leave it alone); opts.desc names the key
---- mappings in :map.
+--- mappings in :map. Limits:
+---   - Without opts.filetype which-key stays on: its only switch for one buffer is its filetype list.
+---   - which-key set up after apply (LazyVim loads it on VeryLazy, so `nvim +Cmd` opening the buffer
+---     at startup) adds its triggers while the buffer stays current; they go on the next BufEnter.
+---   - The buffer's own keys belong on <Leader>, <LocalLeader> or <Plug>: apply maps every Vim key
+---     to itself, also on each BufEnter, and removing mini.clue's triggers deletes any buffer-local
+---     mapping on a trigger's lhs (<Leader> itself, <C-w>). Map them after apply.
 function M.apply(buf, opts)
   opts = opts or {}
   local desc = opts.desc or 'plain Neovim key'

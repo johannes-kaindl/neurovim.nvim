@@ -92,7 +92,7 @@ Either no key was counted (a paste, or the text was already right), or the text 
 
 ### More keys than I typed
 
-A mapping costs the keys you press for it, also one to a `<Plug>` mapping or to `:NeuroVim check` (`<Space>c` costs 2). A terminal without bracketed paste sends a paste as typed keys. With `isolate = false`, which-key replays the keys of a prefix it waited on, and they count twice. [What counts as a key](../explanation/scoring-and-progress.md#what-counts-as-a-key) has the full rules.
+A mapping costs the keys you press for it, also one to a `<Plug>` mapping or to `:NeuroVim check` (`<Space>c` costs 2). A terminal without bracketed paste sends a paste as typed keys. With `isolate = false`, which-key replays the keys of a prefix it waited on, and they count twice. The same happens in a KATA opened as Neovim starts (`nvim '+NeuroVim mission KATA-01'`), before which-key has loaded: the keys of your `<Leader>` mappings count twice in that run, until you first switch buffers. Start from `:NeuroVim` (NEXUS), or switch buffers once. [What counts as a key](../explanation/scoring-and-progress.md#what-counts-as-a-key) has the full rules.
 
 ### A paste won the mission but set no best
 

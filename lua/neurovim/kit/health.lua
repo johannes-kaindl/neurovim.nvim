@@ -1,4 +1,4 @@
--- vendored from nvim-kit@0.7.1 (lua/nvim_kit/health.lua) — do not edit; re-vendor
+-- vendored from nvim-kit@0.7.2 (lua/nvim_kit/health.lua) — do not edit; re-vendor
 -- Building blocks for a plugin's :checkhealth. Diagnosis only: a check reads and reports; it never
 -- moves, repairs, creates or writes anything (a broken file stays exactly as the person left it).
 local M = {}

@@ -203,6 +203,11 @@ Free:
 Time runs from the first key and stops while another buffer is current
 (help, NEXUS, a file of yours); it goes on when you come back.
 
+Known limit: a KATA opened as Neovim starts (`nvim '+NeuroVim mission
+KATA-01'`), before which-key has loaded, counts the keys of your <Leader>
+mappings twice in that run, until you first switch buffers. Start from
+|:NeuroVim| (NEXUS), or switch buffers once.
+
 ==============================================================================
 6. PROGRESS                                                *neurovim-progress*
 
@@ -276,7 +281,8 @@ More keys than I typed ~
   A mapping costs the keys you press for it, also one to a |<Plug>|
   mapping, and a paste in a terminal without bracketed paste counts as
   typed. With isolate = false, which-key replays the keys of a prefix it
-  waited on, and they count twice. See |neurovim-keys|.
+  waited on, and they count twice; so it does in a KATA opened as Neovim
+  starts, until you first switch buffers. See |neurovim-keys|.
 
 A mission is locked ~
   NEXUS names the level that unlocks it. If every free mission is solved,
