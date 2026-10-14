@@ -269,12 +269,20 @@ end)
 -- which-key starts on its own when Operator-pending or Visual mode begins (ModeChanged), without a
 -- mapping to cover; its only switch per buffer is its filetype list. Measured in LazyVim
 -- 2026-10-14: `dw` typed at human pace counted 3.
+-- which-key also adds its Normal-mode triggers (<Space> among them) on the BufEnter before the
+-- filetype is set, and they swallowed <Space>p in LazyVim (2026-10-14); wk.cleared records the
+-- buffers whose triggers which-key.buf.clear was asked to remove.
 local function with_which_key(fn)
-  local saved = package.loaded['which-key.config']
-  local wk = { options = { disable = { ft = { 'help' }, bt = {} } } }
+  local saved, saved_buf = package.loaded['which-key.config'], package.loaded['which-key.buf']
+  local wk = { options = { disable = { ft = { 'help' }, bt = {} } }, cleared = {} }
   package.loaded['which-key.config'] = wk
+  package.loaded['which-key.buf'] = {
+    clear = function(opts)
+      wk.cleared[#wk.cleared + 1] = opts.buf
+    end,
+  }
   local ok, err = pcall(fn, wk)
-  package.loaded['which-key.config'] = saved
+  package.loaded['which-key.config'], package.loaded['which-key.buf'] = saved, saved_buf
   if not ok then
     error(err, 0)
   end
@@ -296,5 +304,24 @@ T.case('counter-check: isolate = false leaves which-key as it is', function()
       mission.start('M-01', { fresh = true })
     end)
     T.eq(wk.options.disable.ft, { 'help' })
+  end)
+end)
+
+T.case("isolated: which-key's triggers already in the mission buffer are cleared", function()
+  with_which_key(function(wk)
+    local buf
+    with_setup(true, function()
+      buf = mission.start('M-01', { fresh = true })
+    end)
+    T.ok(vim.tbl_contains(wk.cleared, buf), vim.inspect(wk.cleared))
+  end)
+end)
+
+T.case('counter-check: isolate = false clears no which-key trigger', function()
+  with_which_key(function(wk)
+    with_setup(false, function()
+      mission.start('M-01', { fresh = true })
+    end)
+    T.eq(wk.cleared, {})
   end)
 end)

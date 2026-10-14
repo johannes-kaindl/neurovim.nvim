@@ -1,4 +1,4 @@
--- vendored from nvim-kit@0.7.0 (lua/nvim_kit/conformance.lua) — do not edit; re-vendor
+-- vendored from nvim-kit@0.7.1 (lua/nvim_kit/conformance.lua) — do not edit; re-vendor
 -- Conformance runner: checks a port of rules against JSON vectors produced by the reference
 -- implementation — { schema, function, cases = { { name, args, expected } } }.
 -- Null handling: nulls inside objects are absent (luanil), top-level null arguments arrive

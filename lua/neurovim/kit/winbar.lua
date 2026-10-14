@@ -1,4 +1,4 @@
--- vendored from nvim-kit@0.7.0 (lua/nvim_kit/winbar.lua) — do not edit; re-vendor
+-- vendored from nvim-kit@0.7.1 (lua/nvim_kit/winbar.lua) — do not edit; re-vendor
 -- A winbar that belongs to one buffer: set window-locally wherever the buffer is shown, so another
 -- buffer in the same window has none. The buffer number is part of the expression because
 -- g:statusline_winid is not set for nvim_eval_statusline (measured). The provider's text is shown

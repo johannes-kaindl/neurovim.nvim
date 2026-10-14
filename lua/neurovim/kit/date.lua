@@ -1,4 +1,4 @@
--- vendored from nvim-kit@0.7.0 (lua/nvim_kit/date.lua) — do not edit; re-vendor
+-- vendored from nvim-kit@0.7.1 (lua/nvim_kit/date.lua) — do not edit; re-vendor
 -- Calendar dates as YYYY-MM-DD strings, without time zones: day arithmetic is pure proleptic
 -- Gregorian calendar math (H. Hinnant's algorithms), never os.time, whose local time and DST
 -- would shift a day. Day ordinals count from 1970-01-01 like code-kit's civilCalendar.

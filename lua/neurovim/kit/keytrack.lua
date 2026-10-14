@@ -1,4 +1,4 @@
--- vendored from nvim-kit@0.7.0 (lua/nvim_kit/keytrack.lua) — do not edit; re-vendor
+-- vendored from nvim-kit@0.7.1 (lua/nvim_kit/keytrack.lua) — do not edit; re-vendor
 -- Count the keys a person types in one buffer and time them from the first one. Only typed keys
 -- count (vim.on_key's `typed`): a macro replay counts the keys that started it, not the ones it
 -- replays, and a mapping counts the keys of its lhs. Keys typed in a command-line window opened
