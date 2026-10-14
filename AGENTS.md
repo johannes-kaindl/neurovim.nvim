@@ -73,6 +73,11 @@ After a rule change upstream:
 - **Typed keys in specs go through `:silent call feedkeys(g:neurovim_test_keys, "ntx")`**: it keeps the echo of searches and commands out of the test report and the keys still count. Don't build the command with `vim.fn.string(keys)` — a `<CR>` in it ends the command line.
 - **Headless `nvim -l` never fires `CursorMoved`**; tests that depend on it raise it with `nvim_exec_autocmds`.
 - **`T.eq(x, vim.NIL)` passes for `nil`** (`deep_equal`); check a JSON null with `rawequal(x, vim.NIL)` or compare with `T.json_eq`.
+- **Scheduled reactions need `vim.wait` in specs.** Neovim's floating preview closes on `CursorMoved` through `vim.schedule`; a spec that raises the event and asserts at once measures nothing. Raise, `vim.wait(20)`, then assert (`tests/result_spec.lua`).
+- **`vim.on_key` reports a mapping's whole lhs in one call** (`typed = "iw"`, `"<Space>p"`), so keytrack 0.6.0 counts a mapping as one key; requested for nvim-kit 0.7.0 (B1).
+- **Neovim's own default mappings have `sid = -8` in a normal start** (like any Lua mapping) but `sid = 1` under `nvim -l`; `isolate.lua` tells them by callback source and `desc`, and a spec asks a real `nvim --clean` (`vim.system`), because the test runner's start differs.
+- **Play tests in a real setup without touching it:** APFS-clone `~/.config/nvim`, `~/.local/share/nvim/{lazy,mason,site}` into a scratch dir (`cp -cR`), point `XDG_CONFIG_HOME`, `XDG_DATA_HOME`, `XDG_STATE_HOME`, `XDG_CACHE_HOME` there, turn the lazy checker off in the copy; start `nvim --listen <sock>` in tmux (session name with PID), type with `tmux send-keys` at human pace (0.2 s; a bare `;` must be sent as `\;`, tmux reads it as a command separator), read state with `nvim --server <sock> --remote-expr`, and take the expected text from `nvim --clean`. Used for the isolate re-test of 2026-10-14 (task note „Missionsbuffer gegen das Nutzer-Setup abschirmen“).
+- **Pass `vendor.py`'s `SRC:DEST` list as separate arguments.** A zsh variable holding the list is not split: `vendor.py` gets one argument and removes every other copy as "no longer in" the source.
 - **StyLua must skip `kit/`** (`.styluaignore`); otherwise it reformats the vendored copies and `vendor-check` turns red.
 
 ## Memory
