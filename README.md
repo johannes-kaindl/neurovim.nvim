@@ -40,7 +40,7 @@ The plugin defines `:NeuroVim` and four `<Plug>` mappings when it loads; calling
 | `:NeuroVim reveal` | Highlights the lines that still differ from the solution, with a mark at the line end; a mark goes once its line is right. |
 | `:NeuroVim restart` | Reloads the corrupted text and resets time and keys. |
 
-A mission is a scratch buffer `neurovim://<id>` with the objective above line 1 and a winbar like `M-01 · 01:23 · 37 keys · par 40`. Time and keys count from your first key in that buffer; `:NeuroVim …` itself, mouse clicks, the scroll wheel and a paste from the terminal do not count (`:help neurovim-keys`). The result opens in a floating window that closes when the cursor moves; `:NeuroVim result` shows it again.
+A mission is a scratch buffer `neurovim://<id>` with the objective above line 1 and a winbar like `M-01 · 01:23 · 37 keys · par 40`. Time and keys count from your first key in that buffer, and the clock stops while you are in another buffer; `:NeuroVim …` itself, a command that only leaves the mission, mouse clicks, the scroll wheel and a paste from the terminal do not count (`:help neurovim-keys`). The result opens in a floating window that closes when the cursor moves; `:NeuroVim result` shows it again.
 
 The plugin sets no global keys. Map the `<Plug>` mappings yourself — `<Plug>(neurovim-nexus)`, `<Plug>(neurovim-check)`, `<Plug>(neurovim-reveal)`, `<Plug>(neurovim-restart)` — under `<Leader>` or a function key (in a mission buffer the other keys are plain Vim keys):
 

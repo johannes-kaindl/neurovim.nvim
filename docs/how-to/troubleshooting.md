@@ -92,7 +92,7 @@ Either no key was counted (a paste, or the text was already right), or the text 
 
 ### More keys than I typed
 
-Your own mapping to a `<Plug>` mapping counts its keys, and a terminal without bracketed paste sends a paste as typed keys. [What counts as a key](../explanation/scoring-and-progress.md#what-counts-as-a-key) has the full rules.
+A mapping costs the keys you press for it, also one to a `<Plug>` mapping or to `:NeuroVim check` (`<Space>c` costs 2). A terminal without bracketed paste sends a paste as typed keys. With `isolate = false`, which-key replays the keys of a prefix it waited on, and they count twice. [What counts as a key](../explanation/scoring-and-progress.md#what-counts-as-a-key) has the full rules.
 
 ### A paste won the mission but set no best
 

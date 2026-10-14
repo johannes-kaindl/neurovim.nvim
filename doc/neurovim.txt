@@ -146,7 +146,8 @@ isolate     boolean, default true. A mission buffer runs in plain Neovim, as
 
 A mission is the buffer neurovim://{id}. The objective stands above line 1,
 wrapped to the window; the winbar shows id, time, keys and par. Time and keys
-count from the first key typed in the mission buffer. `u` stops at the
+count from the first key typed in the mission buffer, and the clock stops
+while you are in another buffer (|neurovim-keys|). `u` stops at the
 corrupted text the mission started with.
 
 Opening a mission that is still running, from NEXUS or with
@@ -176,14 +177,31 @@ Example: >lua
 Put them under <Leader>, <LocalLeader> or a function key: in a mission
 buffer every other key is a plain Vim key (|neurovim-isolate|).
                                                                *neurovim-keys*
-What counts as a key: every key you type in the mission buffer, a macro once
-for the keys that start it (not for what it replays), and a search or an Ex
-command such as :s with all its keys. |:NeuroVim| commands you type do not
-count. Mouse clicks and the scroll wheel do not count. A paste from the
-terminal costs no key at all, however long: terminals send it as one
-bracketed paste. A terminal without bracketed paste sends the pasted
-characters as if you had typed them, and then they count. The keys of your
-own mapping to a |<Plug>| mapping do count.
+What counts as a key: every key you type in the mission buffer, in any mode;
+a search or an Ex command such as :s with all its keys, also one you abandon
+with <Esc>; a macro once, for the keys that record and start it (not for
+what it replays). Keys typed in a command-line window opened from the
+mission (|q:|, |c_CTRL-F|) count like keys typed in the mission.
+
+A mapping costs the keys you press for it, whatever it runs: <F5> mapped to
+`:NeuroVim check<CR>` costs 1, <Space>c costs 2, and so does your own
+mapping to a |<Plug>| mapping.
+
+Free:
+- A |:NeuroVim| command you type, also abbreviated (`:Neuro check`), run or
+  abandoned with <Esc>. From |q:| the q counts; the : and the command in
+  the window do not.
+- A command after which the mission buffer is no longer current and its
+  text is unchanged: `:help`, `:e notes.txt`, `:b 2`, `:NeuroVim` by its
+  own. A command that changes the text and then leaves (`:%s/x//g|b#`)
+  counts.
+- Mouse clicks and the scroll wheel.
+- A paste from the terminal, however long: terminals send it as one
+  bracketed paste. A terminal without bracketed paste sends the pasted
+  characters as if you had typed them, and then they count.
+
+Time runs from the first key and stops while another buffer is current
+(help, NEXUS, a file of yours); it goes on when you come back.
 
 ==============================================================================
 6. PROGRESS                                                *neurovim-progress*
@@ -255,8 +273,10 @@ The result window disappeared ~
   you quit Neovim; NEXUS shows your XP, level and tiers.
 
 More keys than I typed ~
-  The keys of your own mapping to a |<Plug>| mapping count, and so does a
-  paste in a terminal without bracketed paste. See |neurovim-keys|.
+  A mapping costs the keys you press for it, also one to a |<Plug>|
+  mapping, and a paste in a terminal without bracketed paste counts as
+  typed. With isolate = false, which-key replays the keys of a prefix it
+  waited on, and they count twice. See |neurovim-keys|.
 
 A mission is locked ~
   NEXUS names the level that unlocks it. If every free mission is solved,

@@ -6,18 +6,19 @@ Why NeuroVim counts what it counts, and why the way through the game includes re
 
 NeuroVim trains Vim, and Vim rewards saying more with fewer keys: a count, a motion, a macro, a search instead of holding `j`. So a run is scored by the keys you typed, against a par for that mission. Time is recorded too, as a best and as keys per minute, but the tier depends on keys only: a calm, precise run beats a fast, clumsy one.
 
-The clock and the counter start with your first key in the mission buffer, not when the buffer opens. Reading the objective and thinking about a plan cost nothing.
+The clock and the counter start with your first key in the mission buffer, not when the buffer opens. Reading the objective and thinking about a plan cost nothing. The clock stops while another buffer is current — the help, NEXUS, a file of yours — and goes on when you come back: a look elsewhere is not part of the run.
 
 ## What counts as a key
 
 The rule is "what you pressed", not "what Vim executed":
 
-- **Every key you type in the mission buffer counts,** in any mode, including the keys of a search (`/pattern<CR>`) or an Ex command (`:s/…`).
+- **Every key you type in the mission buffer counts,** in any mode, including the keys of a search (`/pattern<CR>`) or an Ex command (`:s/…`) — also one you abandon with `<Esc>`, because the keys were pressed. Keys typed in a command-line window opened from the mission (`q:`, `<C-f>` on the command line) count the same: it is another way to type the command.
 - **A macro counts once:** the keys that record and start it (`qa…q`, `29@a`), not the keys it replays. That is the point of macros, and the game should reward it.
-- **`:NeuroVim` commands you type do not count.** Checking your work should never cost you a tier.
+- **A mapping costs the keys you press for it,** whatever it runs: `<F5>` mapped to `:NeuroVim check<CR>` costs 1, `<Space>c` costs 2, and so does a mapping to one of NeuroVim's `<Plug>` mappings. NeuroVim sees the keys you press, and cannot tell a mapping you made for the game from one you made for something else.
+- **`:NeuroVim` commands you type do not count,** abbreviated too (`:Neuro check`), and also when you abandon one with `<Esc>`. Checking your work should never cost you a tier. Only the command typed out is free: from `q:` the `q` counts, and a mapping costs its keys.
+- **Leaving the mission does not count.** A command after which the mission buffer is no longer current and its text is unchanged — `:help`, `:e notes.txt`, `:b 2` — costs nothing: looking something up is not part of the solution. A command that changes the text and then leaves (`:%s/x//g|b#`) counts.
 - **Mouse clicks and the scroll wheel do not count.** They are not Vim skills, and scrolling to read should be free.
 - **A terminal paste costs no key at all.** Terminals with bracketed paste deliver a paste as one block, not as typed keys. A terminal without it sends the characters as if you had typed them, and then they count.
-- **The keys of your own mappings count,** also a mapping to one of NeuroVim's `<Plug>` mappings. NeuroVim sees the keys you press, and cannot tell a mapping you made for the game from one you made for something else.
 
 ## Why par and tiers
 

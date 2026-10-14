@@ -1,7 +1,7 @@
 -- domain: neurovim
 -- A mission run: the raw text in an editable buffer, the objective above line 1, a winbar with
 -- id, clock, keys and par. Keys and time count from the first key typed in this buffer; the
--- player's own :NeuroVim commands do not count.
+-- player's own :NeuroVim commands do not count, and the clock stops while the buffer is left.
 local missions = require('neurovim.missions')
 local scratch = require('neurovim.kit.scratch')
 local panel = require('neurovim.kit.panel')
@@ -75,15 +75,24 @@ local ended = {}
 
 -- Keys count only in the mission buffer. A change to its text while the keys go to another buffer
 -- (:bufdo, :windo, a command typed elsewhere) makes the run unverified, like a paste: XP yes,
--- bests no (decision Johannes 2026-10-14).
-local typed_in, key_ns
+-- bests no (decision Johannes 2026-10-14). A command-line window (q:, <C-f>) types for the buffer
+-- of the window it was opened from.
+local typed_in, cmdwin_from, key_ns
 local function watch(buf)
-  key_ns = key_ns
-    or vim.on_key(function(_, typed)
+  if not key_ns then
+    key_ns = vim.on_key(function(_, typed)
       if typed and typed ~= '' then
-        typed_in = vim.api.nvim_get_current_buf()
+        typed_in = vim.fn.getcmdwintype() ~= '' and cmdwin_from or vim.api.nvim_get_current_buf()
       end
     end)
+    vim.api.nvim_create_autocmd('CmdwinEnter', {
+      group = vim.api.nvim_create_augroup('neurovim.mission.cmdwin', { clear = true }),
+      callback = function()
+        local from = vim.fn.win_getid(vim.fn.winnr('#'))
+        cmdwin_from = from ~= 0 and vim.api.nvim_win_get_buf(from) or nil
+      end,
+    })
+  end
   vim.api.nvim_buf_attach(buf, false, {
     on_lines = function()
       local run = runs[buf]
@@ -95,6 +104,12 @@ local function watch(buf)
       end
     end,
   })
+end
+
+-- :NeuroVim as the player types it, abbreviated too (:Neuro check, :silent NeuroVim result).
+local function is_neurovim(cmdline)
+  local ok, cmd = pcall(vim.api.nvim_parse_cmd, cmdline, {})
+  return ok and cmd.cmd == 'NeuroVim'
 end
 
 function M.ended(buf)
@@ -133,8 +148,13 @@ function M.start(id, opts)
     id = id,
     mission = m,
     done = false,
+    -- :help neurovim-keys: a typed :NeuroVim is free, run or abandoned; so is a command after
+    -- which the mission is no longer current and unchanged (:help, :e notes.txt). The clock stops
+    -- while another buffer is current.
     tracker = keytrack.start(buf, {
-      exclude_cmdline = '^%s*NeuroVim',
+      exclude_cmdline = is_neurovim,
+      free_if_left = true,
+      pause_outside = true,
       on_tick = function()
         vim.cmd('redrawstatus!')
       end,
