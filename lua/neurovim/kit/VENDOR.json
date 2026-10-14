@@ -1,13 +1,13 @@
 {
   "source": "nvim-kit",
   "source_path": "nvim-kit",
-  "tag": "0.5.1",
-  "sha": "9b5e1ce671e95ce29ce5ef1922f4e437115d762c",
-  "commit": "9b5e1ce671e95ce29ce5ef1922f4e437115d762c",
-  "version": "0.5.1",
+  "tag": "0.6.0",
+  "sha": "b116407e1cc9e953302c2de1888e9116dfc7d003",
+  "commit": "b116407e1cc9e953302c2de1888e9116dfc7d003",
+  "version": "0.6.0",
   "license": "AGPL-3.0-only",
   "header": true,
-  "vendored": "11 file(s) from nvim-kit@0.5.1",
+  "vendored": "11 file(s) from nvim-kit@0.6.0",
   "files": [
     "lua/nvim_kit/conformance.lua",
     "lua/nvim_kit/data.lua",

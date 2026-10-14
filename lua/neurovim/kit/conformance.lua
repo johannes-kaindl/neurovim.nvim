@@ -1,8 +1,9 @@
--- vendored from nvim-kit@0.5.1 (lua/nvim_kit/conformance.lua) — do not edit; re-vendor
+-- vendored from nvim-kit@0.6.0 (lua/nvim_kit/conformance.lua) — do not edit; re-vendor
 -- Conformance runner: checks a port of rules against JSON vectors produced by the reference
 -- implementation — { schema, function, cases = { { name, args, expected } } }.
 -- Null handling: nulls inside objects are absent (luanil), top-level null arguments arrive
--- as nil at their position, and the comparison treats vim.NIL as nil.
+-- as nil at their position, and the comparison treats vim.NIL as nil. A null inside an array
+-- argument has no faithful Lua form, so load_dir refuses the vector.
 local M = {}
 -- Relative require: a vendored copy lives under the plugin's namespace (lua/<plugin>/kit/),
 -- and must load its sibling from there, never a global nvim_kit of another version.
@@ -37,6 +38,48 @@ local function validate(file, raw)
   end
 end
 
+-- After luanil only nulls inside arrays are left as vim.NIL. Below the top level of args the
+-- runner cannot pass them: nil would leave a hole, and vim.NIL is truthy in the port.
+local function find_nil(v, path)
+  if v == vim.NIL then
+    return path
+  end
+  if type(v) ~= 'table' then
+    return nil
+  end
+  local keys = vim.tbl_keys(v)
+  table.sort(keys, function(a, b)
+    return tostring(a) < tostring(b)
+  end)
+  for _, k in ipairs(keys) do
+    local sub = type(k) == 'number' and ('[%d]'):format(k) or ('.%s'):format(k)
+    local found = find_nil(v[k], path .. sub)
+    if found then
+      return found
+    end
+  end
+  return nil
+end
+
+local function check_args(file, v)
+  for i, c in ipairs(v.cases) do
+    for j = 1, #c.args do
+      local a = c.args[j]
+      local found = a ~= vim.NIL and find_nil(a, ('args[%d]'):format(j))
+      if found then
+        error(
+          ('nvim-kit conformance: %s case %d (%s): null inside an array at %s cannot reach the port — it would arrive as vim.NIL, which is truthy'):format(
+            file,
+            i,
+            tostring(c.name),
+            found
+          )
+        )
+      end
+    end
+  end
+end
+
 function M.load_dir(dir)
   local files = vim.fn.globpath(dir, '*.json', false, true)
   table.sort(files)
@@ -48,6 +91,7 @@ function M.load_dir(dir)
     local text = read(file)
     validate(file, vim.json.decode(text))
     local v = vim.json.decode(text, { luanil = { object = true } })
+    check_args(file, v)
     if vectors[v['function']] then
       error(('nvim-kit conformance: function %s is defined twice (%s)'):format(v['function'], file))
     end

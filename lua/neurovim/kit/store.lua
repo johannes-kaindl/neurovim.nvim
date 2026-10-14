@@ -1,4 +1,4 @@
--- vendored from nvim-kit@0.5.1 (lua/nvim_kit/store.lua) — do not edit; re-vendor
+-- vendored from nvim-kit@0.6.0 (lua/nvim_kit/store.lua) — do not edit; re-vendor
 -- A JSON state file that two editors can share. Read exactly (null stays vim.NIL, {} stays an
 -- object, so the file keeps its shape for other programs), written atomically (temp file, then
 -- rename), and re-read right before every write so one editor never overwrites what another

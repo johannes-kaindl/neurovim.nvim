@@ -1,6 +1,8 @@
 local T = require('neurovim.kit.test')
 local state = require('neurovim.state')
 
+local ROOT = vim.fn.fnamemodify(debug.getinfo(1, 'S').source:sub(2), ':p:h:h')
+
 -- Each case looks at its own save and gives the data dir back afterwards, also when it fails.
 local function with_fresh_save(fn)
   local before = vim.env.XDG_DATA_HOME
@@ -25,7 +27,9 @@ T.case('a fresh install: Neovim, game data, no save yet, vendored pins — and n
     T.ok(out:find('OK Neovim', 1, true), out)
     T.ok(out:find('54 missions: 40 story, 14 KATA', 1, true), out)
     T.ok(out:find('no save yet', 1, true), out)
-    T.ok(out:find('nvim-kit@0.5.1', 1, true), out)
+    -- The pin the manifest names, so the next vendoring does not need this test changed.
+    local kit = vim.json.decode(table.concat(vim.fn.readfile(ROOT .. '/lua/neurovim/kit/VENDOR.json'), '\n'))
+    T.ok(out:find('nvim-kit@' .. kit.tag, 1, true), out)
     T.ok(out:find('neurovim@', 1, true), out)
     T.eq(out:find('ERROR', 1, true), nil, out)
   end)
